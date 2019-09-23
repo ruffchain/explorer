@@ -73,7 +73,7 @@
         </div>
       </ul>
 
-      <div class="pagination-container" v-if="txs">
+      <div class="pagination-container" v-if="txs && txs.total > 0">
         <el-pagination
           @size-change="updateTxs"
           @current-change="updateTxs"
