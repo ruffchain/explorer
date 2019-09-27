@@ -145,7 +145,7 @@ export default {
       to: [required, validAdress],
       tokenId: [required, validTokenId],
       amount: [required, gt0, rules.amountTooBig()],
-      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.001)]
+      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)]
     }
   },
   methods: {

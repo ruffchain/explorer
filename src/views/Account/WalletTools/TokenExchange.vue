@@ -255,7 +255,7 @@ export default {
           trigger: ['change']
         }
       ],
-      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.001)]
+      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)]
     }
   },
   methods: {

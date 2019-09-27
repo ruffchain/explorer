@@ -403,7 +403,7 @@ export default {
       fee: [
         required,
         rules.maxDecimalCount(9),
-        rules.greaterOrEqualThan(0.001)
+        rules.greaterOrEqualThan(0.1)
       ],
       normalTotal: [required, gt0, amountTooBig],
       initPublish: [required, gt0, maxDecimalCount12, amountTooBig],

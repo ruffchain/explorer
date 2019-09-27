@@ -243,7 +243,7 @@ export default {
     const fee = [
       required,
       rules.maxDecimalCount(9),
-      rules.greaterOrEqualThan(0.001)
+      rules.greaterOrEqualThan(0.1)
     ]
     this.stackFormRules = {
       amount: [
