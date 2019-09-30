@@ -222,7 +222,7 @@ export default {
       stackResult: null,
       stackForm: {
         operateType: '冻结',
-        fee: '0.001',
+        fee: '0.1',
         amount: 0
       },
       stackList: [],
@@ -231,7 +231,7 @@ export default {
       voteResult: null,
       voteForm: {
         candidates: [],
-        fee: '0.001'
+        fee: '0.1'
       },
       candidateList: [],
       voteDetail: null,
