@@ -111,3 +111,13 @@ textarea[required]:invalid,
 textarea:focus:invalid {
   box-shadow: none;
 }
+
+.header-row>th {
+  background: #f8fafd;
+  -webkit-transition: background .3s ease;
+  transition: background .3s ease;
+  text-align: left;
+  color: rgba(0,0,0,.85);
+  font-weight: 500;
+  border-bottom: 1px solid #e8e8e8;
+}
