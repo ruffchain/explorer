@@ -1,25 +1,32 @@
 <style lang="scss" scoped>
 .tx-history-view {
-  ul.tx-list {
-    .list-header {
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: solid 1px #eee;
-    }
-    li {
-      margin: 5px 0;
-    }
-    .el-col {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .empty-view {
-      display: flex;
-      height: 100px;
-      align-items: center;
-      justify-content: center;
-    }
+  .out-tag {
+    color: #b47d00;
+    background-color: rgba(219, 154, 4, .2);
+    font-weight: 700;
+    font-size: .60938rem;
+    line-height: 1.7;
+    padding: .2rem .5rem;
+    display: inline-block;
+    transition: .2s ease-in-out;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    border-radius: .25rem !important;
+  }
+  .in-tag {
+    color: #02977e;
+    background-color: rgba(0, 201, 167, .2);
+    font-weight: 700;
+    font-size: .60938rem;
+    line-height: 1.7;
+    padding: .2rem .9rem;
+    display: inline-block;
+    transition: .2s ease-in-out;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    border-radius: .25rem !important;
   }
   .pagination-container {
     display: flex;
@@ -32,48 +39,63 @@
 <template>
   <LoadingContainer :loading="loading" class="tx-history-view">
     <div>
-      <ul class="tx-list">
-        <el-row class="text-center list-header" tag="li">
-          <el-col :span="4">交易哈希</el-col>
-          <el-col :span="3">所在区块</el-col>
-          <el-col :span="3">时间</el-col>
-          <el-col :span="12">交易内容</el-col>
-          <el-col :span="2" class="text-right">Gasfee</el-col>
-        </el-row>
-
-        <template v-if="txs">
-          <el-row v-for="tx in txs.data" :key="tx.hash" type="flex" tag="li">
-            <el-col :span="4">
-              <div class="text-ellipsis">
-                <router-link :to="`/tx/${tx.hash}`">
-                  {{ tx.hash }}
-                </router-link>
-              </div>
-            </el-col>
-            <el-col :span="3" class="text-center">
-              <router-link :to="`/block/${tx.blocknumber}`">
-                {{ tx.blocknumber }}
-              </router-link>
-            </el-col>
-            <el-col :span="3" class="text-center">
-              {{ tx.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}
-              <div></div>
-              {{ tx.timeAgo }}
-            </el-col>
-            <el-col :span="12">
-              <JsonTreeView :data="tx.content" />
-            </el-col>
-            <el-col :span="2" class="text-right">
-              {{ tx.content.fee }} SYS
-            </el-col>
-          </el-row>
-        </template>
-        <div v-if="!loading && txs && txs.data.length === 0" class="empty-view">
-          记录为空
-        </div>
-      </ul>
-
-      <div class="pagination-container" v-if="txs && txs.total > 0">
+      <el-table :data="txs" highlight-current-row header-row-class-name="header-row" style="min-width:900px;">
+          <el-table-column type="expand">
+              <template slot-scope="scope">
+                  <JsonTreeView :data="scope.row" />
+              </template>
+          </el-table-column>
+          <el-table-column label="交易哈希" show-overflow-tooltip min-width="80px">
+              <template slot-scope="scope">
+                  <router-link :to="'/tx/' + scope.row.content.hash">
+                      {{ scope.row.content.hash }}
+                  </router-link>
+              </template>
+          </el-table-column>
+          <el-table-column label="所在区块" show-overflow-tooltip min-width="60px">
+              <template slot-scope="scope">
+                  <router-link :to="'/block/' + scope.row.blocknumber">
+                      {{ scope.row.blocknumber}}
+                  </router-link>
+              </template>
+          </el-table-column>
+          <el-table-column prop="timeAgo" label="时间" show-overflow-tooltip min-width="90px">
+          </el-table-column>
+          <el-table-column label="发送方" show-overflow-tooltip min-width="150px">
+              <template slot-scope="scope">
+                  <router-link v-if="scope.row.content.caller != address" :to="'/address/' + scope.row.address">
+                      {{ scope.row.address}}
+                  </router-link>
+                  <span v-if="scope.row.content.caller == address">{{ scope.row.address}}</span>
+              </template>
+          </el-table-column>
+          <el-table-column width="70px">
+              <template slot-scope="scope">
+                  <span v-if="scope.row.content.caller != address" class="in-tag">IN</span>
+                  <span v-if="scope.row.content.caller == address" class="out-tag">OUT</span>
+              </template>
+          </el-table-column>
+          <el-table-column label="接收方" show-overflow-tooltip min-width="150px">
+              <template slot-scope="scope">
+                  <span v-if="(scope.row.content.method == 'transferTo')  || (scope.row.content.method == 'transferTokenTo') || (scope.row.content.method == 'transferBancorTokenTo')">
+                      <router-link v-if="scope.row.content.input.to != address" :to="'/address/' + scope.row.content.input.to">{{ scope.row.content.input.to }}</router-link>
+                      <span v-if="scope.row.content.input.to == address">{{ scope.row.content.input.to }}</span>
+                  </span>
+                  <span v-else>{{ scope.row.content.method }}</span>
+              </template>
+          </el-table-column>
+          <el-table-column label="价值">
+              <template slot-scope="scope">
+                  <span v-if="(scope.row.content.method == 'transferTokenTo') || (scope.row.content.method == 'transferBancorTokenTo')">{{ scope.row.content.input.amount }}</span>
+                  <span v-else>{{ scope.row.content.value }}</span>
+                  <span v-if="(scope.row.content.method == 'transferTokenTo') || (scope.row.content.method == 'transferBancorTokenTo')" class="token_label"> {{ scope.row.content.input.tokenid }} </span>
+                  <span v-else> SYS </span>
+              </template>
+          </el-table-column>
+          <el-table-column prop="content.fee" label="交易费用">
+          </el-table-column>
+      </el-table>
+      <div class="pagination-container" v-if="total > 0">
         <el-pagination
           @size-change="updateTxs"
           @current-change="updateTxs"
@@ -81,7 +103,7 @@
           :page-size.sync="pageSize"
           :page-sizes="[10, 20, 30, 40]"
           layout="total,sizes,prev, pager, next, jumper"
-          :total="txs.total"
+          :total="total"
         />
       </div>
     </div>
@@ -106,6 +128,7 @@ export default {
       page: 1,
       pageSize: 10,
       txs: null,
+      total: 0,
       loading: false
     }
   },
@@ -127,7 +150,8 @@ export default {
             item.timeAgo = timeAgo(new Date(item.timestamp * 1000))
             return item
           })
-          this.txs = res
+          this.txs = res.data
+          this.total = res.total
         })
         .finally(() => {
           this.loading = false
