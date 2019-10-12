@@ -35,35 +35,25 @@
     <el-collapse :value="['2', '3']">
       <el-collapse-item name="1">
         <div slot="title" class="section-title">
-          投票规则 <i class="header-icon el-icon-info"></i>
+          投票规则
+          <i class="header-icon el-icon-info"></i>
         </div>
         <ul>
-          <li>
-            1. 投票权通过冻结SYS获得，冻结1SYS可得1投票权。
-          </li>
+          <li>1. 投票权通过冻结{{$_APP.CORE_SYMBOL}}获得，冻结1{{$_APP.CORE_SYMBOL}}可得1投票权。</li>
           <li>2. 每10分钟为一个有效投票周期。</li>
-          <li>
-            3. 周期内可多次投票（每隔60秒可投一次），但仅最后一次投票生效。
-          </li>
+          <li>3. 周期内可多次投票（每隔60秒可投一次），但仅最后一次投票生效。</li>
           <li>4. 一次最多可投7个节点，每个节点都将获得全部票数。</li>
-          <li>5. 再次冻结SYS后所得票数将自动追加给当前已投节点。</li>
-          <li>6. SYS冻结3天后可申请解冻。解冻后，相应已投票数将被自动撤销。</li>
+          <li>5. 再次冻结{{$_APP.CORE_SYMBOL}}后所得票数将自动追加给当前已投节点。</li>
+          <li>6. {{$_APP.CORE_SYMBOL}}冻结3天后可申请解冻。解冻后，相应已投票数将被自动撤销。</li>
         </ul>
       </el-collapse-item>
       <el-collapse-item name="2">
-        <div slot="title" class="section-title ">
-          冻结/解冻 SYS
-        </div>
-        <el-form
-          ref="stackForm"
-          :model="stackForm"
-          :rules="stackFormRules"
-          label-width="80px"
-        >
-          <el-form-item label="">
+        <div slot="title" class="section-title">冻结/解冻 {{$_APP.CORE_SYMBOL}}</div>
+        <el-form ref="stackForm" :model="stackForm" :rules="stackFormRules" label-width="80px">
+          <el-form-item label>
             <el-radio-group v-model="stackForm.operateType" size="mini">
-              <el-radio-button label="冻结">冻结 SYS</el-radio-button>
-              <el-radio-button label="解冻">解冻 SYS</el-radio-button>
+              <el-radio-button label="冻结">冻结 {{$_APP.CORE_SYMBOL}}</el-radio-button>
+              <el-radio-button label="解冻">解冻 {{$_APP.CORE_SYMBOL}}</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item prop="amount" :label="`${stackForm.operateType}数量`">
@@ -71,9 +61,7 @@
           </el-form-item>
           <el-form-item prop="fee" label="Gasfee">
             <el-input type="number" v-model="stackForm.fee">
-              <template slot="append">
-                SYS
-              </template>
+              <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
             </el-input>
           </el-form-item>
           <el-form-item size="small">
@@ -81,54 +69,31 @@
               :loading="stackLoading"
               type="primary"
               @click="operateStack"
-            >
-              确认{{ stackForm.operateType }}
-            </el-button>
+            >确认{{ stackForm.operateType }}</el-button>
           </el-form-item>
         </el-form>
         <TransactionResult v-if="stackResult" :data="stackResult" />
-        <LoadingContainer
-          :loading="stackDetailLoading"
-          class="freeze-list-contaienr"
-        >
+        <LoadingContainer :loading="stackDetailLoading" class="freeze-list-contaienr">
           <div class="section-title">当前冻结状况</div>
           <ul class="freeze-list">
             <li class="freeze-row freeze-header">
-              <div class="amount">冻结 SYS 数量</div>
+              <div class="amount">冻结 {{$_APP.CORE_SYMBOL}} 数量</div>
               <div class="time">可解冻时间</div>
               <div class="status">状态</div>
             </li>
-            <li
-              v-for="(item, index) in stackList"
-              :key="index"
-              class="freeze-row "
-            >
+            <li v-for="(item, index) in stackList" :key="index" class="freeze-row">
               <div class="amount">{{ item.amount }}</div>
               <div class="time">{{ item.dueTime | toLoaclString }}</div>
-              <div class="status">
-                {{ item.dueTime > now ? '时间未到，不' : '' }}可解冻
-              </div>
+              <div class="status">{{ item.dueTime > now ? '时间未到，不' : '' }}可解冻</div>
             </li>
           </ul>
         </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="3" v-if="stackList && stackList.length">
-        <div slot="title" class="section-title ">
-          投票
-        </div>
-        <el-form
-          ref="voteForm"
-          :model="voteForm"
-          :rules="voteFormRules"
-          label-width="80px"
-        >
+        <div slot="title" class="section-title">投票</div>
+        <el-form ref="voteForm" :model="voteForm" :rules="voteFormRules" label-width="80px">
           <el-form-item prop="candidates" label="选择节点">
-            <el-select
-              v-model="voteForm.candidates"
-              multiple
-              placeholder="请选择"
-              style="width:100%"
-            >
+            <el-select v-model="voteForm.candidates" multiple placeholder="请选择" style="width:100%">
               <el-option
                 v-for="(item, index) in candidateList"
                 :key="index"
@@ -136,64 +101,42 @@
                 :value="item.candidate"
               >
                 <div style="display:flex;padding-right:10px;">
-                  <span style="flex:1; ">
-                    {{ item.name }} - {{ item.location }}
-                  </span>
-                  <span style="color: #8492a6; font-size: 13px">
-                    {{ item.candidate }}
-                  </span>
+                  <span style="flex:1; ">{{ item.name }} - {{ item.location }}</span>
+                  <span style="color: #8492a6; font-size: 13px">{{ item.candidate }}</span>
                 </div>
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item prop="fee" label="Gasfee">
             <el-input type="number" v-model="voteForm.fee">
-              <template slot="append">
-                SYS
-              </template>
+              <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
             </el-input>
           </el-form-item>
           <el-form-item size="small">
-            <el-button :loading="voteLoading" @click="vote" type="primary">
-              确认投票
-            </el-button>
+            <el-button :loading="voteLoading" @click="vote" type="primary">确认投票</el-button>
           </el-form-item>
         </el-form>
         <TransactionResult v-if="voteResult" :data="voteResult" />
-        <LoadingContainer
-          :loading="voteDetailLoading"
-          v-if="voteDetail && voteDetail.amount"
-        >
+        <LoadingContainer :loading="voteDetailLoading" v-if="voteDetail && voteDetail.amount">
           <div class="section-title">当前投票</div>
-          <ParameterRow name="投票时间:">
-            {{ voteDetail.timestamp | toLoaclString }}
-          </ParameterRow>
+          <ParameterRow name="投票时间:">{{ voteDetail.timestamp | toLoaclString }}</ParameterRow>
 
-          <ParameterRow name="投票数:">
-            {{ voteDetail.amount | slice(1) }}
-          </ParameterRow>
-          <div class="">
-            <span class="">所投节点</span>
+          <ParameterRow name="投票数:">{{ voteDetail.amount | slice(1) }}</ParameterRow>
+          <div class>
+            <span class>所投节点</span>
             <span>
-              <span
-                v-for="(item, i) in voteDetail.candidates"
-                :key="item.candidate"
-              >
+              <span v-for="(item, i) in voteDetail.candidates" :key="item.candidate">
                 <span v-if="i != 0">,</span>
-                <router-link :to="`/address/${item.candidate}`">
-                  {{ item.name + ' - ' + item.location + '-' + item.candidate }}
-                </router-link>
+                <router-link
+                  :to="`/address/${item.candidate}`"
+                >{{ item.name + ' - ' + item.location + '-' + item.candidate }}</router-link>
               </span>
             </span>
           </div>
         </LoadingContainer>
       </el-collapse-item>
     </el-collapse>
-    <ConfirmTx
-      :visible.sync="showConfirmTx"
-      :tx="txData"
-      @confirm="confirmSendTx"
-    />
+    <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
 

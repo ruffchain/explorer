@@ -45,15 +45,11 @@
           <el-row v-for="tx in txs.data" :key="tx.hash" type="flex" tag="li">
             <el-col :span="4">
               <div class="text-ellipsis">
-                <router-link :to="`/tx/${tx.hash}`">
-                  {{ tx.hash }}
-                </router-link>
+                <router-link :to="`/tx/${tx.hash}`">{{ tx.hash }}</router-link>
               </div>
             </el-col>
             <el-col :span="3" class="text-center">
-              <router-link :to="`/block/${tx.blocknumber}`">
-                {{ tx.blocknumber }}
-              </router-link>
+              <router-link :to="`/block/${tx.blocknumber}`">{{ tx.blocknumber }}</router-link>
             </el-col>
             <el-col :span="3" class="text-center">
               {{ tx.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}
@@ -63,14 +59,10 @@
             <el-col :span="12">
               <JsonTreeView :data="tx.content" />
             </el-col>
-            <el-col :span="2" class="text-right">
-              {{ tx.content.fee }} SYS
-            </el-col>
+            <el-col :span="2" class="text-right">{{ tx.content.fee }} {{$_APP.CORE_SYMBOL}}</el-col>
           </el-row>
         </template>
-        <div v-if="!loading && txs && txs.data.length === 0" class="empty-view">
-          记录为空
-        </div>
+        <div v-if="!loading && txs && txs.data.length === 0" class="empty-view">记录为空</div>
       </ul>
 
       <div class="pagination-container" v-if="txs && txs.total > 0">

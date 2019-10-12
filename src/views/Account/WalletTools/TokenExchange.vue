@@ -21,54 +21,32 @@
 
 <template>
   <div class="token-exchange">
-    <el-alert
-      :closable="false"
-      title="智能Token交易由Bancor算法自动执行，暂不支持账户之间直接交易。"
-      type="info"
-      show-icon
-    ></el-alert>
+    <el-alert :closable="false" title="智能Token交易由Bancor算法自动执行，暂不支持账户之间直接交易。" type="info" show-icon></el-alert>
     <section>
       <div class="top-radio-selecter">
-        <el-radio-group
-          size="mini"
-          v-model="tokenExchangeType"
-          @change="typeChange"
-        >
-          <el-radio-button
-            v-for="item in TOKEN_EXCHANGE_TYPES"
-            :key="item"
-            :label="item"
-          />
+        <el-radio-group size="mini" v-model="tokenExchangeType" @change="typeChange">
+          <el-radio-button v-for="item in TOKEN_EXCHANGE_TYPES" :key="item" :label="item" />
         </el-radio-group>
       </div>
-      <el-form
-        ref="form"
-        :model="formData"
-        :rules="formRules"
-        label-width="90px"
-      >
+      <el-form ref="form" :model="formData" :rules="formRules" label-width="90px">
         <el-form-item prop="tokenId" label="Token名称">
-          <el-input
-            :value="formData.tokenId"
-            @input="formData.tokenId = $event.toUpperCase()"
-          ></el-input>
+          <el-input :value="formData.tokenId" @input="formData.tokenId = $event.toUpperCase()"></el-input>
         </el-form-item>
         <template v-if="formData.tokenId && tokenPrice">
           <div class="info-tip">
             1
             <span class="token-name">{{ formData.tokenId }}</span>
             = {{ tokenPrice }}
-            <span class="token-name">SYS</span>
+            <span class="token-name">{{$_APP.CORE_SYMBOL}}</span>
           </div>
-          <div
-            v-if="tokenExchangeType === TOKEN_EXCHANGE_TYPE.BUY"
-            class="info-tip"
-          >
+          <div v-if="tokenExchangeType === TOKEN_EXCHANGE_TYPE.BUY" class="info-tip">
             最多可供购买 {{ maxAvaliableBuyCount }}
             <span class="token-name">{{ formData.tokenId }}</span>
             =
             {{ maxAvaliableBuySys }}
-            <span class="token-name">SYS</span>
+            <span
+              class="token-name"
+            >{{$_APP.CORE_SYMBOL}}</span>
           </div>
         </template>
 
@@ -79,15 +57,13 @@
           <div v-if="canGetSysCount" class="info-tip">
             可获取
             {{ canGetSysCount }}
-            <span class="token-name">SYS</span>
+            <span class="token-name">{{$_APP.CORE_SYMBOL}}</span>
           </div>
         </template>
         <template v-else>
           <el-form-item prop="cost" label="花费">
             <el-input v-model="formData.cost" type="number">
-              <template slot="append">
-                SYS
-              </template>
+              <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
             </el-input>
           </el-form-item>
           <div v-if="canGetTokenCount" class="info-tip">
@@ -98,28 +74,15 @@
         </template>
 
         <el-form-item prop="fee" label="Gasfee">
-          <el-input v-model="formData.fee" placeholder="">
-            <template slot="append">
-              SYS
-            </template>
+          <el-input v-model="formData.fee" placeholder>
+            <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
           </el-input>
         </el-form-item>
       </el-form>
       <TransactionResult v-if="result" :data="result" />
     </section>
-    <el-button
-      :loading="loading"
-      type="primary"
-      @click="confirm()"
-      style="width:100%"
-    >
-      开始交易
-    </el-button>
-    <ConfirmTx
-      :visible.sync="showConfirmTx"
-      :tx="txData"
-      @confirm="confirmSendTx"
-    />
+    <el-button :loading="loading" type="primary" @click="confirm()" style="width:100%">开始交易</el-button>
+    <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
 
@@ -247,7 +210,7 @@ export default {
             if (this.maxAvaliableBuySys) {
               console.log(value, this.maxAvaliableBuySys)
               if (new BigNumber(value).isGreaterThan(this.maxAvaliableBuySys)) {
-                err = `最多可购买 ${this.maxAvaliableBuySys} SYS的 智能Token`
+                err = `最多可购买 ${this.maxAvaliableBuySys} ${this.$_APP.CORE_SYMBOL} 的智能Token`
               }
             }
             callback(err)

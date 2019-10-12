@@ -10,36 +10,20 @@
   <div class="transfer-token">
     <section>
       <div class="top-radio-selecter">
-        <el-radio-group
-          size="mini"
-          v-model="sendTokenType"
-          @change="typeChange"
-        >
-          <el-radio-button
-            v-for="item in tokenTypes"
-            :key="item"
-            :label="item"
-          ></el-radio-button>
+        <el-radio-group size="mini" v-model="sendTokenType" @change="typeChange">
+          <el-radio-button v-for="item in tokenTypes" :key="item" :label="item"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
         v-if="sendTokenType === TokenType.smart"
         :closable="false"
-        title="智能Token是以SYS Token作为准备金发行的，支持Bancor协议流通兑换的Token"
+        :title="`智能Token是以${$_APP.CORE_SYMBOL} Token作为准备金发行的，支持Bancor协议流通兑换的Token`"
         type="info"
         show-icon
       ></el-alert>
-      <el-form
-        ref="form"
-        :model="formData"
-        :rules="formRules"
-        label-width="90px"
-      >
+      <el-form ref="form" :model="formData" :rules="formRules" label-width="90px">
         <el-form-item prop="to" label="对方账户">
-          <el-input
-            v-model="formData.to"
-            @input="formData.to = formData.to.replace(' ', '')"
-          ></el-input>
+          <el-input v-model="formData.to" @input="formData.to = formData.to.replace(' ', '')"></el-input>
         </el-form-item>
         <el-form-item
           v-if="sendTokenType !== TokenType.sys"
@@ -58,27 +42,14 @@
         </el-form-item>
         <el-form-item prop="fee" label="Gasfee">
           <el-input v-model="formData.fee" placeholder>
-            <template slot="append">
-              SYS
-            </template>
+            <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
           </el-input>
         </el-form-item>
       </el-form>
       <TransactionResult v-if="result" :data="result" />
     </section>
-    <el-button
-      :loading="loading"
-      type="primary"
-      @click="confirm()"
-      style="width:100%"
-    >
-      开始转账
-    </el-button>
-    <ConfirmTx
-      :visible.sync="showConfirmTx"
-      :tx="txData"
-      @confirm="confirmSendTx"
-    />
+    <el-button :loading="loading" type="primary" @click="confirm()" style="width:100%">开始转账</el-button>
+    <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
 

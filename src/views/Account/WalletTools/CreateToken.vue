@@ -40,11 +40,7 @@
   <div class="create-token">
     <section>
       <div class="top-radio-selecter">
-        <el-radio-group
-          size="mini"
-          v-model="createTokenType"
-          @change="typeChange"
-        >
+        <el-radio-group size="mini" v-model="createTokenType" @change="typeChange">
           <el-radio-button :label="TokenType.normal"></el-radio-button>
           <el-radio-button :label="TokenType.smart"></el-radio-button>
         </el-radio-group>
@@ -52,29 +48,17 @@
       <el-alert
         v-if="createTokenType === TokenType.smart"
         :closable="false"
-        title="智能Token是以SYS Token作为准备金发行的，支持Bancor协议流通兑换的Token"
+        :title="`智能Token是以${$_APP.CORE_SYMBOL} Token作为准备金发行的，支持Bancor协议流通兑换的Token`"
         type="info"
         show-icon
       ></el-alert>
-      <el-form
-        ref="form"
-        :model="formData"
-        :rules="formRules"
-        label-width="100px"
-      >
+      <el-form ref="form" :model="formData" :rules="formRules" label-width="100px">
         <el-form-item prop="tokenId" label="Token名称">
-          <el-input
-            :value="formData.tokenId"
-            @input="formData.tokenId = $event.toUpperCase()"
-          ></el-input>
+          <el-input :value="formData.tokenId" @input="formData.tokenId = $event.toUpperCase()"></el-input>
         </el-form-item>
 
         <template v-if="createTokenType === TokenType.normal">
-          <el-form-item
-            prop="normalTotal"
-            :rules="normalTotalRules"
-            label="发行总量"
-          >
+          <el-form-item prop="normalTotal" :rules="normalTotalRules" label="发行总量">
             <el-input v-model="formData.normalTotal" type="number"></el-input>
           </el-form-item>
           <el-form-item prop="precision" label="Token精度">
@@ -88,18 +72,12 @@
             </el-col>
             <el-col :span="12">
               <el-form-item prop="initPublish" label="初始发行量">
-                <el-input
-                  v-model="formData.initPublish"
-                  type="number"
-                ></el-input>
+                <el-input v-model="formData.initPublish" type="number"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="nonLiquidity" label="流通发行量">
-                <el-input
-                  v-model="formData.nonLiquidity"
-                  type="number"
-                ></el-input>
+                <el-input v-model="formData.nonLiquidity" type="number"></el-input>
               </el-form-item>
             </el-col>
 
@@ -110,20 +88,14 @@
             <el-col :span="12" class="input-group-append-max-height">
               <el-form-item prop="cost" label="初始准备金">
                 <el-input v-model="formData.cost" type="number">
-                  <template slot="append">
-                    SYS
-                  </template>
+                  <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
                 </el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
               <el-form-item prop="factor" label="准备金率">
-                <el-input
-                  v-model="formData.factor"
-                  placeholder="0到1之间"
-                  type="number"
-                ></el-input>
+                <el-input v-model="formData.factor" placeholder="0到1之间" type="number"></el-input>
               </el-form-item>
             </el-col>
 
@@ -136,9 +108,7 @@
             <el-col :span="12" class="input-group-append-max-height">
               <el-form-item label="初始价格">
                 <el-input :value="initPrise" disabled>
-                  <template slot="append">
-                    SYS
-                  </template>
+                  <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
                 </el-input>
               </el-form-item>
             </el-col>
@@ -147,16 +117,12 @@
 
         <div v-if="createTokenType === TokenType.normal" class="title">
           发行量分配
-          <span class="err-msg" v-if="normalDistErr">
-            分配总量必须等于发行量
-          </span>
+          <span class="err-msg" v-if="normalDistErr">分配总量必须等于发行量</span>
         </div>
 
         <div v-else class="title">
           初始发行量分配
-          <span class="err-msg" v-if="smartDistErr">
-            分配数量+锁定数量需等于初始发行量
-          </span>
+          <span class="err-msg" v-if="smartDistErr">分配数量+锁定数量需等于初始发行量</span>
         </div>
 
         <section class="receiver-list">
@@ -196,7 +162,7 @@
             <template v-if="createTokenType === TokenType.smart">
               <el-col :span="6">
                 <el-form-item label="锁定数量">
-                  <el-switch v-model="item.lock"> </el-switch>
+                  <el-switch v-model="item.lock"></el-switch>
                 </el-form-item>
               </el-col>
               <template v-if="item.lock">
@@ -210,8 +176,7 @@
                       v-model="item.time_expiration"
                       type="datetime"
                       placeholder="选择日期时间"
-                    >
-                    </el-date-picker>
+                    ></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -225,10 +190,7 @@
                 </el-col>
               </template>
             </template>
-            <el-col
-              :span="24"
-              style="border-bottom:solid 1px #ddd;width:100%;margin-bottom:20px"
-            ></el-col>
+            <el-col :span="24" style="border-bottom:solid 1px #ddd;width:100%;margin-bottom:20px"></el-col>
           </el-row>
 
           <div class="footer">
@@ -238,36 +200,21 @@
               type="primary"
               :disabled="loading"
               @click="addPreBalance()"
-            >
-              添加发行方
-            </el-button>
+            >添加发行方</el-button>
           </div>
         </section>
 
         <el-form-item prop="fee" label="Gasfee">
           <el-input v-model="formData.fee" placeholder>
-            <template slot="append">
-              SYS
-            </template>
+            <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
           </el-input>
         </el-form-item>
       </el-form>
       <TransactionResult v-if="result" :data="result" />
     </section>
-    <el-button
-      :loading="loading"
-      type="primary"
-      @click="confirm()"
-      style="width:100%"
-    >
-      创建 Token
-    </el-button>
+    <el-button :loading="loading" type="primary" @click="confirm()" style="width:100%">创建 Token</el-button>
 
-    <ConfirmTx
-      :visible.sync="showConfirmTx"
-      :tx="txData"
-      @confirm="confirmSendTx"
-    />
+    <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
 
@@ -400,11 +347,7 @@ export default {
       nonLiquidity: [required, ge0, maxDecimalCount12, amountTooBig],
       cost: [required, gt0, maxDecimalCount9, amountTooBig],
       factor: [required, gt0, le1],
-      fee: [
-        required,
-        rules.maxDecimalCount(9),
-        rules.greaterOrEqualThan(0.1)
-      ],
+      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)],
       normalTotal: [required, gt0, amountTooBig],
       initPublish: [required, gt0, maxDecimalCount12, amountTooBig],
       preBalancesAddress: [required, validAdress],

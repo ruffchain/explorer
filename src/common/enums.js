@@ -1,5 +1,5 @@
 export const TokenType = {
-  sys: 'SYS Token',
+  sys: process.env.VUE_APP_CORE_SYMBOL + ' Token',
   normal: '普通 Token',
   smart: '智能 Token'
 }
