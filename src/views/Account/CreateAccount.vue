@@ -38,28 +38,20 @@
     <template v-if="step === 1">
       输入密码,此密码用于加密私钥，不作为生成私钥的种子。
       您需要使用此密码及私钥才能解锁钱包。
-
       <el-form ref="form" :model="formData" :rules="formRules" label-width="0">
-        <el-form-item prop="password" label="">
-          <el-input
-            v-model="formData.password"
-            type="password"
-            placeholder="请输入密码"
-          ></el-input>
+        <el-form-item prop="password" label>
+          <el-input v-model="formData.password" type="password" placeholder="请输入密码"></el-input>
         </el-form-item>
       </el-form>
     </template>
 
     <template v-if="step === 2">
-      <el-button type="primary" class="full-width" @click="download">
-        下载KeyStore文件
-      </el-button>
+      <el-button type="primary" class="full-width" @click="download">下载KeyStore文件</el-button>
     </template>
 
     <template v-if="step === 3">
       <div>请保存好你的私钥:</div>
       {{ privateKey }}
-
       <el-button
         @click="copyPrivateKey"
         type="primary"
@@ -68,38 +60,31 @@
         circle
       ></el-button>
 
-      <el-button
-        v-if="!getCandyRes"
-        :loading="loading"
-        type="primary"
-        @click="getCandy"
-      >
-        点击领取 Token
-      </el-button>
-      <div class="message-box">
-        <div v-if="getCandyRes">
-          <div v-if="getCandyRes.stauts === 0 || getCandyRes.status === 0">
-            领取成功 ，查看本次交易
-            <a target="_blank" :href="`/tx/${getCandyRes.hash}`">
-              {{ getCandyRes.hash }}
-            </a>
+      <template v-if="$_APP.IS_TESTNET">
+        <el-button
+          v-if="!getCandyRes"
+          :loading="loading"
+          type="primary"
+          @click="getCandy"
+        >点击领取 Token</el-button>
+        <div class="message-box">
+          <div v-if="getCandyRes">
+            <div v-if="getCandyRes.stauts === 0 || getCandyRes.status === 0">
+              领取成功 ，查看本次交易
+              <a
+                target="_blank"
+                :href="`/tx/${getCandyRes.hash}`"
+              >{{ getCandyRes.hash }}</a>
+            </div>
+            <div v-if="getCandyRes.status === 1">你已经领取过token</div>
           </div>
-          <div v-if="getCandyRes.status === 1">
-            你已经领取过token
-          </div>
+          <div v-if="getCandyFaild">领取失败，请稍后重试</div>
         </div>
-        <div v-if="getCandyFaild">领取失败，请稍后重试</div>
-      </div>
+      </template>
     </template>
 
     <div slot="footer" class="dialog-footer">
-      <el-button
-        type="primary"
-        :disabled="disableNext || loading"
-        @click="nextStep"
-      >
-        下一步
-      </el-button>
+      <el-button type="primary" :disabled="disableNext || loading" @click="nextStep">下一步</el-button>
     </div>
   </el-dialog>
 </template>

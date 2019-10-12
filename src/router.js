@@ -8,7 +8,6 @@ import Token from './views/Token.vue'
 import Wallet from './views/Account/Wallet.vue'
 
 import Search from './views/Search'
-import GetCandy from './views/GetCandy'
 import AddressToHex from './views/Tools/AddressToHex'
 
 import globalData from './common/global-data.js'
@@ -53,11 +52,6 @@ const router = new Router({
       path: '/wallet',
       name: 'Wallet',
       component: Wallet
-    },
-    {
-      path: '/candy',
-      name: 'GetCandy',
-      component: GetCandy
     },
     {
       path: '/tools/address2hex',

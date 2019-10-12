@@ -31,17 +31,15 @@
     Copyright ©2019 RUFF FOUNDATION LTD. All Rights Reserved
     <div>
       <span class="divider">|</span>
-      <a target="_blank" href="https://github.com/ruffchain/Guide/wiki">
-        帮助中心
-      </a>
+      <a target="_blank" href="https://github.com/ruffchain/Guide/wiki">帮助中心</a>
       <!-- |
       <router-link to="/tools/address2hex">
         地址转换工具
-      </router-link> -->
-      |
-      <a target="_blank" href="https://ruffchain.com/plan-early-birds/profit/"
-        >早鸟计划收益查询</a
-      >
+      </router-link>-->
+      <template v-if="$_APP.IS_TESTNET">
+        |
+        <a target="_blank" href="https://ruffchain.com/plan-early-birds/profit/">早鸟计划收益查询</a>
+      </template>
     </div>
   </div>
 </template>
