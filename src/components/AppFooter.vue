@@ -36,10 +36,7 @@
       <router-link to="/tools/address2hex">
         地址转换工具
       </router-link>-->
-      <template v-if="$_APP.IS_TESTNET">
-        |
-        <a target="_blank" href="https://ruffchain.com/plan-early-birds/profit/">早鸟计划收益查询</a>
-      </template>
+      <a target="_blank" href="https://ruffchain.com/plan-early-birds/profit/">早鸟计划收益查询</a>
     </div>
   </div>
 </template>
