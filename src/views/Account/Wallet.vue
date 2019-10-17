@@ -132,10 +132,10 @@ export default {
         type: NavItemEnums.Exchange,
         name: '智能Token交易'
       },
-      // {
-      //   type: NavItemEnums.Vote,
-      //   name: '投票'
-      // }
+      {
+        type: NavItemEnums.Vote,
+        name: '投票'
+      }
     ]
   }
 }
