@@ -41,21 +41,13 @@ ul.token-list {
 <template>
   <LoadingContainer :loading="loading">
     <el-row class="token-list" tag="ul">
-      <el-col
-        v-for="token in tokens"
-        :key="token.token"
-        :xs="12"
-        :sm="4"
-        tag="li"
-      >
+      <el-col v-for="token in tokens" :key="token.token" :xs="12" :sm="4" tag="li">
         <div class="token-piece">
           <span class="token-name">
             <div class="coin-icon" :class="[token.tokentype]"></div>
-            <router-link :to="`/token/${token.token}`">
-              {{ token.token }}
-            </router-link>
+            <router-link :to="`/token/${token.token}`">{{ token.token }}</router-link>
           </span>
-          <span class="token-amount">{{ token.value }}</span>
+          <span class="token-amount">{{ token.amount }}</span>
         </div>
       </el-col>
     </el-row>

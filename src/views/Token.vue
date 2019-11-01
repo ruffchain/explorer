@@ -94,7 +94,7 @@
                   </router-link>
                 </el-col>
                 <el-col :span="8" class="text-ellipsis">
-                  {{ item.value }}
+                  {{ item.amount }}
                 </el-col>
               </el-row>
             </ul>
