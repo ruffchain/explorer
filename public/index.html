@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#3a4e67">
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <title> RuffChain <%= VUE_APP_IS_TESTNET==='true'?'Testnet':'' %> Explorer</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.9.1/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css" integrity="sha256-WAgYcAck1C1/zEl5sBl5cfyhxtLgKGdpI3oKyJffVRI=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.9.1/lib/theme-chalk/index.css" integrity="sha256-qqPTRj4z/qJRF+PBy1LjBT/5buh0wF5DkVul7Jqyx/g=" crossorigin="anonymous">
 </head>
 
 <body>
@@ -20,14 +20,12 @@
   <div id="app"></div>
 
   <% if (NODE_ENV === "production") { %>
-  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle@3.4.3/minified.js" type="text/javascript"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.runtime.min.js" type="text/javascript"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.1/dist/vue-router.min.js" type="text/javascript"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/element-ui@2.9.1/lib/index.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bignumber.js@8.0.1/bignumber.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle@3.4.3/minified.js" integrity="sha256-x8vn+Bsdgtn22aliPw7FdEQf1eboPBauQr36JUpFdW8=" crossorigin="anonymous"></script>  
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.runtime.min.js" integrity="sha256-mx1AK+wH7lMC4HQZStkQVBdY2M28fAkV7bEiU8NuOI8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.1/dist/vue-router.min.js" integrity="sha256-yEB9jUlD51i5kxJZlzgzfR6XmVKI76Nl1WRA1aqIilU=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/element-ui@2.9.1/lib/index.js" integrity="sha256-2DgJOapKEKqOrMLVus9mFH3pFRUzA/sPF1jlMxCQyi8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js" integrity="sha256-mpnrJ5DpEZZkwkE1ZgkEQQJW/46CSEh/STrZKOB/qoM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bignumber.js@8.0.1/bignumber.min.js" integrity="sha256-e51cgIcKLP+60iGRuwOOhOz7Nxgz2pSBQ7ds0OXpNvE=" crossorigin="anonymous"></script>
   <% } %>
 
   <!-- built files will be auto injected -->
