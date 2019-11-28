@@ -15,29 +15,29 @@ module.exports = {
           '^/chain-info-rpc': '/rpc'
         }
       }
-    },
-    configureWebpack: config => {
-      if (process.env.NODE_ENV === 'production') {
-        config.externals = {
-          'element-ui': 'ELEMENT',
-          vue: 'Vue',
-          'vue-router': 'VueRouter',
-          axios: 'axios',
-          'bignumber.js': 'BigNumber'
-        }
+    }
+  },
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      config.externals = {
+        'element-ui': 'ELEMENT',
+        vue: 'Vue',
+        'vue-router': 'VueRouter',
+        axios: 'axios',
+        'bignumber.js': 'BigNumber'
       }
-      config.devtool = 'source-map'
-    },
-    pwa: {
-      workboxOptions: {
-        // https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin
-        skipWaiting: true,
-        clientsClaim: true,
-        importWorkboxFrom: 'local',
-        importsDirectory: 'js',
-        navigateFallback: '/',
-        navigateFallbackBlacklist: [/\/api\//]
-      }
+    }
+    config.devtool = 'source-map'
+  },
+  pwa: {
+    workboxOptions: {
+      // https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin
+      skipWaiting: true,
+      clientsClaim: true,
+      importWorkboxFrom: 'local',
+      importsDirectory: 'js',
+      navigateFallback: '/',
+      navigateFallbackBlacklist: [/\/api\//]
     }
   }
 }
