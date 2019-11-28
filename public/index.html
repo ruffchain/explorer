@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="theme-color" content="#3a4e67">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>  RuffChain <%= VUE_APP_IS_TESTNET==='true'?'Testnet':'' %> Explorer</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but vue-init doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <% if (NODE_ENV === "production") { %>
-    <script src="https://unpkg.com/core-js-bundle@3.4.3/minified.js"></script>
-    <% } %>
-    <!-- built files will be auto injected -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="theme-color" content="#3a4e67">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title> RuffChain <%= VUE_APP_IS_TESTNET==='true'?'Testnet':'' %> Explorer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.9.1/lib/theme-chalk/index.css">
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but vue-init doesn't work properly without JavaScript enabled. Please enable it to
+      continue.</strong>
+  </noscript>
+  <div id="app"></div>
+
+  <% if (NODE_ENV === "production") { %>
+  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle@3.4.3/minified.js" type="text/javascript"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.runtime.min.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.1/dist/vue-router.min.js" type="text/javascript"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/element-ui@2.9.1/lib/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bignumber.js@8.0.1/bignumber.min.js"></script>
+  <% } %>
+
+  <!-- built files will be auto injected -->
+</body>
+
 </html>
