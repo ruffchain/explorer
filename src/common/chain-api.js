@@ -25,22 +25,11 @@ const callChainRpc = (function() {
     })
 })()
 
-export const getBlock = (which, transactions = true) =>
-  callChainRpc('getBlock', {
-    which,
-    transactions
-  })
-
-export const getTransaction = tx =>
-  callChainRpc('getTransactionReceipt', {
-    tx
-  })
-
 export const checkReceipt = async tx => {
   await delay(500)
   for (let i = 0; i < 10; i++) {
     try {
-      let res = await getTransaction(tx)
+      let res = await callChainRpc('getTransactionReceipt', { tx })
       if (res.receipt.returnCode === 0) {
         return true
       }
@@ -118,6 +107,17 @@ const callQueryRpc = (function() {
 export const search = str => callQueryRpc('getName', str)
 
 export const getChainOverview = () => callQueryRpc('getChainOverview')
+
+export const getBlock = (which, transactions = true) =>
+  callQueryRpc('getBlock', {
+    which,
+    transactions
+  })
+
+export const getTransaction = tx =>
+  callQueryRpc('getTransactionReceipt', {
+    tx
+  })
 
 export const getLatestBlocks = () =>
   callQueryRpc('getLatestBlocks', {
