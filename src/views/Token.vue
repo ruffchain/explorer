@@ -68,7 +68,7 @@
         </ParameterRow>
         <ParameterRow v-if="info.address != '-'" name="创建账户:">
           <router-link :to="`/address/${info.address}`">
-            {{ info.address }}
+            {{$_APP.ADDRESS_PREFIX}}{{ info.address }}
           </router-link>
         </ParameterRow>
       </section>
@@ -90,7 +90,7 @@
               >
                 <el-col :span="16" class="text-ellipsis">
                   <router-link :to="`/address/${item.hash}`">
-                    {{ item.hash }}
+                    {{$_APP.ADDRESS_PREFIX}}{{ item.hash }}
                   </router-link>
                 </el-col>
                 <el-col :span="8" class="text-ellipsis">
