@@ -3,6 +3,11 @@ import {
   addressFromSecretKey
 } from '../../../common/chain-lib/core/address'
 import * as chainApi from '../../../common/chain-api'
+import {
+  ADDRESS_PREFIX,
+  isValidAddressPrefix,
+  rmAddressPrefix
+} from '../../../common/utils'
 
 const handleCb = (cb, err) => {
   err ? cb(new Error(err)) : cb()
@@ -88,7 +93,11 @@ export const validAdress = () => ({
   validator: (rule, value, callback) => {
     let err
     try {
-      if (!isValidAddress(value)) {
+      let address = '' + value
+      if (
+        !isValidAddressPrefix(address) ||
+        !isValidAddress(rmAddressPrefix(address))
+      ) {
         err = `请输入有效账户`
       }
     } catch (e) {

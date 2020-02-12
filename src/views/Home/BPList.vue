@@ -96,9 +96,9 @@
             </a>
           </div> -->
 
-          <router-link :to="'/address/' + bp.candidate.slice(1)">
-            {{ bp.candidate | slice(1) }}
-          </router-link>
+          <router-link
+            :to="'/address/' + bp.candidate.slice(1)"
+          >{{$_APP.ADDRESS_PREFIX }}{{ bp.candidate | slice(1) }}</router-link>
         </div>
         <!-- <div class="website">
           <a :href="bp.website" target="_blank">{{ bp.website }}</a>

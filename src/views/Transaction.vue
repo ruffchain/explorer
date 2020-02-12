@@ -25,9 +25,7 @@
           </router-link>
         </ParameterRow>
         <ParameterRow name="发起方:">
-          <router-link :to="`/address/${data.tx.caller}`">
-            {{ data.tx.caller }}
-          </router-link>
+          <router-link :to="`/address/${data.tx.caller}`">{{$_APP.ADDRESS_PREFIX +data.tx.caller }}</router-link>
         </ParameterRow>
       </div>
       <div class="card" style="margin:10px 0">

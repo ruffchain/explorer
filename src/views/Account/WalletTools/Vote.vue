@@ -102,7 +102,7 @@
               >
                 <div style="display:flex;padding-right:10px;">
                   <span style="flex:1; ">{{ item.name }} - {{ item.location }}</span>
-                  <span style="color: #8492a6; font-size: 13px">{{ item.candidate }}</span>
+                  <span style="color: #8492a6; font-size: 13px">{{$_APP.ADDRESS_PREFIX}}{{ item.candidate }}</span>
                 </div>
               </el-option>
             </el-select>
@@ -129,7 +129,7 @@
                 <span v-if="i != 0">,</span>
                 <router-link
                   :to="`/address/${item.candidate}`"
-                >{{ item.name + ' - ' + item.location + '-' + item.candidate }}</router-link>
+                >{{ item.name + ' - ' + item.location + '-' + $_APP.ADDRESS_PREFIX + item.candidate }}</router-link>
               </span>
             </span>
           </div>

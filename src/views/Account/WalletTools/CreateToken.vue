@@ -226,6 +226,7 @@ import { TokenType } from '../../../common/enums.js'
 import * as rules from './form-rules.js'
 import ConfirmTx from './ConfirmTx'
 import { genCreateTokenTx } from './wallet-helper'
+import { rmAddressPrefix } from '../../../common/utils'
 
 export default {
   components: {
@@ -397,8 +398,13 @@ export default {
       if (this.createTokenType === TokenType.smart && this.smartDistErr) {
         return
       }
+      const formData = JSON.parse(JSON.stringify(this.formData))
+      formData.preBalances = formData.preBalances.map(preBalance => ({
+        ...preBalance,
+        address: rmAddressPrefix(preBalance.address)
+      }))
       this.txData = genCreateTokenTx({
-        ...this.formData,
+        ...formData,
         tokenType: this.createTokenType
       })
       this.showConfirmTx = true

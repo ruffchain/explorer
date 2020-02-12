@@ -15,7 +15,7 @@
     <PageBreadcrumb title="账号详情" />
     <section class="card">
       <ParameterRow name="账户地址:">
-        {{ address }}
+        {{$_APP.ADDRESS_PREFIX }}{{ address }}
       </ParameterRow>
       <template v-if="bpInfo.candidate">
         <ParameterRow name="节点名称:">

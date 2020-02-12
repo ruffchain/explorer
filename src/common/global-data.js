@@ -7,6 +7,7 @@ const globalData = new Vue({
       loading: false,
       CORE_SYMBOL: process.env.VUE_APP_CORE_SYMBOL,
       IS_TESTNET: process.env.VUE_APP_IS_TESTNET === 'true',
+      ADDRESS_PREFIX: process.env.VUE_APP_ADDRESS_PREFIX,
       privateKey: ''
     }
   },

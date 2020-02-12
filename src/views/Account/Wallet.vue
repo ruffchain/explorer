@@ -41,7 +41,7 @@
     <template v-if="$_APP.privateKey">
       <div class="card">
         <ParameterRow name="账户地址:">
-          {{ address }}
+          {{$_APP.ADDRESS_PREFIX }}{{ address }}
         </ParameterRow>
         <TokenList :address="address" />
       </div>

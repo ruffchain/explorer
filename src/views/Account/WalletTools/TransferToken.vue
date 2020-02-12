@@ -60,6 +60,7 @@ import { TokenType } from '../../../common/enums.js'
 import * as rules from './form-rules.js'
 import ConfirmTx from './ConfirmTx'
 import { genTransferTx } from './wallet-helper'
+import { rmAddressPrefix } from '../../../common/utils'
 
 export default {
   components: {
@@ -127,8 +128,10 @@ export default {
     async confirm() {
       this.result = null
       await this.$refs.form.validate()
+      const formData = { ...this.formData }
+      formData.to = rmAddressPrefix(formData.to)
       this.txData = genTransferTx({
-        ...this.formData,
+        ...formData,
         tokenType: this.sendTokenType
       })
       this.showConfirmTx = true

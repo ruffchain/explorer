@@ -124,9 +124,9 @@
                 </div>
                 <div>
                   发起方
-                  <router-link :to="'/address/' + tx.address">
-                    {{ tx.address | shortHash }}
-                  </router-link>
+                  <router-link
+                    :to="'/address/' + tx.address"
+                  >{{$_APP.ADDRESS_PREFIX }}{{ tx.address | shortHash }}</router-link>
                 </div>
               </div>
               <div class="time">{{ tx.timeAgo }}</div>

@@ -31,15 +31,10 @@
         <li>区块编号 ( 示例 : 123 )</li>
         <li>区块 ID ( 示例 : 长度为64的哈希字符串)</li>
         <li>交易 ID ( 示例 : 长度为64的哈希字符串)</li>
-        <li>地 址 ( 示例 : 长度为34的哈希字符串)</li>
+        <li>地 址 ( 示例 : 长度为38的前缀为ruff的哈希字符串)</li>
       </ul>
       <div class="return-home-btn-box">
-        <router-link
-          class="el-button el-button--primary el-button--small"
-          to="/"
-        >
-          返回首页
-        </router-link>
+        <router-link class="el-button el-button--primary el-button--small" to="/">返回首页</router-link>
       </div>
     </div>
   </div>
@@ -48,6 +43,11 @@
 <script>
 import { PageType } from '../common/enums.js'
 import { search } from '../common/chain-api.js'
+import {
+  ADDRESS_PREFIX,
+  rmAddressPrefix,
+  isValidAddressPrefix
+} from '../common/utils'
 
 export default {
   data() {
@@ -70,7 +70,15 @@ export default {
       this.$_APP.loading = true
       this.noResult = false
       try {
-        const res = await search(this.search)
+        let searchStr = this.search
+
+        if (
+          searchStr.length === 34 + ADDRESS_PREFIX.length &&
+          isValidAddressPrefix(searchStr)
+        ) {
+          searchStr = rmAddressPrefix(searchStr)
+        }
+        const res = await search(searchStr)
         if (res.length) {
           const [{ type }] = res
           let route = ''
@@ -89,7 +97,7 @@ export default {
               break
           }
           this.$router.replace({
-            path: route + this.search
+            path: route + searchStr
           })
         } else {
           this.noResult = true

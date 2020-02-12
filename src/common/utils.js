@@ -54,3 +54,14 @@ export const copyText = text => {
 
   return succeed
 }
+
+export const ADDRESS_PREFIX = process.env.VUE_APP_ADDRESS_PREFIX
+
+export const isValidAddressPrefix = address =>
+  address.slice(0, ADDRESS_PREFIX.length) === ADDRESS_PREFIX
+
+export const rmAddressPrefix = address => {
+  if (isValidAddressPrefix(address))
+    return address.slice(ADDRESS_PREFIX.length, address.length)
+  return address
+}

@@ -43,7 +43,7 @@
         <ParameterRow name="出块时间:">
           {{ data.block.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}
         </ParameterRow>
-        <ParameterRow name="出块节点:" :value="data.block.creator" />
+        <ParameterRow name="出块节点:" :value="$_APP.ADDRESS_PREFIX+data.block.creator" />
         <ParameterRow name="区块 hash:" :value="data.block.hash" />
       </div>
       <div class="card" style="margin:10px 0">
