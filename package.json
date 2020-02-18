@@ -22,7 +22,7 @@
     "secp256k1": "^3.6.2",
     "uuid": "^3.3.2",
     "vue": "^2.5.17",
-    "vue-json-views": "^0.1.1",
+    "vue-json-views": "^1.1.0",
     "vue-material-design-icons": "^2.4.0",
     "vue-router": "^3.0.1",
     "web3-utils": "^1.0.0-beta.55",

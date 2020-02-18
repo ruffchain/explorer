@@ -7983,20 +7983,10 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.npm.taobao.org/vue-hot-reload-api/download/vue-hot-reload-api-2.3.3.tgz#2756f46cb3258054c5f4723de8ae7e87302a1ccf"
   integrity sha1-J1b0bLMlgFTF9HI96K5+hzAqHM8=
 
-vue-json-views@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.npm.taobao.org/vue-json-views/download/vue-json-views-0.0.2.tgz#c5a75003a8253a75c337cd717ed8a454c3025f1d"
-  integrity sha1-xadQA6glOnXDN81xftikVMMCXx0=
-  dependencies:
-    vue "^2.5.11"
-
-vue-json-views@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.npm.taobao.org/vue-json-views/download/vue-json-views-0.1.1.tgz#f180172abe04bcaf426a0f43a01924e0426ebcfc"
-  integrity sha1-8YAXKr4EvK9Cag9DoBkk4EJuvPw=
-  dependencies:
-    vue "^2.5.11"
-    vue-json-views "^0.0.2"
+vue-json-views@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/vue-json-views/download/vue-json-views-1.1.0.tgz#8577f3fb33970c415c60750f83abe8957df3ea5e"
+  integrity sha1-hXfz+zOXDEFcYHUPg6volX3z6l4=
 
 vue-loader@^15.7.0:
   version "15.7.2"
@@ -8040,7 +8030,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
-vue@^2.5.11, vue@^2.5.17:
+vue@^2.5.17:
   version "2.6.10"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha1-pysaQqTYKnIepDjRtr9V5mGVxjc=
