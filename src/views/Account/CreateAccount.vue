@@ -23,7 +23,7 @@
 
 <template>
   <el-dialog
-    title="创建账户"
+    :title="strTitle"
     :visible="true"
     @close="$emit('close')"
     width="600px"
@@ -36,21 +36,20 @@
     </el-steps>
 
     <template v-if="step === 1">
-      输入密码,此密码用于加密私钥，不作为生成私钥的种子。
-      您需要使用此密码及私钥才能解锁钱包。
+      {{ strStep1}}
       <el-form ref="form" :model="formData" :rules="formRules" label-width="0">
         <el-form-item prop="password" label>
-          <el-input v-model="formData.password" type="password" placeholder="请输入密码"></el-input>
+          <el-input v-model="formData.password" type="password" :placeholder="strPlaceHolder"></el-input>
         </el-form-item>
       </el-form>
     </template>
 
     <template v-if="step === 2">
-      <el-button type="primary" class="full-width" @click="download">下载KeyStore文件</el-button>
+      <el-button type="primary" class="full-width" @click="download">{{ strDownloadKeyStore}}</el-button>
     </template>
 
     <template v-if="step === 3">
-      <div>请保存好你的私钥:</div>
+      <div>{{ strSavePrivateKey }}</div>
       {{ privateKey }}
       <el-button
         @click="copyPrivateKey"
@@ -66,25 +65,29 @@
           :loading="loading"
           type="primary"
           @click="getCandy"
-        >点击领取 Token</el-button>
+        >{{ strGetCandy }}</el-button>
         <div class="message-box">
           <div v-if="getCandyRes">
             <div v-if="getCandyRes.stauts === 0 || getCandyRes.status === 0">
-              领取成功 ，查看本次交易
+              {{ strGetCandyOK }}
               <a
                 target="_blank"
                 :href="`/tx/${getCandyRes.hash}`"
               >{{ getCandyRes.hash }}</a>
             </div>
-            <div v-if="getCandyRes.status === 1">你已经领取过token</div>
+            <div v-if="getCandyRes.status === 1">{strGetCandyAlready}}</div>
           </div>
-          <div v-if="getCandyFaild">领取失败，请稍后重试</div>
+          <div v-if="getCandyFaild">{{ strGetCandyFail }}</div>
         </div>
       </template>
     </template>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="disableNext || loading" @click="nextStep">下一步</el-button>
+      <el-button
+        type="primary"
+        :disabled="disableNext || loading"
+        @click="nextStep"
+      >{{ strNextStep }}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -105,8 +108,8 @@ export default {
       getCandyRes: null,
       getCandyFaild: false,
       formData: {
-        password: ''
-      }
+        password: '',
+      },
     }
   },
   computed: {
@@ -118,7 +121,37 @@ export default {
         return !this.downloadClicked
       }
       return false
-    }
+    },
+    strTitle() {
+      return this.$t('CreateAccount.title')
+    },
+    strStep1() {
+      return this.$t('CreateAccount.step1')
+    },
+    strPlaceHolder() {
+      return this.$t('CreateAccount.placeHolder')
+    },
+    strDownloadKeyStore() {
+      return this.$t('CreateAccount.downloadKeyStore')
+    },
+    strSavePrivateKey() {
+      return this.$t('CreateAccount.savePrivateKey')
+    },
+    strGetCandy() {
+      return this.$t('CreateAccount.getCandy')
+    },
+    strGetCandyOK() {
+      return this.$t('CreateAccount.getCandyOK')
+    },
+    strGetCandyAlready() {
+      return this.$t('CreateAccount.getCandyAlready')
+    },
+    strGetCandyFail() {
+      return this.$t('CreateAccount.getCandyFail')
+    },
+    strNextStep() {
+      return this.$t('CreateAccount.nextStep')
+    },
   },
   created() {
     const required = rules.required()
@@ -129,13 +162,13 @@ export default {
           validator: async (rule, value, callback) => {
             let err
             if (value.length < 8) {
-              err = `密码最少为8位`
+              err = this.$t('CreateAccount.validatorErr')
             }
             err ? callback(new Error(err)) : callback()
           },
-          trigger: ['change']
-        }
-      ]
+          trigger: ['change'],
+        },
+      ],
     }
   },
   methods: {
@@ -172,9 +205,9 @@ export default {
       chainApi
         .getCandy({
           address: this.address,
-          token: 'SYS'
+          token: 'SYS',
         })
-        .then(res => {
+        .then((res) => {
           if (res.hash) {
             this.getCandyRes = res
           } else {
@@ -191,13 +224,13 @@ export default {
     copyPrivateKey() {
       if (copyText(this.privateKey)) {
         this.$message({
-          message: '复制成功',
-          type: 'success'
+          message: this.$t('CreateAccount.copyPrivateKeyOk'),
+          type: 'success',
         })
       } else {
-        this.$message.error('复制失败，请手动复制')
+        this.$message.error(this.$t('CreateAccount.copyPrivateKeyFail'))
       }
-    }
-  }
+    },
+  },
 }
 </script>

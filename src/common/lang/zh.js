@@ -88,7 +88,10 @@ export default {
     getCandyOK: '领取成功 ，查看本次交易',
     getCandyAlready: '你已经领取过token',
     getCandyFail: '领取失败，请稍后重试',
-    nextStep: '下一步'
+    nextStep: '下一步',
+    validatorErr: '密码最少为8位',
+    copyPrivateKeyOk: '复制成功',
+    copyPrivateKeyFail: '复制失败，请手动复制'
   },
   LoginAccount: {
     title: '登录账户',
@@ -104,7 +107,7 @@ export default {
     title: '钱包',
     addressAccount: '账户地址:',
     addressUnlogin: '未登陆钱包',
-    history:'账户历史',
+    history: '账户历史',
     transfer: '转账',
     create: '创建Token',
     exchange: '智能Token交易',

@@ -88,7 +88,10 @@ export default {
     getCandyOK: 'Get Candy OK, check the transaction',
     getCandyAlready: 'Token alreay got',
     getCandyFail: 'Getting Token failed，please try later',
-    nextStep: 'Next'
+    nextStep: 'Next',
+    validatorErr: 'password length >= 8',
+    copyPrivateKeyOk: 'Copy Succeed',
+    copyPrivateKeyFail: 'Copy Failed, please save it by hand.'
   },
   LoginAccount: {
     title: 'Login Account',
