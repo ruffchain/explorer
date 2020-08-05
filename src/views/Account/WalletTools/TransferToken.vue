@@ -11,7 +11,7 @@
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="sendTokenType" @change="typeChange">
-          <el-radio-button v-for="item in newTokenTypes" :key="item" :label="item"></el-radio-button>
+          <el-radio-button v-for="item in tokenTypes" :key="item" :label="item"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
@@ -108,13 +108,13 @@ export default {
       }
       return [...this.formRules.amount, maxDecimalCount]
     },
-    newTokenTypes() {
-      return [
-        process.env.VUE_APP_CORE_SYMBOL + ' Token',
-        this.$t('TransferToken.normal') + ' Token',
-        this.$t('TransferToken.smart') + ' Token',
-      ]
-    },
+    // newTokenTypes() {
+    //   return [
+    //     process.env.VUE_APP_CORE_SYMBOL + ' Token',
+    //     this.$t('TransferToken.normal') + ' Token',
+    //     this.$t('TransferToken.smart') + ' Token',
+    //   ]
+    // },
     strTitle() {
       return (
         this.$t('CreateToken.title1') +
@@ -134,10 +134,21 @@ export default {
     strTokenAmount() {
       return this.$t('TransferToken.tokenAmount')
     },
+    getTokenType() {
+      return {
+        sys: process.env.VUE_APP_CORE_SYMBOL + ' Token',
+        normal: this.$t('TransferToken.normal') + ' Token',
+        smart: this.$t('TransferToken.smart') + ' Token',
+      }
+    },
   },
   beforeMount() {
-    this.TokenType = TokenType
-    this.tokenTypes = [TokenType.sys, TokenType.normal, TokenType.smart]
+    this.TokenType = this.getTokenType
+    this.tokenTypes = [
+      this.TokenType.sys,
+      this.TokenType.normal,
+      this.TokenType.smart,
+    ]
 
     const required = rules.required()
     const gt0 = rules.greaterThan(0)
