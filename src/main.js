@@ -18,6 +18,8 @@ import * as chain from './common/chain-lib/index'
 import VueI18n from 'vue-i18n'
 import Cookies from 'js-cookie'
 
+import { updateNewTimeAgo } from './common/utils'
+
 
 window.chain = chain
 
@@ -37,6 +39,8 @@ const i18n = new VueI18n({
     }
   }
 })
+
+updateNewTimeAgo();
 
 Vue.use(Element, {
   i18n: (key, value) => i18n.t(key, value)

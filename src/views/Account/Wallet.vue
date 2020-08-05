@@ -37,10 +37,10 @@
 
 <template>
   <div class="wallet-page">
-    <PageBreadcrumb title="钱包" />
+    <PageBreadcrumb :title="strTitle" />
     <template v-if="$_APP.privateKey">
       <div class="card">
-        <ParameterRow name="账户地址:">{{$_APP.ADDRESS_PREFIX }}{{ address }}</ParameterRow>
+        <ParameterRow :name="strAddress">{{$_APP.ADDRESS_PREFIX }}{{ address }}</ParameterRow>
         <TokenList :address="address" />
       </div>
       <div class="main-container">

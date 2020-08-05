@@ -1,11 +1,35 @@
 import TimeAgo from 'javascript-time-ago'
 import { canonical } from 'javascript-time-ago/gradation'
 import zh from 'javascript-time-ago/locale/zh'
+import en from 'javascript-time-ago/locale/en'
+import Cookies from 'js-cookie'
 
 TimeAgo.addLocale(zh)
+TimeAgo.addLocale(en)
+
 const ago = new TimeAgo('zh')
+const enAgo = new TimeAgo('en')
+const zhAgo = new TimeAgo('zh-CN')
 
 export const timeAgo = time => ago.format(time, { gradation: canonical })
+
+export let newTimeAgo = function (time) {
+}
+
+export function updateNewTimeAgo() {
+  let newago;
+  let locale = Cookies.get('locale') || 'zh-CN';
+  if (locale === 'en') {
+    newago = enAgo;
+  } else if (locale === 'zh-CN') {
+    newago = zhAgo;
+  } else {
+    console.error('unrecognized locale ' + time)
+  }
+  newTimeAgo = function (time) {
+    return newago.format(time, { gradation: canonical })
+  }
+}
 
 export const delay = ms =>
   new Promise(resolve => window.setTimeout(resolve, ms))
@@ -19,7 +43,7 @@ export function downloadString(strContent, fileName) {
   a.href = window.URL.createObjectURL(blob)
   document.body.appendChild(a)
   a.click()
-  window.setTimeout(function() {
+  window.setTimeout(function () {
     window.URL.revokeObjectURL(a.href)
     document.body.removeChild(a)
   }, 0)

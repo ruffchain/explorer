@@ -34,15 +34,15 @@
     <div>
       <ul class="tx-list">
         <el-row class="text-center list-header" tag="li">
-          <el-col :span="4">交易哈希</el-col>
-          <el-col :span="3">所在区块</el-col>
-          <el-col :span="3">时间</el-col>
-          <el-col :span="12">交易内容</el-col>
+          <el-col :span="4">{{strTxHash}}</el-col>
+          <el-col :span="3">{{strBlock}}</el-col>
+          <el-col :span="3">{{strDate}}</el-col>
+          <el-col :span="12">{{strTxContent}}</el-col>
           <el-col :span="2" class="text-right">Gasfee</el-col>
         </el-row>
 
         <template v-if="txs">
-          <el-row v-for="tx in txs.data" :key="tx.hash" type="flex" tag="li">
+          <el-row v-for="tx in dataTxs" :key="tx.hash" type="flex" tag="li">
             <el-col :span="4">
               <div class="text-ellipsis">
                 <router-link :to="`/tx/${tx.hash}`">{{ tx.hash }}</router-link>
@@ -62,7 +62,7 @@
             <el-col :span="2" class="text-right">{{ tx.content.fee }} {{$_APP.CORE_SYMBOL}}</el-col>
           </el-row>
         </template>
-        <div v-if="!loading && txs && txs.data.length === 0" class="empty-view">记录为空</div>
+        <div v-if="!loading && txs && txs.data.length === 0" class="empty-view">{{strEmpty}}</div>
       </ul>
 
       <div class="pagination-container" v-if="txs && txs.total > 0">
@@ -82,28 +82,53 @@
 <script>
 import JsonTreeView from '@/components/JsonTreeView/JsonTreeView'
 import LoadingContainer from './LoadingContainer'
-import { timeAgo } from '../common/utils.js'
+import { timeAgo, newTimeAgo } from '../common/utils.js'
 import * as chainApi from '../common/chain-api.js'
 
 export default {
   props: {
-    address: {}
+    address: {},
   },
   components: {
     JsonTreeView,
-    LoadingContainer
+    LoadingContainer,
   },
   data() {
     return {
       page: 1,
       pageSize: 10,
       txs: null,
-      loading: false
+      loading: false,
     }
   },
 
   mounted() {
     this.updateTxs()
+  },
+  computed: {
+    strTxHash() {
+      return this.$t('AddressTxHistory.txHash')
+    },
+    strBlock() {
+      return this.$t('AddressTxHistory.block')
+    },
+    strDate() {
+      return this.$t('AddressTxHistory.date')
+    },
+    strTxContent() {
+      return this.$t('AddressTxHistory.txContent')
+    },
+    strEmpty() {
+      return this.$t('AddressTxHistory.empty')
+    },
+    dataTxs() {
+      this.txs.data.forEach((item) => {
+        item.timeAgo =
+          newTimeAgo(new Date(item.timestamp * 1000)) +
+          this.$t('AddressTxHistory.occupy')
+      })
+      return this.txs.data
+    },
   },
   methods: {
     async updateTxs() {
@@ -112,10 +137,10 @@ export default {
         .getTxsByAddress({
           address: this.address,
           page: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
         })
-        .then(res => {
-          res.data.forEach(item => {
+        .then((res) => {
+          res.data.forEach((item) => {
             item.timeAgo = timeAgo(new Date(item.timestamp * 1000))
             return item
           })
@@ -124,7 +149,7 @@ export default {
         .finally(() => {
           this.loading = false
         })
-    }
-  }
+    },
+  },
 }
 </script>

@@ -151,6 +151,7 @@ import TranslateIcon from 'vue-material-design-icons/Translate.vue'
 import CreateAccount from '../views/Account/CreateAccount.vue'
 import LoginAccount from '../views/Account/LoginAccount.vue'
 import Cookies from 'js-cookie'
+import { updateNewTimeAgo } from '../common/utils'
 
 export default {
   data() {
@@ -236,10 +237,12 @@ export default {
     onI18nCn() {
       this.$i18n.locale = 'zh-CN'
       Cookies.set('locale', 'zh-CN')
+      updateNewTimeAgo()
     },
     onI18nEn() {
       this.$i18n.locale = 'en'
       Cookies.set('locale', 'en')
+      updateNewTimeAgo()
     },
     login() {
       this.showLogin = true
