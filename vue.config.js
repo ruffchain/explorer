@@ -2,14 +2,14 @@ module.exports = {
   devServer: {
     proxy: {
       '/chain-rpc': {
-        target: 'http://replace-your-chain-rpc-url',
+        target: 'http://173.255.255.84:18089',
         changeOrigin: true,
         pathRewrite: {
           '^/chain-rpc': '/rpc'
         }
       },
       '/chain-info-rpc': {
-        target: 'http://replace-your-explorer-backend-url',
+        target: 'http://173.255.255.84:18080',
         changeOrigin: true,
         pathRewrite: {
           '^/chain-info-rpc': '/rpc'
