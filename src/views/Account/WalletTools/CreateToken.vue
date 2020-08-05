@@ -41,8 +41,8 @@
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="createTokenType" @change="typeChange">
-          <el-radio-button :label="strNormal"></el-radio-button>
-          <el-radio-button :label="strSmart"></el-radio-button>
+          <el-radio-button :label="TokenType.normal"></el-radio-button>
+          <el-radio-button :label="TokenType.smart"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
