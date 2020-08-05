@@ -145,6 +145,8 @@ export default {
     preBalancesAmount: '锁定数量',
     addPreBalance: '添加发行方',
     createToken: '创建Token',
+    normal: '普通',
+    smart: '智能'
   },
   TokenExchange: {
     title: '智能Token交易由Bancor算法自动执行，暂不支持账户之间直接交易。',

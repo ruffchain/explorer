@@ -41,8 +41,8 @@
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="createTokenType" @change="typeChange">
-          <el-radio-button :label="TokenType.normal"></el-radio-button>
-          <el-radio-button :label="TokenType.smart"></el-radio-button>
+          <el-radio-button :label="strNormal"></el-radio-button>
+          <el-radio-button :label="strSmart"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
@@ -231,7 +231,7 @@ import { rmAddressPrefix } from '../../../common/utils'
 export default {
   components: {
     TransactionResult,
-    ConfirmTx
+    ConfirmTx,
   },
   data() {
     return {
@@ -245,8 +245,8 @@ export default {
             amount: '100',
             lock: false,
             time_expiration: '',
-            lock_amount: '0'
-          }
+            lock_amount: '0',
+          },
         ],
         tokenId: '',
         nonLiquidity: '0',
@@ -255,10 +255,10 @@ export default {
         fee: '',
         normalTotal: 100,
         initPublish: 100,
-        precision: 9 // token 精度
+        precision: 9, // token 精度
       },
       showConfirmTx: false,
-      txData: {}
+      txData: {},
     }
   },
   computed: {
@@ -313,12 +313,18 @@ export default {
         this.preBalanceTotalAmount !==
         new BigNumber(this.formData.initPublish).toString()
       )
-    }
+    },
+    strNormal() {
+      return this.$t('CreateToken.normal')
+    },
+    strSmart() {
+      return this.$t('CreateToken.smart')
+    },
   },
   watch: {
-    'formData.precision': function() {
+    'formData.precision': function () {
       // 在token精度改变时重新相关字段校验
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         let fields = this.formData.preBalances.map((item, i) => {
           return `preBalances.${i}.amount`
         })
@@ -330,7 +336,7 @@ export default {
         }
         this.$refs.form.validateField(['normalTotal', ...fields])
       })
-    }
+    },
   },
   beforeMount() {
     this.TokenType = TokenType
@@ -364,9 +370,9 @@ export default {
             }
             err ? callback(new Error(err)) : callback()
           },
-          trigger: ['change']
-        }
-      ]
+          trigger: ['change'],
+        },
+      ],
     }
   },
   methods: {
@@ -380,12 +386,12 @@ export default {
         amount: '100',
         lock: false,
         time_expiration: '',
-        lock_amount: '0'
+        lock_amount: '0',
       })
     },
     deletePreBalance(item) {
       this.formData.preBalances = this.formData.preBalances.filter(
-        temp => item !== temp
+        (temp) => item !== temp
       )
     },
     async confirm() {
@@ -399,13 +405,13 @@ export default {
         return
       }
       const formData = JSON.parse(JSON.stringify(this.formData))
-      formData.preBalances = formData.preBalances.map(preBalance => ({
+      formData.preBalances = formData.preBalances.map((preBalance) => ({
         ...preBalance,
-        address: rmAddressPrefix(preBalance.address)
+        address: rmAddressPrefix(preBalance.address),
       }))
       this.txData = genCreateTokenTx({
         ...formData,
-        tokenType: this.createTokenType
+        tokenType: this.createTokenType,
       })
       this.showConfirmTx = true
     },
@@ -417,14 +423,14 @@ export default {
           message: res.confirmed
             ? '成功，交易内容如下：'
             : '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
-          json: res.tx
+          json: res.tx,
         }
         if (res.confirmed) {
           this.cleanForm()
         }
       } catch (e) {
         this.result = {
-          message: '出错' + e
+          message: '出错' + e,
         }
       } finally {
         this.loading = false
@@ -433,7 +439,7 @@ export default {
     cleanForm() {
       this.$refs.form.resetFields()
       this.formData = this.$options.data().formData
-    }
-  }
+    },
+  },
 }
 </script>

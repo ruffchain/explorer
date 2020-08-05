@@ -144,6 +144,8 @@ export default {
     preBalancesAmount: 'Lock Amount',
     addPreBalance: 'Add Issuer',
     createToken: 'Create',
+    normal: 'Normal ',
+    smart: 'Smart '
   },
   TokenExchange: {
     title: 'Exchange of Smart Token is handled by Bancor protocol automatically. No direct human intervention.',
