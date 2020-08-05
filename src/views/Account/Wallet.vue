@@ -47,7 +47,7 @@
         <ul class="card nav">
           <li
             class="nav-item"
-            v-for="item in navItems"
+            v-for="item in newNavItems"
             :key="item.type"
             @click="activeNav = item.type"
             :class="{ active: activeNav === item.type }"
@@ -114,31 +114,48 @@ export default {
     strUnlogin() {
       return this.$t('Wallet.addressUnlogin')
     },
+    strHistory() {
+      return this.$t('Wallet.history')
+    },
+    strTransfer() {
+      return this.$t('Wallet.transfer')
+    },
+    strCreateToken() {
+      return this.$t('Wallet.create')
+    },
+    strExchange() {
+      return this.$t('Wallet.exchange')
+    },
+    strVote() {
+      return this.$t('Wallet.vote')
+    },
+    newNavItems() {
+      return [
+        {
+          type: NavItemEnums.History,
+          name: this.strHistory,
+        },
+        {
+          type: NavItemEnums.Transfer,
+          name: this.strTransfer,
+        },
+        {
+          type: NavItemEnums.CreateToken,
+          name: this.strCreateToken,
+        },
+        {
+          type: NavItemEnums.Exchange,
+          name: this.strExchange,
+        },
+        {
+          type: NavItemEnums.Vote,
+          name: this.strVote,
+        },
+      ]
+    },
   },
   beforeMount() {
     this.NavItemEnums = NavItemEnums
-    this.navItems = [
-      {
-        type: NavItemEnums.History,
-        name: this.$t('Wallet.history'),
-      },
-      {
-        type: NavItemEnums.Transfer,
-        name: this.$t('Wallet.transfer'),
-      },
-      {
-        type: NavItemEnums.CreateToken,
-        name: this.$t('Wallet.create'),
-      },
-      {
-        type: NavItemEnums.Exchange,
-        name: this.$t('Wallet.exchange'),
-      },
-      {
-        type: NavItemEnums.Vote,
-        name: this.$t('Wallet.vote'),
-      },
-    ]
   },
 }
 </script>

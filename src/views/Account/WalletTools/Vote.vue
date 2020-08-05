@@ -39,7 +39,7 @@
           <i class="header-icon el-icon-info"></i>
         </div>
         <ul>
-          <li>1. 投票权通过冻结{{$_APP.CORE_SYMBOL}}获得，冻结1{{$_APP.CORE_SYMBOL}}可得1投票权。</li>
+          <li>1. {{ strRule1 }}</li>
           <li>2. 每10分钟为一个有效投票周期。</li>
           <li>3. 周期内可多次投票（每隔60秒可投一次），但仅最后一次投票生效。</li>
           <li>4. 一次最多可投7个节点，每个节点都将获得全部票数。</li>

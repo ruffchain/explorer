@@ -107,10 +107,10 @@ export default {
     title: 'Wallet',
     addressAccount: 'Account Address:',
     addressUnlogin: 'Unlogin Wallet',
-    history: 'Account History',
+    history: 'History',
     transfer: 'Transfer',
     create: 'Create Token',
-    exchange: 'Smart Token Exchange',
+    exchange: 'Exchange Smart Token',
     vote: 'Vote',
   },
   ConfirmTx: {
