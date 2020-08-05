@@ -35,7 +35,7 @@
     <el-collapse :value="['2', '3']">
       <el-collapse-item name="1">
         <div slot="title" class="section-title">
-          投票规则
+          {{ strTitle}}
           <i class="header-icon el-icon-info"></i>
         </div>
         <ul>
@@ -102,7 +102,9 @@
               >
                 <div style="display:flex;padding-right:10px;">
                   <span style="flex:1; ">{{ item.name }} - {{ item.location }}</span>
-                  <span style="color: #8492a6; font-size: 13px">{{$_APP.ADDRESS_PREFIX}}{{ item.candidate }}</span>
+                  <span
+                    style="color: #8492a6; font-size: 13px"
+                  >{{$_APP.ADDRESS_PREFIX}}{{ item.candidate }}</span>
                 </div>
               </el-option>
             </el-select>
@@ -154,7 +156,7 @@ export default {
     TransactionResult,
     ConfirmTx,
     ParameterRow,
-    LoadingContainer
+    LoadingContainer,
   },
   data() {
     return {
@@ -166,7 +168,7 @@ export default {
       stackForm: {
         operateType: '冻结',
         fee: '0.1',
-        amount: 0
+        amount: 0,
       },
       stackList: [],
       voteLoading: false,
@@ -174,11 +176,11 @@ export default {
       voteResult: null,
       voteForm: {
         candidates: [],
-        fee: '0.1'
+        fee: '0.1',
       },
       candidateList: [],
       voteDetail: null,
-      now: Date.now()
+      now: Date.now(),
     }
   },
   beforeMount() {
@@ -186,7 +188,7 @@ export default {
     const fee = [
       required,
       rules.maxDecimalCount(9),
-      rules.greaterOrEqualThan(0.1)
+      rules.greaterOrEqualThan(0.1),
     ]
     this.stackFormRules = {
       amount: [
@@ -202,10 +204,10 @@ export default {
             }
             err ? callback(new Error(err)) : callback()
           },
-          trigger: ['change']
-        }
+          trigger: ['change'],
+        },
       ],
-      fee
+      fee,
     }
     this.voteFormRules = {
       candidates: [
@@ -218,20 +220,124 @@ export default {
             }
             err ? callback(new Error(err)) : callback()
           },
-          trigger: ['change']
-        }
+          trigger: ['change'],
+        },
       ],
-      fee
+      fee,
     }
     this.updateStackList()
     this.updateCandidateList()
     this.updateVoteDetail()
   },
+  computed: {
+    strTitle() {
+      return this.$t('Vote.title')
+    },
+    strRule1() {
+      return (
+        this.$t('Vote.rule1') +
+        $_APP.CORE_SYMBOL +
+        this.$t('Vote.rule11') +
+        $_APP.CORE_SYMBOL +
+        this.$t('Vote.rule12')
+      )
+    },
+    strRule2() {
+      return this.$t('Vote.rule2')
+    },
+    strRule3() {
+      return this.$t('Vote.rule3')
+    },
+    strRule4() {
+      return this.$t('Vote.rule4')
+    },
+    strRule5() {
+      return this.$t('Vote.rule5') + $_APP.CORE_SYMBOL + this.$t('Vote.rule51')
+    },
+    strRule6() {
+      return $_APP.CORE_SYMBOL + this.$t('Vote.rule6')
+    },
+    strSectionTitle() {
+      return this.$t('Vote.sectionTitle')
+    },
+    strFreeze() {
+      return this.$t('Vote.freeze')
+    },
+    strUnfreeze() {
+      return this.$t('Vote.unfreeze')
+    },
+    strAmount() {
+      return `${stackForm.operateType}` + this.$t('Vote.amount')
+    },
+    strConfirm() {
+      return this.$t('Vote.confirm')
+    },
+    strFreezeStatus() {
+      return this.$t('Vote.freezeStatus')
+    },
+    strAmountByWords() {
+      return this.$t('Vote.amount')
+    },
+    strFreezeTime() {
+      return this.$t('Vote.freezeTime')
+    },
+    strStatus() {
+      return this.$t('Vote.status')
+    },
+    strDueTime() {
+      return this.$t('Vote.dueTime')
+    },
+    strDueTimeYes() {
+      return this.$t('Vote.dueTimeYes')
+    },
+    strVote() {
+      return this.$t('Vote.vote')
+    },
+    strChooseCandidate() {
+      return this.$t('Vote.chooseCandidate')
+    },
+    strChoosePlaceHolder() {
+      return this.$t('Vote.choosePlaceHolder')
+    },
+    strConfirmVote() {
+      return this.$t('Vote.confirmVote')
+    },
+    strCurrentVote() {
+      return this.$t('Vote.currentVote')
+    },
+    strVoteTime() {
+      return this.$t('Vote.voteTime')
+    },
+    strVoteNum() {
+      return this.$t('Vote.voteNum')
+    },
+    strVoteNodes() {
+      return this.$t('Vote.voteNodes')
+    },
+    strErr1() {
+      return this.$t('Vote.err1')
+    },
+    strErr2() {
+      return this.$t('Vote.err2')
+    },
+    strErr3() {
+      return this.$t('Vote.err3')
+    },
+    strSendOK() {
+      return this.$t('Vote.sendOK')
+    },
+    strSendFail() {
+      return this.$t('Vote.sendFail')
+    },
+    strFailCatch() {
+      return this.$t('Vote.failCatch')
+    },
+  },
   methods: {
     async updateCandidateList() {
-      this._candidateListPromise = chainApi.getCandidates().then(res => {
-        this.candidateList = res.candidates.map(item => {
-          Object.keys(item).forEach(key => {
+      this._candidateListPromise = chainApi.getCandidates().then((res) => {
+        this.candidateList = res.candidates.map((item) => {
+          Object.keys(item).forEach((key) => {
             item[key] = item[key].slice(1)
           })
           return item
@@ -242,13 +348,13 @@ export default {
       this.voteDetailLoading = true
       chainApi
         .getTicket(this.$_APP.address)
-        .then(res => {
+        .then((res) => {
           const voteDetail = res.value
           return this._candidateListPromise.then(() => {
             if (voteDetail && voteDetail.candidates) {
-              voteDetail.candidates = voteDetail.candidates.map(address => {
+              voteDetail.candidates = voteDetail.candidates.map((address) => {
                 return this.candidateList.find(
-                  item => item.candidate === address.slice(1)
+                  (item) => item.candidate === address.slice(1)
                 )
               })
               this.voteDetail = voteDetail
@@ -263,7 +369,7 @@ export default {
       this.stackDetailLoading = true
       chainApi
         .getStacks(this.$_APP.address)
-        .then(res => {
+        .then((res) => {
           this.stackList = res.value.vote
         })
         .finally(() => {
@@ -283,11 +389,11 @@ export default {
           message: res.confirmed
             ? '成功，交易内容如下：'
             : '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
-          json: res.tx
+          json: res.tx,
         }
       } catch (e) {
         result = {
-          message: '出错' + e
+          message: '出错' + e,
         }
       } finally {
         if (tx.method === 'vote') {
@@ -320,7 +426,7 @@ export default {
       const { candidates, fee } = this.voteForm
       this.txData = walletHelper.genVoteTx(candidates, fee)
       this.showConfirmTx = true
-    }
-  }
+    },
+  },
 }
 </script>
