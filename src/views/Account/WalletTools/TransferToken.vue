@@ -11,25 +11,25 @@
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="sendTokenType" @change="typeChange">
-          <el-radio-button v-for="item in tokenTypes" :key="item" :label="item"></el-radio-button>
+          <el-radio-button v-for="item in newTokenTypes" :key="item" :label="item"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
         v-if="sendTokenType === TokenType.smart"
         :closable="false"
-        :title="`智能Token是以${$_APP.CORE_SYMBOL} Token作为准备金发行的，支持Bancor协议流通兑换的Token`"
+        :title="strTitle"
         type="info"
         show-icon
       ></el-alert>
       <el-form ref="form" :model="formData" :rules="formRules" label-width="90px">
-        <el-form-item prop="to" label="对方账户">
+        <el-form-item prop="to" :label="strToAccount">
           <el-input v-model="formData.to" @input="formData.to = formData.to.replace(' ', '')"></el-input>
         </el-form-item>
         <el-form-item
           v-if="sendTokenType !== TokenType.sys"
           prop="tokenId"
           :rules="tokenIdRules"
-          label="Token名称"
+          :label="strTokenName"
         >
           <el-input
             :value="formData.tokenId"
@@ -37,7 +37,7 @@
             @blur="tokenIdBlur"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="amount" :rules="amountRules" label="Token数量">
+        <el-form-item prop="amount" :rules="amountRules" :label="strTokenAmount">
           <el-input v-model="formData.amount" type="number"></el-input>
         </el-form-item>
         <el-form-item prop="fee" label="Gasfee">
@@ -48,7 +48,12 @@
       </el-form>
       <TransactionResult v-if="result" :data="result" />
     </section>
-    <el-button :loading="loading" type="primary" @click="confirm()" style="width:100%">开始转账</el-button>
+    <el-button
+      :loading="loading"
+      type="primary"
+      @click="confirm()"
+      style="width:100%"
+    >{{strTokenConfirm }}</el-button>
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
@@ -65,7 +70,7 @@ import { rmAddressPrefix } from '../../../common/utils'
 export default {
   components: {
     TransactionResult,
-    ConfirmTx
+    ConfirmTx,
   },
   data() {
     return {
@@ -76,10 +81,10 @@ export default {
         to: '',
         tokenId: '',
         amount: '',
-        fee: ''
+        fee: '',
       },
       showConfirmTx: false,
-      txData: {}
+      txData: {},
     }
   },
   computed: {
@@ -102,7 +107,33 @@ export default {
         maxDecimalCount = this.getNormalTokenAmountValidator()
       }
       return [...this.formRules.amount, maxDecimalCount]
-    }
+    },
+    newTokenTypes() {
+      return [
+        process.env.VUE_APP_CORE_SYMBOL + ' Token',
+        this.$t('TransferToken.normal') + ' Token',
+        this.$t('TransferToken.smart') + ' Token',
+      ]
+    },
+    strTitle() {
+      return (
+        this.$t('CreateToken.title1') +
+        `${$_APP.CORE_SYMBOL}` +
+        this.$t('CreateToken.title2')
+      )
+    },
+    strToAccount() {
+      return this.$t('TransferToken.toAccount')
+    },
+    strTokenName() {
+      return this.$t('CreateToken.tokenName')
+    },
+    strTokenConfirm() {
+      return this.$t('TransferToken.confirm')
+    },
+    strTokenAmount() {
+      return this.$t('TransferToken.tokenAmount')
+    },
   },
   beforeMount() {
     this.TokenType = TokenType
@@ -117,7 +148,7 @@ export default {
       to: [required, validAdress],
       tokenId: [required, validTokenId],
       amount: [required, gt0, rules.amountTooBig()],
-      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)]
+      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)],
     }
   },
   methods: {
@@ -132,7 +163,7 @@ export default {
       formData.to = rmAddressPrefix(formData.to)
       this.txData = genTransferTx({
         ...formData,
-        tokenType: this.sendTokenType
+        tokenType: this.sendTokenType,
       })
       this.showConfirmTx = true
     },
@@ -142,16 +173,16 @@ export default {
         const res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         this.result = {
           message: res.confirmed
-            ? '成功，交易内容如下：'
-            : '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
-          json: res.tx
+            ? this.$t('TransferToken.confirmedOk')
+            : this.$t('TransferToken.confirmedFail'),
+          json: res.tx,
         }
         if (res.confirmed) {
           this.cleanForm()
         }
       } catch (e) {
         this.result = {
-          message: '出错' + e
+          message: this.$t('TransferToken.resultCatch') + e,
         }
       } finally {
         this.loading = false
@@ -167,7 +198,7 @@ export default {
         let err
         const tokenId = this.formData.tokenId
         if (rules.tokenIdToErrMessage(tokenId)) {
-          err = '请先填写正确的 Token 名称'
+          err = this.$t('TransferToken.validErr')
         } else {
           let tokenInfo
           const [, decimal] = value.toString().split('.') //3.141592654
@@ -182,23 +213,26 @@ export default {
           }
           if (!tokenInfo.name || tokenInfo.type !== 'normal') {
             // token不存在或者不为普通token
-            err = '请先填写正确的 Token 名称'
+            err = this.$t('TransferToken.validErr')
           } else if (decimal && decimal.length > tokenInfo.content.precision) {
-            err = `精度最大为小数点后${tokenInfo.content.precision}位`
+            err =
+              this.$t('TransferToken.precisionErr') +
+              `${tokenInfo.content.precision}` +
+              this.$t('TransferToken.precisionBit')
           }
         }
         callback(err ? new Error(err) : undefined)
       }
       const res = {
         validator,
-        trigger: ['blur']
+        trigger: ['blur'],
       }
       return res
     },
     cleanForm() {
       this.$refs.form.resetFields()
       this.formData = this.$options.data().formData
-    }
-  }
+    },
+  },
 }
 </script>

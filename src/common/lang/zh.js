@@ -112,7 +112,7 @@ export default {
     create: '创建Token',
     exchange: '智能Token交易',
     vote: '投票',
-    
+
   },
   ConfirmTx: {
     title: '确认交易内容',
@@ -159,7 +159,16 @@ export default {
   TransferToken: {
     toAccount: '对方账户',
     tokenAmount: 'Token数量',
-    confirm: '开始转账'
+    confirm: '开始转账',
+    confirmedOk: '成功，交易内容如下：',
+    confirmedFail: '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
+    resultCatch: '出错',
+    validErr: '请先填写正确的 Token 名称',
+    precisionErr: '精度最大为小数点后',
+    precisionBit: '位',
+
+    normal: '普通',
+    smart: '智能'
 
   },
   Vote: {

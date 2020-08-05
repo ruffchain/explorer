@@ -158,8 +158,15 @@ export default {
   TransferToken: {
     toAccount: 'To Account',
     tokenAmount: 'Token Amount',
-    confirm: 'Transfer'
-
+    confirm: 'Transfer',
+    confirmedOk: 'Succeed, Tx content:',
+    confirmedFail: 'Sending Tx succeed. But confirmation is not received. Please check by the chain. Tx content:',
+    resultCatch: 'Error ',
+    validErr: 'Please make sure it is a valid token name',
+    precisionErr: 'Maximum float precision is ',
+    precisionBit: ' decimal points',
+    normal: 'Normal ',
+    smart: 'Smart '
   },
   Vote: {
     title: 'Rules of Voting',
