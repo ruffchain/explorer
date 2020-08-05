@@ -1,18 +1,9 @@
 <template>
-  <el-dialog
-    title="确认交易内容"
-    :visible="visible"
-    @update:visible="close"
-    width="600px"
-  >
+  <el-dialog :title="strTitle" :visible="visible" @update:visible="close" width="600px">
     <JsonTreeView :data="tx" />
     <div slot="footer" class="dialog-footer">
-      <el-button type="default" @click="close">
-        取消
-      </el-button>
-      <el-button type="primary" @click="confirm">
-        确认
-      </el-button>
+      <el-button type="default" @click="close">{{strCancel}}</el-button>
+      <el-button type="primary" @click="confirm">{{ strConfirm }}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -21,11 +12,22 @@
 import JsonTreeView from '@/components/JsonTreeView/JsonTreeView'
 export default {
   components: {
-    JsonTreeView
+    JsonTreeView,
   },
   props: {
     visible: {},
-    tx: {}
+    tx: {},
+  },
+  computed: {
+    strTitle() {
+      return this.$t('ConfirmTx.title')
+    },
+    strCancel() {
+      return this.$t('ConfirmTx.cancel')
+    },
+    strConfirm() {
+      return this.$t('ConfirmTx.confirm')
+    },
   },
   methods: {
     close() {
@@ -34,7 +36,7 @@ export default {
     confirm() {
       this.$emit('confirm', this.tx)
       this.close()
-    }
-  }
+    },
+  },
 }
 </script>
