@@ -40,9 +40,7 @@
     <PageBreadcrumb title="钱包" />
     <template v-if="$_APP.privateKey">
       <div class="card">
-        <ParameterRow name="账户地址:">
-          {{$_APP.ADDRESS_PREFIX }}{{ address }}
-        </ParameterRow>
+        <ParameterRow name="账户地址:">{{$_APP.ADDRESS_PREFIX }}{{ address }}</ParameterRow>
         <TokenList :address="address" />
       </div>
       <div class="main-container">
@@ -53,16 +51,11 @@
             :key="item.type"
             @click="activeNav = item.type"
             :class="{ active: activeNav === item.type }"
-          >
-            {{ item.name }}
-          </li>
+          >{{ item.name }}</li>
         </ul>
         <div class="devider"></div>
         <div class="card container">
-          <AddressTxHistory
-            v-if="activeNav === NavItemEnums.History"
-            :address="address"
-          />
+          <AddressTxHistory v-if="activeNav === NavItemEnums.History" :address="address" />
           <TransferToken v-if="activeNav === NavItemEnums.Transfer" />
           <CreateToken v-if="activeNav === NavItemEnums.CreateToken" />
           <TokenExchange v-if="activeNav === NavItemEnums.Exchange" />
@@ -70,7 +63,7 @@
         </div>
       </div>
     </template>
-    <div v-else>未登陆钱包</div>
+    <div v-else>{{ strUnlogin }}</div>
   </div>
 </template>
 
@@ -89,7 +82,7 @@ const NavItemEnums = {
   Transfer: 'Transfer',
   CreateToken: 'CreateToken',
   Exchange: 'Exchange',
-  Vote: 'Vote'
+  Vote: 'Vote',
 }
 
 export default {
@@ -101,42 +94,51 @@ export default {
     TransferToken,
     CreateToken,
     TokenExchange,
-    Vote
+    Vote,
   },
   data() {
     return {
-      activeNav: NavItemEnums.History
+      activeNav: NavItemEnums.History,
     }
   },
   computed: {
     address() {
       return this.$_APP.address
-    }
+    },
+    strTitle() {
+      return this.$t('Wallet.title')
+    },
+    strAddress() {
+      return this.$t('Wallet.addressAccount')
+    },
+    strUnlogin() {
+      return this.$t('Wallet.addressUnlogin')
+    },
   },
   beforeMount() {
     this.NavItemEnums = NavItemEnums
     this.navItems = [
       {
         type: NavItemEnums.History,
-        name: '账户历史'
+        name: this.$t('Wallet.history'),
       },
       {
         type: NavItemEnums.Transfer,
-        name: '转账'
+        name: this.$t('Wallet.transfer'),
       },
       {
         type: NavItemEnums.CreateToken,
-        name: '创建Token'
+        name: this.$t('Wallet.create'),
       },
       {
         type: NavItemEnums.Exchange,
-        name: '智能Token交易'
+        name: this.$t('Wallet.exchange'),
       },
       {
         type: NavItemEnums.Vote,
-        name: '投票'
-      }
+        name: this.$t('Wallet.vote'),
+      },
     ]
-  }
+  },
 }
 </script>

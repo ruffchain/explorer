@@ -112,6 +112,7 @@ export default {
     create: '创建Token',
     exchange: '智能Token交易',
     vote: '投票',
+    
   },
   ConfirmTx: {
     title: '确认交易内容',

@@ -31,7 +31,7 @@
 
 <template>
   <el-dialog
-    title="登录账户"
+    :title="strTitle"
     :visible="true"
     @close="$emit('close')"
     class="login-account"
