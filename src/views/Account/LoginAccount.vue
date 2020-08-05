@@ -40,41 +40,35 @@
     <div class="main-container">
       <template v-if="!keyStore">
         <div class="login-type">
-          <div class="title">私钥</div>
+          <div class="title">{{strSecret}}</div>
           <el-input type="password" v-model="privateKey"></el-input>
-          <div class="err-msg" v-if="privateKeyErr">错误的秘钥</div>
+          <div class="err-msg" v-if="privateKeyErr">{{ strWrongSecret }}</div>
           <el-button
             :disabled="privateKey.length !== 64"
             type="primary"
             class="full-width"
             @click="privateKeyLogin"
-          >
-            登录
-          </el-button>
+          >{{ strLogin }}</el-button>
         </div>
         <div class="devider" />
         <div class="login-type">
-          <div class="title">KeyStore 文件</div>
+          <div class="title">{{ strKeyStoreFile }}</div>
 
           <input type="file" @change="fileInputChange" ref="fileInput" />
-          <el-button type="primary" class="full-width" @click="chooseKeyStore">
-            选择文件
-          </el-button>
+          <el-button type="primary" class="full-width" @click="chooseKeyStore">{{ strChooseFile }}</el-button>
         </div>
       </template>
       <template v-else>
         <div class="login-type">
-          输入KeyStore密码
+          {{ strInputKeyStore }}
           <el-input type="password" v-model="password"></el-input>
-          <div class="err-msg" v-if="passwordErr">KeyStore或者密码错误</div>
+          <div class="err-msg" v-if="passwordErr">{{ strKeyStoreWrong }}</div>
           <el-button
             :disabled="!password"
             type="primary"
             class="full-width"
             @click="keyStoreLogin"
-          >
-            登录
-          </el-button>
+          >{{ strLogin }}</el-button>
         </div>
       </template>
     </div>
@@ -91,8 +85,34 @@ export default {
       privateKeyErr: false,
       keyStore: null,
       password: '',
-      passwordErr: false
+      passwordErr: false,
     }
+  },
+  computed: {
+    strTitle() {
+      return this.$t('LoginAccount.title')
+    },
+    strSecret() {
+      return this.$t('LoginAccount.secret')
+    },
+    strWrongSecret() {
+      return this.$t('LoginAccount.wrongSecret')
+    },
+    strLogin() {
+      return this.$t('LoginAccount.login')
+    },
+    strKeyStoreFile() {
+      return this.$t('LoginAccount.keyStoreFile')
+    },
+    strChooseFile() {
+      return this.$t('LoginAccount.chooseFile')
+    },
+    strInputKeyStore() {
+      return this.$t('LoginAccount.inputKeyStore')
+    },
+    strKeyStoreWrong() {
+      return this.$t('LoginAccount.keyStoreWrong')
+    },
   },
   methods: {
     privateKeyLogin() {
@@ -116,7 +136,7 @@ export default {
     fileInputChange() {
       const file = this.$refs.fileInput.files[0]
       const reader = new FileReader()
-      reader.onloadend = e => {
+      reader.onloadend = (e) => {
         this.keyStore = e.target.result
         console.log(e.target.result)
       }
@@ -136,7 +156,7 @@ export default {
       } catch (e) {
         this.passwordErr = true
       }
-    }
-  }
+    },
+  },
 }
 </script>
