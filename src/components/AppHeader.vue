@@ -25,6 +25,16 @@
   .hd-right {
     margin: 0 10px;
     position: relative;
+    .i18n-button {
+      display: flex;
+      color: inherit;
+      padding: 3px 10px;
+      padding-top: 5px;
+      .material-design-icon {
+        margin-right: 5px;
+        margin-top: -3px;
+      }
+    }
     .login-button {
       display: flex;
       align-items: center;
@@ -76,13 +86,14 @@
       <div class="hd-center">
         <el-input
           class="search-input"
-          placeholder="区块，交易，Token，账户"
+          :placeholder="placeHolder"
           suffix-icon="el-icon-search"
           size="small"
           v-model="searchText"
           @keydown.enter.native="search"
         ></el-input>
       </div>
+
       <div class="hd-right">
         <a
           class="login-button"
@@ -92,34 +103,54 @@
           href="javascript:;"
         >
           <AccountIcon decorative class="icon-20" />
-          {{ isLogin ? '钱包' : '登录' }}
+          {{ strAccountIcon }}
         </a>
         <div v-if="showDropdown" class="account-dropdown-menu">
           <ul>
             <template v-if="!isLogin">
-              <li @click="login">登录</li>
-              <li @click="showCreateAccount = true">创建账户</li>
+              <li @click="login">{{strLogin}}</li>
+              <li @click="showCreateAccount = true">{{strCreateAccount}}</li>
             </template>
             <template v-else>
-              <li @click="viewAccount">查看账户</li>
-              <li @click="logOut">退出登录</li>
+              <li @click="viewAccount">{{strViewAccount}}</li>
+              <li @click="logOut">{{strLogOut}}</li>
+            </template>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hd-right">
+        <a
+          class="i18n-button"
+          ref="i18n"
+          @click="openI18nDropdown()"
+          @blur="closeI18nDropdown()"
+          href="javascript:;"
+        >
+          <TranslateIcon decorative class="icon-18" />
+          {{ locale }}
+        </a>
+        <div v-if="showI18nDropdown" class="account-dropdown-menu">
+          <ul>
+            <template>
+              <li @click="onI18nCn">中文</li>
+              <li @click="onI18nEn">English</li>
             </template>
           </ul>
         </div>
       </div>
     </div>
-    <CreateAccount
-      v-if="showCreateAccount"
-      @close="showCreateAccount = false"
-    />
+    <CreateAccount v-if="showCreateAccount" @close="showCreateAccount = false" />
     <LoginAccount v-if="showLogin" @close="showLogin = false" />
   </div>
 </template>
 
 <script>
 import AccountIcon from 'vue-material-design-icons/AccountCircle.vue'
+import TranslateIcon from 'vue-material-design-icons/Translate.vue'
 import CreateAccount from '../views/Account/CreateAccount.vue'
 import LoginAccount from '../views/Account/LoginAccount.vue'
+import Cookies from 'js-cookie'
 
 export default {
   data() {
@@ -127,18 +158,51 @@ export default {
       searchText: '',
       showDropdown: false,
       showCreateAccount: false,
-      showLogin: false
+      showLogin: false,
+      showI18nDropdown: false,
     }
   },
   components: {
     AccountIcon,
+    TranslateIcon,
     CreateAccount,
-    LoginAccount
+    LoginAccount,
   },
   computed: {
     isLogin() {
       return !!this.$_APP.privateKey
-    }
+    },
+    locale() {
+      let curLocale = Cookies.get('locale') || 'zh-CN'
+      if (curLocale === 'en') {
+        return this.$t('locale')
+      } else {
+        return this.$t('locale')
+      }
+    },
+    placeHolder() {
+      return this.$t('AppHeader.placeHolder')
+    },
+    strLogin() {
+      return this.$t('AppHeader.login')
+    },
+    strCreateAccount() {
+      return this.$t('AppHeader.createAccount')
+    },
+    strAccountIcon() {
+      //isLogin ? '钱包' : '登录'
+      if (!!this.$_APP.privateKey) {
+        return this.$t('AppHeader.wallet')
+      } else {
+        return this.$t('AppHeader.login')
+      }
+    },
+    strViewAccount() {
+      return this.$t('AppHeader.viewAccount')
+    },
+    strLogOut() {
+      return this.$t('AppHeader.logOut')
+    },
   },
   methods: {
     search() {
@@ -146,7 +210,7 @@ export default {
         this.$router.push({
           name: 'Search',
           params: { search: this.searchText.trim() },
-          query: { t: new Date().getTime() }
+          query: { t: new Date().getTime() },
         })
     },
     openDropdown() {
@@ -158,17 +222,36 @@ export default {
         this.showDropdown = false
       }, 200)
     },
+    openI18nDropdown() {
+      this.$refs.i18n.focus()
+      this.showI18nDropdown = true
+      //console.log(this.$i18n.locale)
+    },
+    closeI18nDropdown() {
+      window.setTimeout(() => {
+        this.showI18nDropdown = false
+      }, 200)
+      //console.log(this.$i18n.locale)
+    },
+    onI18nCn() {
+      this.$i18n.locale = 'zh-CN'
+      Cookies.set('locale', 'zh-CN')
+    },
+    onI18nEn() {
+      this.$i18n.locale = 'en'
+      Cookies.set('locale', 'en')
+    },
     login() {
       this.showLogin = true
     },
     viewAccount() {
       this.$router.push({
-        name: 'Wallet'
+        name: 'Wallet',
       })
     },
     logOut() {
       this.$_APP.privateKey = ''
-    }
-  }
+    },
+  },
 }
 </script>
