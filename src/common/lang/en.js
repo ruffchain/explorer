@@ -121,7 +121,7 @@ export default {
   CreateToken: {
     title1: 'SmartToken use ',
     title2: 'Token as reserve，Bancor protocol exchanges are supported',
-    tokenName: 'Token Name',
+    tokenName: 'Token',
     circulation: 'Circulation Amount',
     precision: 'Token Precision',
     circulationTotal: 'Total',
@@ -158,8 +158,8 @@ export default {
     confirm: 'Confirm'
   },
   TransferToken: {
-    toAccount: 'To Account',
-    tokenAmount: 'Token Amount',
+    toAccount: 'To',
+    tokenAmount: 'Amount',
     confirm: 'Transfer',
     confirmedOk: 'Succeed, Tx content:',
     confirmedFail: 'Sending Tx succeed. But confirmation is not received. Please check by the chain. Tx content:',

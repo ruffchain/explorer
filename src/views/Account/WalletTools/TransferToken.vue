@@ -11,11 +11,13 @@
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="sendTokenType" @change="typeChange">
-          <el-radio-button v-for="item in tokenTypes" :key="item" :label="item"></el-radio-button>
+          <el-radio-button :label="getTokenSys"></el-radio-button>
+          <el-radio-button :label="getTokenNormal"></el-radio-button>
+          <el-radio-button :label="getTokenSmart"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
-        v-if="sendTokenType === TokenType.smart"
+        v-if="sendTokenType === getTokenSmart"
         :closable="false"
         :title="strTitle"
         type="info"
@@ -26,7 +28,7 @@
           <el-input v-model="formData.to" @input="formData.to = formData.to.replace(' ', '')"></el-input>
         </el-form-item>
         <el-form-item
-          v-if="sendTokenType !== TokenType.sys"
+          v-if="sendTokenType !== getTokenSys"
           prop="tokenId"
           :rules="tokenIdRules"
           :label="strTokenName"
@@ -74,7 +76,7 @@ export default {
   },
   data() {
     return {
-      sendTokenType: TokenType.sys,
+      sendTokenType: process.env.VUE_APP_CORE_SYMBOL + ' Token',
       loading: false,
       result: null,
       formData: {
@@ -87,34 +89,33 @@ export default {
       txData: {},
     }
   },
+  watch: {
+    getTokenNormal: function () {
+      console.log('Triggered')
+      this.sendTokenType = process.env.VUE_APP_CORE_SYMBOL + ' Token'
+    },
+  },
   computed: {
     tokenIdRules() {
       let type
-      if (this.sendTokenType === TokenType.normal) {
+      if (this.sendTokenType === this.getTokenNormal) {
         type = rules.normalTokenShouldExist()
       }
-      if (this.sendTokenType === TokenType.smart) {
+      if (this.sendTokenType === this.getTokenSmart) {
         type = rules.bancorTokenShouldExist()
       }
       return [...this.formRules.tokenId, type]
     },
     amountRules() {
       let maxDecimalCount = rules.maxDecimalCount(9)
-      if (this.sendTokenType === TokenType.smart) {
+      if (this.sendTokenType === this.getTokenSmart) {
         maxDecimalCount = rules.maxDecimalCount(12)
-      } else if (this.sendTokenType === TokenType.normal) {
+      } else if (this.sendTokenType === this.getTokenNormal) {
         // 普通token需要获取token精度后再做校验
         maxDecimalCount = this.getNormalTokenAmountValidator()
       }
       return [...this.formRules.amount, maxDecimalCount]
     },
-    // newTokenTypes() {
-    //   return [
-    //     process.env.VUE_APP_CORE_SYMBOL + ' Token',
-    //     this.$t('TransferToken.normal') + ' Token',
-    //     this.$t('TransferToken.smart') + ' Token',
-    //   ]
-    // },
     strTitle() {
       return (
         this.$t('CreateToken.title1') +
@@ -134,22 +135,24 @@ export default {
     strTokenAmount() {
       return this.$t('TransferToken.tokenAmount')
     },
-    getTokenType() {
-      return {
-        sys: process.env.VUE_APP_CORE_SYMBOL + ' Token',
-        normal: this.$t('TransferToken.normal') + ' Token',
-        smart: this.$t('TransferToken.smart') + ' Token',
-      }
+    // getTokenType() {
+    //   return {
+    //     sys: process.env.VUE_APP_CORE_SYMBOL + ' Token',
+    //     normal: this.$t('TransferToken.normal') + ' Token',
+    //     smart: this.$t('TransferToken.smart') + ' Token',
+    //   }
+    // },
+    getTokenSys() {
+      return process.env.VUE_APP_CORE_SYMBOL + ' Token'
+    },
+    getTokenNormal() {
+      return this.$t('TransferToken.normal') + ' Token'
+    },
+    getTokenSmart() {
+      return this.$t('TransferToken.smart') + ' Token'
     },
   },
   beforeMount() {
-    this.TokenType = this.getTokenType
-    this.tokenTypes = [
-      this.TokenType.sys,
-      this.TokenType.normal,
-      this.TokenType.smart,
-    ]
-
     const required = rules.required()
     const gt0 = rules.greaterThan(0)
     const validAdress = rules.validAdress()
@@ -162,10 +165,22 @@ export default {
       fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)],
     }
   },
+
   methods: {
     typeChange() {
       this.result = null
       this.cleanForm()
+    },
+    transformTokenType(type) {
+      if (type === this.getTokenSys) {
+        return TokenType.sys
+      } else if (type === this.getTokenNormal) {
+        return TokenType.normal
+      } else if (type === this.getTokenSmart) {
+        return TokenType.smart
+      } else {
+        return null
+      }
     },
     async confirm() {
       this.result = null
@@ -174,7 +189,7 @@ export default {
       formData.to = rmAddressPrefix(formData.to)
       this.txData = genTransferTx({
         ...formData,
-        tokenType: this.sendTokenType,
+        tokenType: this.transformTokenType(this.sendTokenType),
       })
       this.showConfirmTx = true
     },
