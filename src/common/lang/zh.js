@@ -160,7 +160,12 @@ export default {
     infoGetSysCount: '可获取',
     cost: '花费',
     infoGetTokenCount: '可获取',
-    confirm: '开始交易'
+    confirm: '开始交易',
+    buy: '购买',
+    sell: '出售',
+    sendOK: '成功，交易内容如下：',
+    sendFail: '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
+    err: '出错 '
   },
   TransferToken: {
     toAccount: '对方账户',

@@ -21,15 +21,16 @@
 
 <template>
   <div class="token-exchange">
-    <el-alert :closable="false" title="智能Token交易由Bancor算法自动执行，暂不支持账户之间直接交易。" type="info" show-icon></el-alert>
+    <el-alert :closable="false" :title="strTitle" type="info" show-icon></el-alert>
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="tokenExchangeType" @change="typeChange">
-          <el-radio-button v-for="item in TOKEN_EXCHANGE_TYPES" :key="item" :label="item" />
+          <el-radio-button :label="strBuy" />
+          <el-radio-button :label="strSell" />
         </el-radio-group>
       </div>
-      <el-form ref="form" :model="formData" :rules="formRules" label-width="90px">
-        <el-form-item prop="tokenId" label="Token名称">
+      <el-form ref="form" :model="formData" :rules="formRules" label-width="160px">
+        <el-form-item prop="tokenId" :label="strTokenId">
           <el-input :value="formData.tokenId" @input="formData.tokenId = $event.toUpperCase()"></el-input>
         </el-form-item>
         <template v-if="formData.tokenId && tokenPrice">
@@ -39,9 +40,11 @@
             = {{ tokenPrice }}
             <span class="token-name">{{$_APP.CORE_SYMBOL}}</span>
           </div>
-          <div v-if="tokenExchangeType === TOKEN_EXCHANGE_TYPE.BUY" class="info-tip">
-            最多可供购买 {{ maxAvaliableBuyCount }}
-            <span class="token-name">{{ formData.tokenId }}</span>
+          <div v-if="tokenExchangeType === strBuy" class="info-tip">
+            {{ strInfoTip }} {{ maxAvaliableBuyCount }}
+            <span
+              class="token-name"
+            >{{ formData.tokenId }}</span>
             =
             {{ maxAvaliableBuySys }}
             <span
@@ -50,26 +53,30 @@
           </div>
         </template>
 
-        <template v-if="tokenExchangeType === TOKEN_EXCHANGE_TYPE.SELL">
-          <el-form-item prop="amount" label="Token数量">
+        <template v-if="tokenExchangeType === strSell">
+          <el-form-item prop="amount" :label="strTokenAmount">
             <el-input v-model="formData.amount" type="number"></el-input>
           </el-form-item>
           <div v-if="canGetSysCount" class="info-tip">
-            可获取
+            {{ strInfoGetSysCount }}
             {{ canGetSysCount }}
-            <span class="token-name">{{$_APP.CORE_SYMBOL}}</span>
+            <span
+              class="token-name"
+            >{{$_APP.CORE_SYMBOL}}</span>
           </div>
         </template>
         <template v-else>
-          <el-form-item prop="cost" label="花费">
+          <el-form-item prop="cost" :label="strCost">
             <el-input v-model="formData.cost" type="number">
               <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
             </el-input>
           </el-form-item>
           <div v-if="canGetTokenCount" class="info-tip">
-            可获取
+            {{ strInfoGetTokenCount }}
             {{ canGetTokenCount }}
-            <span class="token-name">{{ formData.tokenId }}</span>
+            <span
+              class="token-name"
+            >{{ formData.tokenId }}</span>
           </div>
         </template>
 
@@ -81,7 +88,12 @@
       </el-form>
       <TransactionResult v-if="result" :data="result" />
     </section>
-    <el-button :loading="loading" type="primary" @click="confirm()" style="width:100%">开始交易</el-button>
+    <el-button
+      :loading="loading"
+      type="primary"
+      @click="confirm()"
+      style="width:100%"
+    >{{ strConfirm }}</el-button>
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
@@ -98,30 +110,35 @@ import { genExchangeTokenTx } from './wallet-helper'
 export default {
   components: {
     TransactionResult,
-    ConfirmTx
+    ConfirmTx,
   },
   data() {
     return {
-      tokenExchangeType: TOKEN_EXCHANGE_TYPE.BUY,
+      tokenExchangeType: this.strBuy,
       loading: false,
       result: null,
       formData: {
         tokenId: '',
         amount: '',
         cost: '',
-        fee: ''
+        fee: '',
       },
       maxAvaliableBuyCount: null,
       maxAvaliableBuySys: null,
       tokenPrice: null,
       showConfirmTx: false,
-      txData: {}
+      txData: {},
     }
+  },
+  watch: {
+    strTitle: function () {
+      this.tokenExchangeType = this.strBuy
+    },
   },
   computed: {
     canGetSysCount() {
       let res = null
-      if (this.tokenExchangeType === TOKEN_EXCHANGE_TYPE.SELL) {
+      if (this.tokenExchangeType === this.strSell) {
         if (
           this.formData.amount &&
           this.formData.amount > 0 &&
@@ -136,7 +153,7 @@ export default {
     },
     canGetTokenCount() {
       let res = null
-      if (this.tokenExchangeType === TOKEN_EXCHANGE_TYPE.BUY) {
+      if (this.tokenExchangeType === this.strBuy) {
         if (this.formData.cost && this.formData.cost > 0 && this.tokenPrice) {
           res = new BigNumber(this.formData.cost)
             .dividedBy(this.tokenPrice)
@@ -144,14 +161,62 @@ export default {
         }
       }
       return res
-    }
+    },
+    strTitle() {
+      return this.$t('TokenExchange.title')
+    },
+    strTokenId() {
+      return this.$t('TokenExchange.tokenId')
+    },
+    strInfoTip() {
+      return this.$t('TokenExchange.infoTip')
+    },
+    strTokenAmount() {
+      return this.$t('TokenExchange.tokenAmount')
+    },
+    strInfoGetSysCount() {
+      return this.$t('TokenExchange.infoGetSysCount')
+    },
+    strCost() {
+      return this.$t('TokenExchange.cost')
+    },
+    strInfoGetTokenCount() {
+      return this.$t('TokenExchange.infoGetTokenCount')
+    },
+    strConfirm() {
+      return this.$t('TokenExchange.confirm')
+    },
+    strBuy() {
+      return this.$t('TokenExchange.buy')
+    },
+    strSell() {
+      return this.$t('TokenExchange.sell')
+    },
+    strValidatorInfo() {
+      return (
+        this.$t('TokenExchange.infoTip') +
+        `${this.maxAvaliableBuySys} ${this.$_APP.CORE_SYMBOL} Token`
+      )
+    },
+    strSendOK() {
+      return this.$t('TokenExchange.sendOK')
+    },
+    strSendFail() {
+      return this.$t('TokenExchange.sendFail')
+    },
+    strErr() {
+      return this.$t('TokenExchange.err')
+    },
+  },
+  mounted: function () {
+    this.tokenExchangeType = this.strBuy
   },
   beforeMount() {
-    this.TOKEN_EXCHANGE_TYPE = TOKEN_EXCHANGE_TYPE
-    this.TOKEN_EXCHANGE_TYPES = [
-      TOKEN_EXCHANGE_TYPE.BUY,
-      TOKEN_EXCHANGE_TYPE.SELL
-    ]
+    // this.TOKEN_EXCHANGE_TYPE = TOKEN_EXCHANGE_TYPE
+    // this.TOKEN_EXCHANGE_TYPES = [
+    //   TOKEN_EXCHANGE_TYPE.BUY,
+    //   TOKEN_EXCHANGE_TYPE.SELL,
+    // ]
 
     const required = rules.required()
     const gt0 = rules.greaterThan(0)
@@ -169,7 +234,7 @@ export default {
               this.maxAvaliableBuySys = null
             }
           },
-          trigger: ['change']
+          trigger: ['change'],
         },
         required,
         rules.validTokenId(),
@@ -181,7 +246,7 @@ export default {
               const token = this.formData.tokenId
               const { F, S, R } = await chainApi.getBancorTokenParams(token)
               const {
-                content: { supply, nonliquidity }
+                content: { supply, nonliquidity },
               } = await chainApi.getTokenInfo(token)
 
               // this.maxAvaliableBuyCount = supply + nonliquidity - S
@@ -195,8 +260,8 @@ export default {
                 .toFixed(9)
             }
           },
-          trigger: ['blur']
-        }
+          trigger: ['blur'],
+        },
       ],
       amount: [required, gt0, rules.maxDecimalCount(12), rules.amountTooBig()],
       cost: [
@@ -210,15 +275,15 @@ export default {
             if (this.maxAvaliableBuySys) {
               console.log(value, this.maxAvaliableBuySys)
               if (new BigNumber(value).isGreaterThan(this.maxAvaliableBuySys)) {
-                err = `最多可购买 ${this.maxAvaliableBuySys} ${this.$_APP.CORE_SYMBOL} 的智能Token`
+                err = this.strValidatorInfo
               }
             }
             callback(err)
           },
-          trigger: ['change']
-        }
+          trigger: ['change'],
+        },
       ],
-      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)]
+      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)],
     }
   },
   methods: {
@@ -226,13 +291,22 @@ export default {
       this.result = null
       this.cleanForm()
     },
+    transformExchangeType(type) {
+      if (type === this.strBuy) {
+        return TOKEN_EXCHANGE_TYPE.BUY
+      } else if (type === this.strSell) {
+        return TOKEN_EXCHANGE_TYPE.SELL
+      } else {
+        return null
+      }
+    },
     async confirm() {
       this.result = null
       this._submitValidate = true
       await this.$refs.form.validate()
       this.txData = genExchangeTokenTx({
         ...this.formData,
-        tokenExchangeType: this.tokenExchangeType
+        tokenExchangeType: this.transformExchangeType(this.tokenExchangeType),
       })
       this.showConfirmTx = true
     },
@@ -241,17 +315,15 @@ export default {
         this.loading = true
         const res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         this.result = {
-          message: res.confirmed
-            ? '成功，交易内容如下：'
-            : '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
-          json: res.tx
+          message: res.confirmed ? this.strSendOK : this.strSendFail,
+          json: res.tx,
         }
         if (res.confirmed) {
           this.cleanForm()
         }
       } catch (e) {
         this.result = {
-          message: '出错' + e
+          message: this.strErr + e,
         }
       } finally {
         this.loading = false
@@ -261,7 +333,7 @@ export default {
     cleanForm() {
       this.$refs.form.resetFields()
       this.formData = this.$options.data().formData
-    }
-  }
+    },
+  },
 }
 </script>

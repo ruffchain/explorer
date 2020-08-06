@@ -159,7 +159,12 @@ export default {
     infoGetSysCount: 'Available',
     cost: 'Cost',
     infoGetTokenCount: 'Available',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
+    buy: 'Buy',
+    sell: 'Sell',
+    sendOK: 'Succeed! Tx content:',
+    sendFail: 'Tx has been sent successfully! But in a short time , confirmation is not received. Please check it on the chain manually. Tx content: ',
+    err: 'Error '
   },
   TransferToken: {
     toAccount: 'To',
