@@ -25,13 +25,13 @@
 
 <template>
   <div id="app" class="layout-column">
-    <el-alert v-if="$_APP.IS_TESTNET" title="本测试链的数据将不定期清空" type="warning" show-icon></el-alert>
-    <AppHeader/>
+    <el-alert v-if="$_APP.IS_TESTNET" :title="strTitle" type="warning" show-icon></el-alert>
+    <AppHeader />
     <div class="flex router-view-ct">
-      <router-view class="router-view"/>
+      <router-view class="router-view" />
     </div>
-    <AppLoading :loading="$_APP.loading"/>
-    <AppFooter/>
+    <AppLoading :loading="$_APP.loading" />
+    <AppFooter />
   </div>
 </template>
 
@@ -43,7 +43,12 @@ export default {
   components: {
     AppHeader,
     AppFooter,
-    AppLoading
-  }
+    AppLoading,
+  },
+  computed: {
+    strTitle() {
+      return this.$t('APP.title')
+    },
+  },
 }
 </script>

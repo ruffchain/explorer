@@ -7,12 +7,7 @@
   <div class="address-to-hex">
     <PageBreadcrumb title="地址转换工具" />
     <div class="card">
-      <el-form
-        ref="form"
-        :model="formData"
-        :rules="formRules"
-        label-width="90px"
-      >
+      <el-form ref="form" :model="formData" :rules="formRules" label-width="90px">
         <el-form-item prop="address" label="地址">
           <el-input v-model="formData.address"></el-input>
         </el-form-item>
@@ -30,9 +25,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="translate">
-            转换为16进制(HEX)
-          </el-button>
+          <el-button type="primary" @click="translate">转换为16进制(HEX)</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -49,10 +42,27 @@ export default {
     return {
       formData: { address: '' },
       formRules: {
-        address: [rules.required(), rules.validAdress()]
+        address: [rules.required(), rules.validAdress()],
       },
-      output: null
+      output: null,
     }
+  },
+  computed: {
+    strTitle() {
+      return this.$t('AddressToHex.title')
+    },
+    strAddress() {
+      return this.$t('AddressToHex.address')
+    },
+    strToHex() {
+      return this.$t('AddressToHex.toHex')
+    },
+    strCopySuccess() {
+      return this.$t('AddressToHex.copySuccess')
+    },
+    strCopyFail() {
+      return this.$t('AddressToHex.copyFail')
+    },
   },
   methods: {
     translate() {
@@ -61,23 +71,23 @@ export default {
         .validate()
         .then(() => {
           const charList = [...this.formData.address]
-          var hexList = charList.map(char => {
+          var hexList = charList.map((char) => {
             return char.charCodeAt(0).toString(16)
           })
           this.output = hexList.join('')
         })
-        .catch(e => {})
+        .catch((e) => {})
     },
     copyText() {
       if (copyText(this.output)) {
         this.$message({
-          message: '复制成功',
-          type: 'success'
+          message: this.strCopySuccess,
+          type: 'success',
         })
       } else {
-        this.$message.error('复制失败，请手动复制')
+        this.$message.error(this.strCopyFail)
       }
-    }
-  }
+    },
+  },
 }
 </script>

@@ -242,7 +242,10 @@ export default {
   AddressToHex: {
     title: '地址转换工具',
     address: '地址',
-    toHex: '转换为16进制(HEX)'
+    toHex: '转换为16进制(HEX)',
+    copySuccess: '复制成功',
+    copyFail: '复制失败，请手动复制'
+
   },
   Transaction: {
     title: '交易详情',

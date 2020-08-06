@@ -239,7 +239,9 @@ export default {
   AddressToHex: {
     title: 'Address Conversion Tool',
     address: 'Address',
-    toHex: 'Convert to Hex'
+    toHex: 'Convert to Hex',
+    copySuccess: 'Copy Success',
+    copyFail: 'Copy Failed. Please save it by hand'
   },
   Transaction: {
     title: 'Tx Detail',
