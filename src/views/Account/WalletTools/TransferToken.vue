@@ -91,7 +91,6 @@ export default {
   },
   watch: {
     getTokenNormal: function () {
-      console.log('Triggered')
       this.sendTokenType = process.env.VUE_APP_CORE_SYMBOL + ' Token'
     },
   },

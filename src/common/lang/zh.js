@@ -127,12 +127,12 @@ export default {
     precision: 'Token精度',
     circulationTotal: '发行总量',
     circulationInit: '初始发行量',
-    nonLiquidity: '流通发行量',
+    nonLiquidity: '非流通量',
     priceInit: 'Token 初始定价',
     reserveInit: '初始准备金',
     reserveRatio: '准备金率',
     reservePlaceHolder: '0到1之间',
-    initPrice: '初始价格',
+    priceInit: '初始价格',
     circulationDistr: '发行量分配',
     normalDistErr: '分配总量必须等于发行量',
     circulationDistrInit: '初始发行量分配',
@@ -146,7 +146,11 @@ export default {
     addPreBalance: '添加发行方',
     createToken: '创建Token',
     normal: '普通',
-    smart: '智能'
+    smart: '智能',
+    lockErr: '时间必须在30分钟之后',
+    sendOK: '成功，交易内容如下：',
+    sendFail: '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
+    err: '出错 '
   },
   TokenExchange: {
     title: '智能Token交易由Bancor算法自动执行，暂不支持账户之间直接交易。',

@@ -145,7 +145,11 @@ export default {
     addPreBalance: 'Add Issuer',
     createToken: 'Create',
     normal: 'Normal ',
-    smart: 'Smart '
+    smart: 'Smart ',
+    lockErr: 'Date must be later than 30 minutes',
+    sendOK: 'Succeed! Tx content:',
+    sendFail: 'Tx has been sent successfully! But in a short time , confirmation is not received. Please check it on the chain manually. Tx content: ',
+    err: 'Error '
   },
   TokenExchange: {
     title: 'Exchange of Smart Token is handled by Bancor protocol automatically. No direct human intervention.',

@@ -41,52 +41,52 @@
     <section>
       <div class="top-radio-selecter">
         <el-radio-group size="mini" v-model="createTokenType" @change="typeChange">
-          <el-radio-button :label="TokenType.normal"></el-radio-button>
-          <el-radio-button :label="TokenType.smart"></el-radio-button>
+          <el-radio-button :label="strTokenNormal"></el-radio-button>
+          <el-radio-button :label="strTokenSmart"></el-radio-button>
         </el-radio-group>
       </div>
       <el-alert
-        v-if="createTokenType === TokenType.smart"
+        v-if="createTokenType === strTokenSmart"
         :closable="false"
-        :title="`智能Token是以${$_APP.CORE_SYMBOL} Token作为准备金发行的，支持Bancor协议流通兑换的Token`"
+        :title="strTitle"
         type="info"
         show-icon
       ></el-alert>
-      <el-form ref="form" :model="formData" :rules="formRules" label-width="100px">
-        <el-form-item prop="tokenId" label="Token名称">
+      <el-form ref="form" :model="formData" :rules="formRules" label-width="160px">
+        <el-form-item prop="tokenId" :label="strTokenName">
           <el-input :value="formData.tokenId" @input="formData.tokenId = $event.toUpperCase()"></el-input>
         </el-form-item>
 
-        <template v-if="createTokenType === TokenType.normal">
-          <el-form-item prop="normalTotal" :rules="normalTotalRules" label="发行总量">
+        <template v-if="createTokenType === strTokenNormal">
+          <el-form-item prop="normalTotal" :rules="normalTotalRules" :label="strCirculation">
             <el-input v-model="formData.normalTotal" type="number"></el-input>
           </el-form-item>
-          <el-form-item prop="precision" label="Token精度">
+          <el-form-item prop="precision" :label="strTokenPrecision">
             <el-input v-model="formData.precision" type="number"></el-input>
           </el-form-item>
         </template>
         <template v-else>
           <el-row>
             <el-col :span="24">
-              <div class="title">发行总量 {{ tokenSmartTotal }}</div>
+              <div class="title">{{strCirculation}} {{ tokenSmartTotal }}</div>
             </el-col>
             <el-col :span="12">
-              <el-form-item prop="initPublish" label="初始发行量">
+              <el-form-item prop="initPublish" :label="strCirculationInit">
                 <el-input v-model="formData.initPublish" type="number"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item prop="nonLiquidity" label="流通发行量">
+              <el-form-item prop="nonLiquidity" :label="strNonliquidity">
                 <el-input v-model="formData.nonLiquidity" type="number"></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="24">
-              <div class="title">Token 初始定价</div>
+              <div class="title">{{ strPriceInit }}</div>
             </el-col>
 
             <el-col :span="12" class="input-group-append-max-height">
-              <el-form-item prop="cost" label="初始准备金">
+              <el-form-item prop="cost" :label="strReserveInit">
                 <el-input v-model="formData.cost" type="number">
                   <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
                 </el-input>
@@ -94,20 +94,24 @@
             </el-col>
 
             <el-col :span="12">
-              <el-form-item prop="factor" label="准备金率">
-                <el-input v-model="formData.factor" placeholder="0到1之间" type="number"></el-input>
+              <el-form-item prop="factor" :label="strReserveRatio">
+                <el-input
+                  v-model="formData.factor"
+                  :placeholder="strReservePlaceHolder"
+                  type="number"
+                ></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="初始发行量">
+              <el-form-item :label="strCirculationInit">
                 <el-input v-model="formData.initPublish" disabled></el-input>
               </el-form-item>
             </el-col>
 
             <el-col :span="12" class="input-group-append-max-height">
-              <el-form-item label="初始价格">
-                <el-input :value="initPrise" disabled>
+              <el-form-item :label="strPriceInit">
+                <el-input :value="initPrice" disabled>
                   <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
                 </el-input>
               </el-form-item>
@@ -115,14 +119,14 @@
           </el-row>
         </template>
 
-        <div v-if="createTokenType === TokenType.normal" class="title">
-          发行量分配
-          <span class="err-msg" v-if="normalDistErr">分配总量必须等于发行量</span>
+        <div v-if="createTokenType === strTokenNormal" class="title">
+          {{ strCirculationDistr }}
+          <span class="err-msg" v-if="normalDistErr">{{strNormalDistErr}}</span>
         </div>
 
         <div v-else class="title">
-          初始发行量分配
-          <span class="err-msg" v-if="smartDistErr">分配数量+锁定数量需等于初始发行量</span>
+          {{ strCirculationDistrInit }}
+          <span class="err-msg" v-if="smartDistErr">{{strSmartDistErr}}</span>
         </div>
 
         <section class="receiver-list">
@@ -131,7 +135,7 @@
               <el-form-item
                 :prop="'preBalances.' + index + '.address'"
                 :rules="formRules.preBalancesAddress"
-                label="账户"
+                :label="strAccount"
               >
                 <el-input
                   v-model="item.address"
@@ -143,7 +147,7 @@
               <el-form-item
                 :prop="'preBalances.' + index + '.amount'"
                 :rules="preBalancesAmountRules"
-                label="分配数量"
+                :label="strDistAmount"
               >
                 <el-input v-model="item.amount" type="number"></el-input>
               </el-form-item>
@@ -159,9 +163,9 @@
                 v-if="index !== 0"
               ></el-button>
             </el-col>
-            <template v-if="createTokenType === TokenType.smart">
+            <template v-if="createTokenType === strTokenSmart">
               <el-col :span="6">
-                <el-form-item label="锁定数量">
+                <el-form-item :label="strLockAmount">
                   <el-switch v-model="item.lock"></el-switch>
                 </el-form-item>
               </el-col>
@@ -170,12 +174,12 @@
                   <el-form-item
                     :prop="'preBalances.' + index + '.time_expiration'"
                     :rules="formRules.time_expiration"
-                    label="解锁日期"
+                    :label="strUnlockDate"
                   >
                     <el-date-picker
                       v-model="item.time_expiration"
                       type="datetime"
-                      placeholder="选择日期时间"
+                      :placeholder="strChooseDateTime"
                     ></el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -183,7 +187,7 @@
                   <el-form-item
                     :prop="'preBalances.' + index + '.lock_amount'"
                     :rules="preBalancesAmountRules"
-                    label="锁定数量"
+                    :label="strLockAmount"
                   >
                     <el-input v-model="item.lock_amount"></el-input>
                   </el-form-item>
@@ -200,7 +204,7 @@
               type="primary"
               :disabled="loading"
               @click="addPreBalance()"
-            >添加发行方</el-button>
+            >{{ strAddPreBalance }}</el-button>
           </div>
         </section>
 
@@ -212,7 +216,12 @@
       </el-form>
       <TransactionResult v-if="result" :data="result" />
     </section>
-    <el-button :loading="loading" type="primary" @click="confirm()" style="width:100%">创建 Token</el-button>
+    <el-button
+      :loading="loading"
+      type="primary"
+      @click="confirm()"
+      style="width:100%"
+    >{{ strCreateToken }}</el-button>
 
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
@@ -235,7 +244,7 @@ export default {
   },
   data() {
     return {
-      createTokenType: TokenType.normal,
+      createTokenType: this.strTokenNormal,
       result: null,
       loading: false,
       formData: {
@@ -296,7 +305,7 @@ export default {
         .plus(this.formData.nonLiquidity)
         .toString()
     },
-    initPrise() {
+    initPrice() {
       return new BigNumber(this.formData.cost)
         .div(this.formData.factor)
         .div(this.formData.initPublish)
@@ -314,11 +323,100 @@ export default {
         new BigNumber(this.formData.initPublish).toString()
       )
     },
+    strTitle() {
+      return (
+        this.$t('CreateToken.title1') +
+        ' ' +
+        `${$_APP.CORE_SYMBOL}` +
+        this.$t('CreateToken.title2')
+      )
+    },
+    strTokenName() {
+      return this.$t('CreateToken.tokenName')
+    },
+    strCirculation() {
+      return this.$t('CreateToken.circulation')
+    },
+    strTokenPrecision() {
+      return this.$t('CreateToken.precision')
+    },
+    strCirculationInit() {
+      return this.$t('CreateToken.circulationInit')
+    },
+    strNonliquidity() {
+      return this.$t('CreateToken.nonLiquidity')
+    },
+    strPriceInit() {
+      return this.$t('CreateToken.priceInit')
+    },
+    strReserveInit() {
+      return this.$t('CreateToken.reserveInit')
+    },
+    strReserveRatio() {
+      return this.$t('CreateToken.reserveRatio')
+    },
+    strReservePlaceHolder() {
+      return this.$t('CreateToken.reservePlaceHolder')
+    },
+    strCirculationDistr() {
+      return this.$t('CreateToken.circulationDistr')
+    },
+    strNormalDistErr() {
+      return this.$t('CreateToken.normalDistErr')
+    },
+    strCirculationDistrInit() {
+      return this.$t('CreateToken.circulationDistrInit')
+    },
+    strSmartDistErr() {
+      return this.$t('CreateToken.smartDistErr')
+    },
+    strAccount() {
+      return this.$t('CreateToken.account')
+    },
+    strDistAmount() {
+      return this.$t('CreateToken.distAmount')
+    },
+    strAddPreBalance() {
+      return this.$t('CreateToken.addPreBalance')
+    },
+    strCreateToken() {
+      return this.$t('CreateToken.createToken')
+    },
+    strLockAmount() {
+      return this.$t('CreateToken.lockAmount')
+    },
+    strUnlockDate() {
+      return this.$t('CreateToken.unlockDate')
+    },
+    strChooseDateTime() {
+      return this.$t('CreateToken.chooseDateTime')
+    },
+    strLockAmount() {
+      return this.$t('CreateToken.lockAmount')
+    },
+    strLockErr() {
+      return this.$t('CreateToken.lockErr')
+    },
     strNormal() {
       return this.$t('CreateToken.normal')
     },
     strSmart() {
       return this.$t('CreateToken.smart')
+    },
+    strTokenNormal() {
+      return this.$t('CreateToken.normal') + ' Token'
+    },
+    strTokenSmart() {
+      return this.$t('CreateToken.smart') + ' Token'
+    },
+    strSendOK() {
+      return this.$t('CreateToken.sendOK')
+    },
+    strSendFail() {
+      return this.$t('CreateToken.sendFail')
+    },
+    strErr() {
+      return this.$t('CreateToken.err')
     },
   },
   watch: {
@@ -337,6 +435,12 @@ export default {
         this.$refs.form.validateField(['normalTotal', ...fields])
       })
     },
+    strTokenNormal: function () {
+      this.createTokenType = this.strTokenNormal
+    },
+  },
+  mounted: function () {
+    this.createTokenType = this.strTokenNormal
   },
   beforeMount() {
     this.TokenType = TokenType
@@ -366,7 +470,7 @@ export default {
           validator: async (rule, value, callback) => {
             let err
             if (new Date(value).getTime() < Date.now() + 30 * 60 * 1000) {
-              err = `时间必须在30分钟之后`
+              err = this.strLockErr
             }
             err ? callback(new Error(err)) : callback()
           },
@@ -394,14 +498,23 @@ export default {
         (temp) => item !== temp
       )
     },
+    transformTokenType(type) {
+      if (type === this.strTokenNormal) {
+        return TokenType.normal
+      } else if (type === this.strTokenSmart) {
+        return TokenType.smart
+      } else {
+        return null
+      }
+    },
     async confirm() {
       this.result = null
       await this.$refs.form.validate()
 
-      if (this.createTokenType === TokenType.normal && this.normalDistErr) {
+      if (this.createTokenType === strTokenNormal && this.normalDistErr) {
         return
       }
-      if (this.createTokenType === TokenType.smart && this.smartDistErr) {
+      if (this.createTokenType === strTokenSmart && this.smartDistErr) {
         return
       }
       const formData = JSON.parse(JSON.stringify(this.formData))
@@ -411,7 +524,7 @@ export default {
       }))
       this.txData = genCreateTokenTx({
         ...formData,
-        tokenType: this.createTokenType,
+        tokenType: this.transformTokenType(this.createTokenType),
       })
       this.showConfirmTx = true
     },
@@ -420,9 +533,7 @@ export default {
         this.loading = true
         const res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         this.result = {
-          message: res.confirmed
-            ? '成功，交易内容如下：'
-            : '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
+          message: res.confirmed ? this.strSendOK : this.strSendFail,
           json: res.tx,
         }
         if (res.confirmed) {
@@ -430,7 +541,7 @@ export default {
         }
       } catch (e) {
         this.result = {
-          message: '出错' + e,
+          message: this.strErr + e,
         }
       } finally {
         this.loading = false
