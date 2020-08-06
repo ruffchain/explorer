@@ -171,7 +171,7 @@ export default {
       stackDetailLoading: false,
       stackResult: null,
       stackForm: {
-        operateType: this.stackForm.operateType,
+        operateType: '',
         fee: '0.1',
         amount: 0,
       },
