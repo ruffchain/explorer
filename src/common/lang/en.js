@@ -189,7 +189,7 @@ export default {
     rule4: 'You can vote 7 nodes at a time, every node will get all your votes.',
     rule5: 'Freezing ',
     rule51: ' again, the votes will go to the voted nodes automatically',
-    rule6: 'Unfreeze after 72 hours。Then all before votes will be canceled.',
+    rule6: ' can be unfreezed after 72 hours。Then all votes will be canceled.',
     sectionTitle: 'freeze/unfreeze',
     freeze: 'freeze',
     unfreeze: 'unfreeze',

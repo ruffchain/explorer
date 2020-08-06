@@ -40,23 +40,23 @@
         </div>
         <ul>
           <li>1. {{ strRule1 }}</li>
-          <li>2. 每10分钟为一个有效投票周期。</li>
-          <li>3. 周期内可多次投票（每隔60秒可投一次），但仅最后一次投票生效。</li>
-          <li>4. 一次最多可投7个节点，每个节点都将获得全部票数。</li>
-          <li>5. 再次冻结{{$_APP.CORE_SYMBOL}}后所得票数将自动追加给当前已投节点。</li>
-          <li>6. {{$_APP.CORE_SYMBOL}}冻结3天后可申请解冻。解冻后，相应已投票数将被自动撤销。</li>
+          <li>2. {{ strRule2 }}</li>
+          <li>3. {{ strRule3 }}</li>
+          <li>4. {{ strRule4 }}</li>
+          <li>5. {{ strRule5 }}</li>
+          <li>6. {{ strRule6 }}</li>
         </ul>
       </el-collapse-item>
       <el-collapse-item name="2">
-        <div slot="title" class="section-title">冻结/解冻 {{$_APP.CORE_SYMBOL}}</div>
-        <el-form ref="stackForm" :model="stackForm" :rules="stackFormRules" label-width="80px">
+        <div slot="title" class="section-title">{{ strSectionTitle}} {{$_APP.CORE_SYMBOL}}</div>
+        <el-form ref="stackForm" :model="stackForm" :rules="stackFormRules" label-width="150px">
           <el-form-item label>
             <el-radio-group v-model="stackForm.operateType" size="mini">
-              <el-radio-button label="冻结">冻结 {{$_APP.CORE_SYMBOL}}</el-radio-button>
-              <el-radio-button label="解冻">解冻 {{$_APP.CORE_SYMBOL}}</el-radio-button>
+              <el-radio-button :label="strFreeze">{{strFreeze}} {{$_APP.CORE_SYMBOL}}</el-radio-button>
+              <el-radio-button :label="strUnfreeze">{{strUnfreeze}} {{$_APP.CORE_SYMBOL}}</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item prop="amount" :label="`${stackForm.operateType}数量`">
+          <el-form-item prop="amount" :label="strAmount">
             <el-input type="number" v-model="stackForm.amount"></el-input>
           </el-form-item>
           <el-form-item prop="fee" label="Gasfee">
@@ -69,31 +69,36 @@
               :loading="stackLoading"
               type="primary"
               @click="operateStack"
-            >确认{{ stackForm.operateType }}</el-button>
+            >{{ strConfirm }} {{ stackForm.operateType }}</el-button>
           </el-form-item>
         </el-form>
         <TransactionResult v-if="stackResult" :data="stackResult" />
         <LoadingContainer :loading="stackDetailLoading" class="freeze-list-contaienr">
-          <div class="section-title">当前冻结状况</div>
+          <div class="section-title">{{ strFreezeStatus }}</div>
           <ul class="freeze-list">
             <li class="freeze-row freeze-header">
-              <div class="amount">冻结 {{$_APP.CORE_SYMBOL}} 数量</div>
-              <div class="time">可解冻时间</div>
-              <div class="status">状态</div>
+              <div class="amount">{{ strFreeze}} {{$_APP.CORE_SYMBOL}} {{ strAmountByWords }}</div>
+              <div class="time">{{ strFreezeTime }}</div>
+              <div class="status">{{ strStatus }}</div>
             </li>
             <li v-for="(item, index) in stackList" :key="index" class="freeze-row">
               <div class="amount">{{ item.amount }}</div>
               <div class="time">{{ item.dueTime | toLoaclString }}</div>
-              <div class="status">{{ item.dueTime > now ? '时间未到，不' : '' }}可解冻</div>
+              <div class="status">{{ item.dueTime > now ? strDueTimeYes : strDueTime }}</div>
             </li>
           </ul>
         </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="3" v-if="stackList && stackList.length">
-        <div slot="title" class="section-title">投票</div>
+        <div slot="title" class="section-title">{{ strVote }}</div>
         <el-form ref="voteForm" :model="voteForm" :rules="voteFormRules" label-width="80px">
-          <el-form-item prop="candidates" label="选择节点">
-            <el-select v-model="voteForm.candidates" multiple placeholder="请选择" style="width:100%">
+          <el-form-item prop="candidates" :label="strChooseCandidate">
+            <el-select
+              v-model="voteForm.candidates"
+              multiple
+              :placeholder="strChoosePlaceHolder"
+              style="width:100%"
+            >
               <el-option
                 v-for="(item, index) in candidateList"
                 :key="index"
@@ -115,17 +120,17 @@
             </el-input>
           </el-form-item>
           <el-form-item size="small">
-            <el-button :loading="voteLoading" @click="vote" type="primary">确认投票</el-button>
+            <el-button :loading="voteLoading" @click="vote" type="primary">{{ strConfirmVote}}</el-button>
           </el-form-item>
         </el-form>
         <TransactionResult v-if="voteResult" :data="voteResult" />
         <LoadingContainer :loading="voteDetailLoading" v-if="voteDetail && voteDetail.amount">
-          <div class="section-title">当前投票</div>
-          <ParameterRow name="投票时间:">{{ voteDetail.timestamp | toLoaclString }}</ParameterRow>
+          <div class="section-title">{{strCurrentVote}}</div>
+          <ParameterRow :name="strVoteTime">{{ voteDetail.timestamp | toLoaclString }}</ParameterRow>
 
-          <ParameterRow name="投票数:">{{ voteDetail.amount | slice(1) }}</ParameterRow>
+          <ParameterRow :name="strVoteNum">{{ voteDetail.amount | slice(1) }}</ParameterRow>
           <div class>
-            <span class>所投节点</span>
+            <span class>{{ strVoteNodes }}</span>
             <span>
               <span v-for="(item, i) in voteDetail.candidates" :key="item.candidate">
                 <span v-if="i != 0">,</span>
@@ -182,6 +187,9 @@ export default {
       voteDetail: null,
       now: Date.now(),
     }
+  },
+  mounted: function () {
+    this.stackForm.operateType = this.strFreeze
   },
   beforeMount() {
     const required = rules.required()
@@ -267,7 +275,7 @@ export default {
       return this.$t('Vote.unfreeze')
     },
     strAmount() {
-      return `${stackForm.operateType}` + this.$t('Vote.amount')
+      return this.stackForm.operateType + ' ' + this.$t('Vote.amount')
     },
     strConfirm() {
       return this.$t('Vote.confirm')
@@ -333,6 +341,11 @@ export default {
       return this.$t('Vote.failCatch')
     },
   },
+  watch: {
+    strTitle: function () {
+      this.stackForm.operateType = this.strFreeze
+    },
+  },
   methods: {
     async updateCandidateList() {
       this._candidateListPromise = chainApi.getCandidates().then((res) => {
@@ -386,14 +399,12 @@ export default {
       try {
         const res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         result = {
-          message: res.confirmed
-            ? '成功，交易内容如下：'
-            : '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
+          message: res.confirmed ? this.strSendOK : this.strSendFail,
           json: res.tx,
         }
       } catch (e) {
         result = {
-          message: '出错' + e,
+          message: this.failCatch + e,
         }
       } finally {
         if (tx.method === 'vote') {
@@ -413,9 +424,9 @@ export default {
       await this.$refs.stackForm.validate()
       const { amount, fee } = this.stackForm
       const type = this.stackForm.operateType
-      if (type === '冻结') {
+      if (type === this.strFreeze) {
         this.txData = walletHelper.genMortgageTx(amount, fee)
-      } else if (type === '解冻') {
+      } else if (type === this.strUnfreeze) {
         this.txData = walletHelper.genUnMortgageTx(amount, fee)
       }
       this.showConfirmTx = true
