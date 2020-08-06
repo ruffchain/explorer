@@ -171,7 +171,7 @@ export default {
       stackDetailLoading: false,
       stackResult: null,
       stackForm: {
-        operateType: '冻结',
+        operateType: this.stackForm.operateType,
         fee: '0.1',
         amount: 0,
       },
@@ -205,10 +205,10 @@ export default {
           validator: async (rule, value, callback) => {
             let err
             if (value < 1) {
-              err = `数字必须大于等于1`
+              err = this.strErr1
             }
             if (Number.parseInt(value).toString() !== value.toString()) {
-              err = `数字必须是整数`
+              err = this.strErr2
             }
             err ? callback(new Error(err)) : callback()
           },
@@ -224,7 +224,7 @@ export default {
           validator: async (rule, value, callback) => {
             let err
             if (value.length > 7) {
-              err = `最多只能选择7个节点`
+              err = this.strErr3
             }
             err ? callback(new Error(err)) : callback()
           },
