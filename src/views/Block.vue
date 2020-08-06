@@ -32,23 +32,23 @@
 
 <template>
   <div class="block-detail">
-    <PageBreadcrumb title="区块详情" />
+    <PageBreadcrumb :title="strTitle" />
     <template v-if="data">
       <div class="card">
         <div class="block-num">
           <LeftIcon @click.native="lastBlock()" />
-          <span class="text">区块 #{{ data.block.number }}</span>
+          <span class="text">{{strBlockNumber}}{{ data.block.number }}</span>
           <RightIcon @click.native="nextBlock()" />
         </div>
-        <ParameterRow name="出块时间:">
-          {{ data.block.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}
-        </ParameterRow>
-        <ParameterRow name="出块节点:" :value="$_APP.ADDRESS_PREFIX+data.block.creator" />
-        <ParameterRow name="区块 hash:" :value="data.block.hash" />
+        <ParameterRow
+          :name="strBlockTime"
+        >{{ data.block.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}</ParameterRow>
+        <ParameterRow :name="strBlockNode" :value="$_APP.ADDRESS_PREFIX+data.block.creator" />
+        <ParameterRow :name="strBlockHash" :value="data.block.hash" />
       </div>
       <div class="card" style="margin:10px 0">
         <el-tabs v-model="activeTab" style="margin-top:-5px">
-          <el-tab-pane :label="`交易(${data.transactions.length})`" name="0">
+          <el-tab-pane :label="strTx" name="0">
             <div v-if="data.transactions.length">
               <el-row
                 v-for="item in data.transactions"
@@ -59,9 +59,7 @@
                 <el-col :xs="24" :sm="10" class="tx-row-lf-part">
                   <div class="method-name">{{ item.method }}</div>
                   <div class="text-ellipsis">
-                    <router-link :to="`/tx/${item.hash}`">
-                      {{ item.hash }}
-                    </router-link>
+                    <router-link :to="`/tx/${item.hash}`">{{ item.hash }}</router-link>
                   </div>
                 </el-col>
                 <el-col :xs="24" :sm="14">
@@ -70,7 +68,7 @@
               </el-row>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="原始数据" name="1">
+          <el-tab-pane :label="strOriginalData" name="1">
             <JsonTreeView :data="data" />
           </el-tab-pane>
         </el-tabs>
@@ -93,13 +91,13 @@ export default {
     PageBreadcrumb,
     ParameterRow,
     LeftIcon,
-    RightIcon
+    RightIcon,
   },
   data() {
     return {
       activeTab: '0',
       blockNumber: null,
-      data: null
+      data: null,
     }
   },
   mounted() {
@@ -108,6 +106,29 @@ export default {
   beforeRouteUpdate(to, from, next) {
     next()
     this.init()
+  },
+  computed: {
+    strTitle() {
+      return this.$t('Block.title')
+    },
+    strBlockNumber() {
+      return this.$t('Block.blockNumber')
+    },
+    strBlockTime() {
+      return this.$t('Block.blockTime')
+    },
+    strBlockNode() {
+      return this.$t('Block.blockNode')
+    },
+    strBlockHash() {
+      return this.$t('Block.blockHash')
+    },
+    strTx() {
+      return this.$t('Block.tx') + '(' + this.data.transactions.length + ')'
+    },
+    strOriginalData() {
+      return this.$t('Block.originalData')
+    },
   },
   methods: {
     init() {
@@ -134,16 +155,16 @@ export default {
       if (last === 0) return
       this.$router.push({
         name: 'Block',
-        params: { which: last }
+        params: { which: last },
       })
     },
     nextBlock() {
       const next = this.blockNumber + 1
       this.$router.push({
         name: 'Block',
-        params: { which: next }
+        params: { which: next },
       })
-    }
-  }
+    },
+  },
 }
 </script>

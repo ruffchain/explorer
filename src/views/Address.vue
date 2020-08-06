@@ -12,36 +12,26 @@
 
 <template>
   <div class="address-detail">
-    <PageBreadcrumb title="账号详情" />
+    <PageBreadcrumb :title="strAccount" />
     <section class="card">
-      <ParameterRow name="账户地址:">
-        {{$_APP.ADDRESS_PREFIX }}{{ address }}
-      </ParameterRow>
+      <ParameterRow :name="strAddress">{{$_APP.ADDRESS_PREFIX }}{{ address }}</ParameterRow>
       <template v-if="bpInfo.candidate">
-        <ParameterRow name="节点名称:">
-          {{ bpInfo.name | slice(1) }}
-        </ParameterRow>
-        <ParameterRow name="节点得票数:">
-          {{ bpInfo.vote | slice(1) }}
-        </ParameterRow>
-        <ParameterRow name="节点IP:">
-          {{ bpInfo.ip | slice(1) }}
-        </ParameterRow>
+        <ParameterRow :name="strName">{{ bpInfo.name | slice(1) }}</ParameterRow>
+        <ParameterRow :name="strVotes">{{ bpInfo.vote | slice(1) }}</ParameterRow>
+        <ParameterRow :name="strIp">{{ bpInfo.ip | slice(1) }}</ParameterRow>
         <!-- <ParameterRow name="节点网址:">
           <a :href="bpInfo.url.slice(1)" target="_blank">
             {{ bpInfo.url | slice(1) }}
           </a>
-        </ParameterRow> -->
-        <ParameterRow name="节点位置:">
-          {{ bpInfo.location | slice(1) }}
-        </ParameterRow>
+        </ParameterRow>-->
+        <ParameterRow :name="strLocation">{{ bpInfo.location | slice(1) }}</ParameterRow>
       </template>
       <TokenList :address="address" />
     </section>
 
     <div class="card" style="margin:10px 0">
       <el-tabs v-model="activeTab" style="margin-top:-5px">
-        <el-tab-pane label="交易历史" name="0" class="tx-history-tab">
+        <el-tab-pane :label="strHistory" name="0" class="tx-history-tab">
           <AddressTxHistory :address="address" />
         </el-tab-pane>
       </el-tabs>
@@ -61,23 +51,44 @@ export default {
     PageBreadcrumb,
     ParameterRow,
     TokenList,
-    AddressTxHistory
+    AddressTxHistory,
   },
   data() {
     return {
       activeTab: 0,
-      bpInfo: {}
+      bpInfo: {},
     }
   },
   computed: {
     address() {
       return this.$route.params.address
-    }
+    },
+    strAccount() {
+      return this.$t('Address.account')
+    },
+    strAddress() {
+      return this.$t('Address.address')
+    },
+    strName() {
+      return this.$t('Address.name')
+    },
+    strVotes() {
+      return this.$t('Address.votes')
+    },
+    strIp() {
+      return this.$t('Address.ip')
+    },
+    strLocation() {
+      return this.$t('Address.location')
+    },
+    strHistory() {
+      return this.$t('Address.history')
+    },
   },
   mounted() {
-    chainApi.getCandidateInfo(this.address).then(res => {
+    chainApi.getCandidateInfo(this.address).then((res) => {
       this.bpInfo = res.value
     })
-  }
+  },
 }
 </script>

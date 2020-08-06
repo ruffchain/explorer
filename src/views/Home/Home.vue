@@ -58,32 +58,30 @@
 </style>
 
 <template>
-  <div class="home-page ">
+  <div class="home-page">
     <section class="card chain-info">
       <el-row>
         <el-col :xs="24" :sm="6">
           <div class="piece">
-            <span class="name">最新区块</span>
+            <span class="name">{{ strBlock }}</span>
             <span class="value">{{ chainOverview.blockHeight }}</span>
           </div>
         </el-col>
         <el-col :xs="24" :sm="6">
           <div class="piece">
-            <span class="name">不可逆区块</span>
-            <span class="value">
-              {{ chainOverview.irreversibleBlockHeight }}
-            </span>
+            <span class="name">{{ strIrb}}</span>
+            <span class="value">{{ chainOverview.irreversibleBlockHeight }}</span>
           </div>
         </el-col>
         <el-col :xs="24" :sm="6">
           <div class="piece">
-            <span class="name">总交易数量</span>
+            <span class="name">{{ strTxAmount }}</span>
             <span class="value">{{ chainOverview.txCount }}</span>
           </div>
         </el-col>
         <el-col :xs="24" :sm="6">
           <div class="piece">
-            <span class="name">总账户数量</span>
+            <span class="name">{{ strAccountAmount}}</span>
             <span class="value">{{ chainOverview.userCount }}</span>
           </div>
         </el-col>
@@ -93,17 +91,15 @@
     <el-row :gutter="15">
       <el-col :sm="12">
         <section class="card blocks latest-list">
-          <span class="title">最新不可逆区块</span>
+          <span class="title">{{ strIrbNew}}</span>
           <transition-group name="flip-list" tag="ul">
             <li v-for="block in blocks" :key="block.number" class="list-item">
               <div class="lf-box">
                 <div>
-                  区块#
-                  <router-link :to="'/block/' + block.number">
-                    {{ block.number }}
-                  </router-link>
+                  {{ strBlockNum }}
+                  <router-link :to="'/block/' + block.number">{{ block.number }}</router-link>
                 </div>
-                <div>包含 {{ block.txs }} 个交易</div>
+                <div>{{ strContain}} {{ block.txs }} {{ strTransaction}}</div>
               </div>
               <div class="time">{{ block.timeAgo }}</div>
             </li>
@@ -112,18 +108,16 @@
       </el-col>
       <el-col :sm="12">
         <section class="card transactions latest-list">
-          <span class="title">最新交易</span>
+          <span class="title">{{ strTransactionNew}}</span>
           <transition-group name="flip-list" tag="ul">
             <li v-for="tx in transactions" :key="tx.hash" class="list-item">
               <div class="lf-box">
                 <div>
-                  交易#
-                  <router-link :to="'/tx/' + tx.hash">
-                    {{ tx.hash | shortHash }}
-                  </router-link>
+                  {{ strTransactionNum}}
+                  <router-link :to="'/tx/' + tx.hash">{{ tx.hash | shortHash }}</router-link>
                 </div>
                 <div>
-                  发起方
+                  {{ strSender }}
                   <router-link
                     :to="'/address/' + tx.address"
                   >{{$_APP.ADDRESS_PREFIX }}{{ tx.address | shortHash }}</router-link>
@@ -141,22 +135,22 @@
 
 <script>
 import BPList from './BPList'
-import { timeAgo, delay } from '../../common/utils.js'
+import { timeAgo, delay, newTimeAgo } from '../../common/utils.js'
 import * as chainApi from '../../common/chain-api.js'
 
 export default {
   components: {
-    BPList
+    BPList,
   },
   data() {
     return {
       chainOverview: {
         blockHeight: '-',
         irreversibleBlockHeight: '-',
-        txCount: '-'
+        txCount: '-',
       },
       blocks: [],
-      transactions: []
+      transactions: [],
     }
   },
   mounted() {
@@ -164,20 +158,55 @@ export default {
     this.autoUpdate()
     this.autoUpdateTimeAgo()
   },
+  computed: {
+    strBlock() {
+      return this.$t('Home.block')
+    },
+    strIrb() {
+      return this.$t('Home.irb')
+    },
+    strTxAmount() {
+      return this.$t('Home.txAmount')
+    },
+    strAccountAmount() {
+      return this.$t('Home.accountAmount')
+    },
+    strIrbNew() {
+      return this.$t('Home.irbNew')
+    },
+    strBlockNum() {
+      return this.$t('Home.blockNum')
+    },
+    strContain() {
+      return this.$t('Home.contain')
+    },
+    strTransaction() {
+      return this.$t('Home.transaction')
+    },
+    strTransactionNew() {
+      return this.$t('Home.transactionNew')
+    },
+    strTransactionNum() {
+      return this.$t('Home.transactionNum')
+    },
+    strSender() {
+      return this.$t('Home.sender')
+    },
+  },
   methods: {
     async update() {
       try {
         const res = await Promise.all([
           chainApi.getChainOverview(),
           chainApi.getLatestBlocks(),
-          chainApi.getLatestTxs()
+          chainApi.getLatestTxs(),
         ])
         this.chainOverview = res[0]
         const blocks = res[1].data
         const transactions = res[2].data
 
-        const mapFun = item => {
-          item.timeAgo = timeAgo(new Date(item.timestamp * 1000))
+        const mapFun = (item) => {
+          item.timeAgo = newTimeAgo(new Date(item.timestamp * 1000))
           return item
         }
 
@@ -196,17 +225,17 @@ export default {
     },
     async autoUpdateTimeAgo() {
       while (!this.isBeingDestroyed) {
-        const fun = item => {
-          item.timeAgo = timeAgo(new Date(item.timestamp * 1000))
+        const fun = (item) => {
+          item.timeAgo = newTimeAgo(new Date(item.timestamp * 1000))
         }
         this.blocks.forEach(fun)
         this.transactions.forEach(fun)
         await delay(300)
       }
-    }
+    },
   },
   beforeDestroy() {
     this.isBeingDestroyed = true
-  }
+  },
 }
 </script>
