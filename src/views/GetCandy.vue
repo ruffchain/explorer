@@ -17,9 +17,7 @@
         <el-input v-model="form.address"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="loading" type="primary" @click="getCandy">
-          领取 Token
-        </el-button>
+        <el-button :loading="loading" type="primary" @click="getCandy">{{strToken}}</el-button>
       </el-form-item>
     </el-form>
     <div></div>
@@ -27,16 +25,12 @@
     <div class="message-box">
       <div v-if="getCandyRes">
         <div v-if="getCandyRes.stauts === 0 || getCandyRes.status === 0">
-          领取成功 ，查看本次交易
-          <a target="_blank" :href="`/tx/${getCandyRes.hash}`">
-            {{ getCandyRes.hash }}
-          </a>
+          {{strSuccess}}
+          <a target="_blank" :href="`/tx/${getCandyRes.hash}`">{{ getCandyRes.hash }}</a>
         </div>
-        <div v-if="getCandyRes.status === 1">
-          你已经领取过token
-        </div>
+        <div v-if="getCandyRes.status === 1">{{strAlready}}</div>
       </div>
-      <div v-if="getCandyFaild">领取失败，请稍后重试</div>
+      <div v-if="getCandyFaild">{{strFail}}</div>
     </div>
   </div>
 </template>
@@ -49,15 +43,29 @@ export default {
   data() {
     return {
       form: {
-        address: ''
+        address: '',
       },
       formRules: {
-        address: [rules.required(), rules.validAdress()]
+        address: [rules.required(), rules.validAdress()],
       },
       loading: false,
       getCandyFaild: false,
-      getCandyRes: null
+      getCandyRes: null,
     }
+  },
+  computed: {
+    strToken() {
+      return this.$t('GetCandy.getToken')
+    },
+    strSuccess() {
+      return this.$t('GetCandy.getSuccess')
+    },
+    strAlready() {
+      return this.$t('GetCandy.getAlready')
+    },
+    strFail() {
+      return this.$t('GetCandy.getFail')
+    },
   },
   methods: {
     async getCandy() {
@@ -68,9 +76,9 @@ export default {
       chainApi
         .getCandy({
           address: this.form.address,
-          token: 'SYS'
+          token: 'SYS',
         })
-        .then(res => {
+        .then((res) => {
           if (res.hash) {
             this.getCandyRes = res
           } else {
@@ -83,7 +91,7 @@ export default {
         .finally(() => {
           this.loading = false
         })
-    }
-  }
+    },
+  },
 }
 </script>

@@ -26,15 +26,15 @@
 <template>
   <div class="search-view">
     <div v-if="noResult">
-      <div class="title">找不到结果,支持以下搜索:</div>
+      <div class="title">{{strTitle}}</div>
       <ul>
-        <li>区块编号 ( 示例 : 123 )</li>
-        <li>区块 ID ( 示例 : 长度为64的哈希字符串)</li>
-        <li>交易 ID ( 示例 : 长度为64的哈希字符串)</li>
-        <li>地 址 ( 示例 : 长度为38的前缀为ruff的哈希字符串)</li>
+        <li>{{strNumber}}</li>
+        <li>{{strBlock}}</li>
+        <li>{{strTx}}</li>
+        <li>{{strAddress}}</li>
       </ul>
       <div class="return-home-btn-box">
-        <router-link class="el-button el-button--primary el-button--small" to="/">返回首页</router-link>
+        <router-link class="el-button el-button--primary el-button--small" to="/">{{strHome}}</router-link>
       </div>
     </div>
   </div>
@@ -46,14 +46,14 @@ import { search } from '../common/chain-api.js'
 import {
   ADDRESS_PREFIX,
   rmAddressPrefix,
-  isValidAddressPrefix
+  isValidAddressPrefix,
 } from '../common/utils'
 
 export default {
   data() {
     return {
       noResult: false,
-      search: ''
+      search: '',
     }
   },
   mounted() {
@@ -64,6 +64,26 @@ export default {
     this.search = params.search
     this.searching()
     next()
+  },
+  computed: {
+    strTitle() {
+      return this.$t('Search.title')
+    },
+    strNumber() {
+      return this.$t('Search.number')
+    },
+    strBlock() {
+      return this.$t('Search.block')
+    },
+    strTx() {
+      return this.$t('Search.tx')
+    },
+    strAddress() {
+      return this.$t('Search.address')
+    },
+    strHome() {
+      return this.$t('Search.home')
+    },
   },
   methods: {
     async searching() {
@@ -97,7 +117,7 @@ export default {
               break
           }
           this.$router.replace({
-            path: route + searchStr
+            path: route + searchStr,
           })
         } else {
           this.noResult = true
@@ -106,7 +126,7 @@ export default {
       } finally {
         this.$_APP.loading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>

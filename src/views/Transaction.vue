@@ -10,27 +10,23 @@
 
 <template>
   <div class="tx-detail">
-    <PageBreadcrumb title="交易详情" />
+    <PageBreadcrumb :title="strTitle" />
     <template v-if="data">
       <div class="card">
-        <ParameterRow name="交易哈希:">
-          {{ data.tx.hash }}
+        <ParameterRow :name="strHash">{{ data.tx.hash }}</ParameterRow>
+        <ParameterRow
+          :name="strTime"
+        >{{ data.block.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}</ParameterRow>
+        <ParameterRow :name="strBlock">
+          <router-link :to="`/block/${data.block.number}`">{{ data.block.number }}</router-link>
         </ParameterRow>
-        <ParameterRow name="交易时间:">
-          {{ data.block.timestamp | ms | dateformat('YYYY-MM-DD HH:mm:ss') }}
-        </ParameterRow>
-        <ParameterRow name="所在区块:">
-          <router-link :to="`/block/${data.block.number}`">
-            {{ data.block.number }}
-          </router-link>
-        </ParameterRow>
-        <ParameterRow name="发起方:">
+        <ParameterRow :name="strSender">
           <router-link :to="`/address/${data.tx.caller}`">{{$_APP.ADDRESS_PREFIX +data.tx.caller }}</router-link>
         </ParameterRow>
       </div>
       <div class="card" style="margin:10px 0">
         <el-tabs v-model="activeTab" style="margin-top:-5px">
-          <el-tab-pane label="原始数据" name="0">
+          <el-tab-pane :label="strRaw" name="0">
             <JsonTreeView :data="data" />
           </el-tab-pane>
         </el-tabs>
@@ -49,12 +45,12 @@ export default {
   components: {
     JsonTreeView,
     PageBreadcrumb,
-    ParameterRow
+    ParameterRow,
   },
   data() {
     return {
       activeTab: 0,
-      data: null
+      data: null,
     }
   },
   mounted() {
@@ -63,6 +59,26 @@ export default {
   beforeRouteUpdate(to, from, next) {
     this.update()
     next()
+  },
+  computed: {
+    strTitle() {
+      return this.$t('Transaction.title')
+    },
+    strHash() {
+      return this.$t('Transaction.hash')
+    },
+    strTime() {
+      return this.$t('Transaction.time')
+    },
+    strBlock() {
+      return this.$t('Transaction.block')
+    },
+    strSender() {
+      return this.$t('Transaction.sender')
+    },
+    strRaw() {
+      return this.$t('Transaction.raw')
+    },
   },
   methods: {
     async update() {
@@ -75,7 +91,7 @@ export default {
       } finally {
         this.$_APP.loading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
