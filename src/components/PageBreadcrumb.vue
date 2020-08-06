@@ -6,14 +6,19 @@
 
 <template>
   <el-breadcrumb class="page-breadcrumb" separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item :to="{ path: '/' }">{{strHomePage}}</el-breadcrumb-item>
     <el-breadcrumb-item>{{ title }}</el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 <script>
 export default {
   props: {
-    title: {}
-  }
+    title: {},
+  },
+  computed: {
+    strHomePage() {
+      return this.$t('PageBreadcrumb.homePage')
+    },
+  },
 }
 </script>
