@@ -511,10 +511,10 @@ export default {
       this.result = null
       await this.$refs.form.validate()
 
-      if (this.createTokenType === strTokenNormal && this.normalDistErr) {
+      if (this.createTokenType === this.strTokenNormal && this.normalDistErr) {
         return
       }
-      if (this.createTokenType === strTokenSmart && this.smartDistErr) {
+      if (this.createTokenType === this.strTokenSmart && this.smartDistErr) {
         return
       }
       const formData = JSON.parse(JSON.stringify(this.formData))
