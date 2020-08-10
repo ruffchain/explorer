@@ -6,7 +6,8 @@ import * as chainApi from '../../../common/chain-api'
 import {
   ADDRESS_PREFIX,
   isValidAddressPrefix,
-  rmAddressPrefix
+  rmAddressPrefix,
+  getCurrentLocale
 } from '../../../common/utils'
 
 const handleCb = (cb, err) => {
@@ -15,7 +16,7 @@ const handleCb = (cb, err) => {
 
 export const required = () => ({
   required: true,
-  message: '请输入',
+  message: (getCurrentLocale() === 'en') ? 'Please Input' : '请输入',
   trigger: ['change', 'blur']
 })
 
@@ -23,7 +24,7 @@ export const greaterThan = num => ({
   validator: (rule, value, callback) => {
     let err
     if (value <= num) {
-      err = `数字必须大于${num}`
+      err = (getCurrentLocale() === 'en') ? `Must >= ${num}` : `数字必须大于${num}`
     }
     handleCb(callback, err)
   },
@@ -34,7 +35,7 @@ export const greaterOrEqualThan = num => ({
   validator: (rule, value, callback) => {
     let err
     if (value < num) {
-      err = `数字不能小于${num}`
+      err = (getCurrentLocale() === 'en') ? `Must not < ${num}` : `数字不能小于${num}`
     }
     handleCb(callback, err)
   },
@@ -45,7 +46,7 @@ export const lessOrEqualThan = num => ({
   validator: (rule, value, callback) => {
     let err
     if (value > num) {
-      err = `数字不能大于${num}`
+      err = (getCurrentLocale() === 'en') ? `Must not > ${num}` : `数字不能大于${num}`
     }
     handleCb(callback, err)
   },
@@ -60,7 +61,7 @@ export const tokenPrecision = () => ({
   validator: (rule, value, callback) => {
     handleCb(
       callback,
-      validTokenPrecision(value) ? '' : '必须为0到9之间的正整数'
+      validTokenPrecision(value) ? '' : (getCurrentLocale() === 'en') ? 'Must be an integer between 1 and 9' : '必须为0到9之间的正整数'
     )
   },
   trigger: ['change', 'blur']
@@ -70,7 +71,7 @@ export const amountTooBig = () => ({
   validator: (rule, value, callback) => {
     let err
     if (value >= 1000000000000000000) {
-      err = `数字太大`
+      err = (getCurrentLocale() === 'en') ? 'Number too large!' : `数字太大`
     }
     handleCb(callback, err)
   },
@@ -82,7 +83,7 @@ export const maxDecimalCount = count => ({
     let err
     const [, decimal] = value.toString().split('.') //3.141592654
     if (decimal && decimal.length > count) {
-      err = `精度最大为小数点后${count}位`
+      err = (getCurrentLocale() === 'en') ? `Maximum precision ${count}` : `精度最大为小数点后${count}位`
     }
     handleCb(callback, err)
   },
@@ -98,10 +99,10 @@ export const validAdress = () => ({
         !isValidAddressPrefix(address) ||
         !isValidAddress(rmAddressPrefix(address))
       ) {
-        err = `请输入有效账户`
+        err = (getCurrentLocale() === 'en') ? 'Please input a valid account' : `请输入有效账户`
       }
     } catch (e) {
-      err = `请输入有效账户`
+      err = (getCurrentLocale() === 'en') ? 'Please input a valid account' : `请输入有效账户`
     }
     handleCb(callback, err)
   },
@@ -114,9 +115,9 @@ export const validSecret = () => ({
     let address = null
     try {
       address = addressFromSecretKey(value)
-    } catch (e) {}
+    } catch (e) { }
     if (!address) {
-      err = `请输入有效私钥`
+      err = (getCurrentLocale() === 'en') ? 'Please input a valid Secret Key' : `请输入有效私钥`
     }
     handleCb(callback, err)
   },
@@ -126,11 +127,11 @@ export const validSecret = () => ({
 export const tokenIdToErrMessage = value => {
   let err
   if (/^[0-9]+/.test(value)) {
-    err = '不能以数字开头'
+    err = (getCurrentLocale() === 'en') ? 'Token ID can not start with a number' : '不能以数字开头'
   } else if (!/^[A-Za-z0-9]+$/.test(value)) {
-    err = '字符只能包含英文字母和数字'
+    err = (getCurrentLocale() === 'en') ? 'Token ID can only contain characters and numbers' : '字符只能包含英文字母和数字'
   } else if (value.length < 3 || value.length > 12) {
-    err = '长度必须在3到12个字符之间'
+    err = (getCurrentLocale() === 'en') ? 'Length must be between 3~12' : '长度必须在3到12个字符之间'
   }
   return err
 }
@@ -149,10 +150,10 @@ export const tokenShouldNotExist = () => ({
     try {
       const res = await chainApi.getTokenInfo(value)
       if (res.name) {
-        err = 'Token 已存在'
+        err = (getCurrentLocale() === 'en') ? 'Token exists already' : 'Token 已存在'
       }
     } catch (e) {
-      err = '查询 Token 是否存在出错，请重试'
+      err = (getCurrentLocale() === 'en') ? 'Token querying failed, please try again later' : '查询 Token 是否存在出错，请重试'
     } finally {
       handleCb(callback, err)
     }
@@ -168,10 +169,10 @@ const tokenExist = async (tokenType, value) => {
   try {
     const res = await chainApi.getTokenInfo(value)
     if (!res.name || res.type != tokenType) {
-      err = tokenType === 'bancor' ? '智能 Token 不存在' : '普通 Token 不存在'
+      err = tokenType === 'bancor' ? (getCurrentLocale() === 'en') ? 'Smart-Token Not exists' : '智能 Token 不存在' : (getCurrentLocale() === 'en') ? 'Normal-Token Not exists' : '普通 Token 不存在'
     }
   } catch (e) {
-    err = '查询token出错，请重试'
+    err = (getCurrentLocale() === 'en') ? 'Token querying failed, please try again later' : '查询token出错，请重试'
   }
   return err
 }

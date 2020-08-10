@@ -16,6 +16,11 @@ export const timeAgo = time => ago.format(time, { gradation: canonical })
 export let newTimeAgo = function (time) {
 }
 
+export function getCurrentLocale() {
+  let locale = Cookies.get('locale') || 'zh-CN';
+  return locale
+}
+
 export function updateNewTimeAgo() {
   let newago;
   let locale = Cookies.get('locale') || 'zh-CN';
