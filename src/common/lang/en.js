@@ -149,7 +149,8 @@ export default {
     lockErr: 'Date must be later than 30 minutes',
     sendOK: 'Succeed! Tx content:',
     sendFail: 'Tx has been sent successfully! But in a short time , confirmation is not received. Please check it on the chain manually. Tx content: ',
-    err: 'Error '
+    err: 'Error ',
+    create: ' Creation'
   },
   TokenExchange: {
     title: 'Exchange of Smart Token is handled by Bancor protocol automatically. No direct human intervention.',
@@ -164,20 +165,22 @@ export default {
     sell: 'Sell',
     sendOK: 'Succeed! Tx content:',
     sendFail: 'Tx has been sent successfully! But in a short time , confirmation is not received. Please check it on the chain manually. Tx content: ',
-    err: 'Error '
+    err: 'Error ',
+    exchange: ' exchange'
   },
   TransferToken: {
     toAccount: 'To',
     tokenAmount: 'Amount',
     confirm: 'Transfer',
     confirmedOk: 'Succeed, Tx content:',
-    confirmedFail: 'Sending Tx succeed. But confirmation is not received. Please check by the chain. Tx content:',
+    confirmedFail: 'Sending Tx succeed. But confirmation is not received. Please wait:',
     resultCatch: 'Error ',
     validErr: 'Please make sure it is a valid token name',
     precisionErr: 'Maximum float precision is ',
     precisionBit: ' decimal points',
     normal: 'Normal ',
-    smart: 'Smart '
+    smart: 'Smart ',
+    transfer: ' Transfer'
   },
   Vote: {
     title: 'Rules of Voting',
@@ -250,5 +253,14 @@ export default {
     block: 'Block:',
     sender: 'Sender:',
     raw: 'Raw'
+  },
+  AppDialog: {
+    info: 'Tx is in processing, but confirmation is not received by now. Please check the execution result later in Chain Browser.',
+    close: 'Close',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    hint: 'Hint',
+    question: 'Tx is still in processing, please check the execution result in Chain Browser.'
+
   }
 }

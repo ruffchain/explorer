@@ -57,7 +57,11 @@
       style="width:100%"
     >{{strTokenConfirm }}</el-button>
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
-    <AppDialog :title="sendTokenType+'转账'" @cleanForm="cleanForm(),loading=false" v-if="loading" />
+    <AppDialog
+      :title="sendTokenType+ transfer"
+      @cleanForm="cleanForm(),loading=false"
+      v-if="loading"
+    />
   </div>
 </template>
 
@@ -152,6 +156,9 @@ export default {
     },
     getTokenSmart() {
       return this.$t('TransferToken.smart') + ' Token'
+    },
+    transfer() {
+      return this.$t('TransferToken.transfer')
     },
   },
   beforeMount() {

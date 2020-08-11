@@ -96,7 +96,7 @@
     >{{ strConfirm }}</el-button>
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
     <AppDialog
-      :title="tokenExchangeType+'交易'"
+      :title="tokenExchangeType+ strExchange"
       @cleanForm="cleanForm(),loading=false"
       v-if="loading"
     />
@@ -213,6 +213,9 @@ export default {
     },
     strErr() {
       return this.$t('TokenExchange.err')
+    },
+    strExchange() {
+      return this.$t('TokenExchange.exchange')
     },
   },
   mounted: function () {

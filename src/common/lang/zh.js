@@ -150,7 +150,9 @@ export default {
     lockErr: '时间必须在30分钟之后',
     sendOK: '成功，交易内容如下：',
     sendFail: '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
-    err: '出错 '
+    err: '出错 ',
+    create: '创建',
+    exchange: '交易'
   },
   TokenExchange: {
     title: '智能Token交易由Bancor算法自动执行，暂不支持账户之间直接交易。',
@@ -177,9 +179,9 @@ export default {
     validErr: '请先填写正确的 Token 名称',
     precisionErr: '精度最大为小数点后',
     precisionBit: '位',
-
     normal: '普通',
-    smart: '智能'
+    smart: '智能',
+    transfer: '转账'
 
   },
   Vote: {
@@ -254,5 +256,14 @@ export default {
     block: '所在区块:',
     sender: '发起方:',
     raw: '原始数据'
+  },
+  AppDialog: {
+    info: '交易进行中,但是在短时间内还没获取到交易成功执行的信息，稍后可自行确认交易是否被链执行。',
+    close: '关闭',
+    confirm: '确定',
+    cancel: '取消',
+    hint: '提示',
+    question: '关闭后交易依旧进行中,稍后可自行确认交易是否被链执行?'
+
   }
 }

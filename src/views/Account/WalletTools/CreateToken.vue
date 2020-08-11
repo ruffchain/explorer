@@ -222,7 +222,11 @@
       @click="confirm()"
       style="width:100%"
     >{{ strCreateToken }}</el-button>
-    <AppDialog :title="createTokenType+'创建'" @cleanForm="cleanForm(),loading=false" v-if="loading" />
+    <AppDialog
+      :title="createTokenType+ strCreate"
+      @cleanForm="cleanForm(),loading=false"
+      v-if="loading"
+    />
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
@@ -419,6 +423,9 @@ export default {
     },
     strErr() {
       return this.$t('CreateToken.err')
+    },
+    strCreate() {
+      return this.$t('CreateToken.create')
     },
   },
   watch: {

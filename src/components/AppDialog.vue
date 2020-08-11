@@ -105,7 +105,7 @@
         <slot></slot>
         <span
           class="app-dialog__body-title"
-        >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交易进行中,但是在短时间内还没获取到交易成功执行的信息，稍后可自行确认交易是否被链执行。</span>
+        >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ info }}</span>
         <div class="load-container">
           <div class="container">
             <div class="boxLoading boxLoading1"></div>
@@ -117,7 +117,7 @@
         </div>
       </div>
       <div class="app-dialog__footer">
-        <el-button @click="closeDialog">关闭</el-button>
+        <el-button @click="closeDialog">{{ close }}</el-button>
       </div>
     </div>
   </div>
@@ -130,17 +130,33 @@ export default {
   },
   methods: {
     closeDialog() {
-      this.$confirm(
-        '关闭后交易依旧进行中,稍后可自行确认交易是否被链执行?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      ).then(() => {
+      this.$confirm(this.question, this.hint, {
+        confirmButtonText: this.confirm,
+        cancelButtonText: this.cancel,
+        type: 'warning',
+      }).then(() => {
         this.$emit('cleanForm')
       })
+    },
+  },
+  computed: {
+    info() {
+      return this.$t('AppDialog.info')
+    },
+    close() {
+      return this.$t('AppDialog.close')
+    },
+    confirm() {
+      return this.$t('AppDialog.confirm')
+    },
+    cancel() {
+      return this.$t('AppDialog.cancel')
+    },
+    hint() {
+      return this.$t('AppDialog.hint')
+    },
+    question() {
+      return this.$t('AppDialog.question')
     },
   },
 }
