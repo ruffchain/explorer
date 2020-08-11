@@ -222,7 +222,7 @@
       @click="confirm()"
       style="width:100%"
     >{{ strCreateToken }}</el-button>
-
+    <AppDialog :title="createTokenType+'创建'" @cleanForm="cleanForm(),loading=false" v-if="loading" />
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
   </div>
 </template>
@@ -236,11 +236,13 @@ import * as rules from './form-rules.js'
 import ConfirmTx from './ConfirmTx'
 import { genCreateTokenTx } from './wallet-helper'
 import { rmAddressPrefix } from '../../../common/utils'
+import AppDialog from '../../../components/AppDialog'
 
 export default {
   components: {
     TransactionResult,
     ConfirmTx,
+    AppDialog,
   },
   data() {
     return {

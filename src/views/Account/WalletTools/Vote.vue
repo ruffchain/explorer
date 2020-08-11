@@ -72,6 +72,12 @@
             >{{ strConfirm }} {{ stackForm.operateType }}</el-button>
           </el-form-item>
         </el-form>
+        <AppDialog
+          :title="stackForm.operateType"
+          @cleanForm="stackLoading=false"
+          v-if="stackLoading"
+        />
+
         <TransactionResult v-if="stackResult" :data="stackResult" />
         <LoadingContainer :loading="stackDetailLoading" class="freeze-list-contaienr">
           <div class="section-title">{{ strFreezeStatus }}</div>
@@ -123,6 +129,8 @@
             <el-button :loading="voteLoading" @click="vote" type="primary">{{ strConfirmVote}}</el-button>
           </el-form-item>
         </el-form>
+        <AppDialog :title="strVote" @cleanForm="voteLoading=false" v-if="voteLoading" />
+
         <TransactionResult v-if="voteResult" :data="voteResult" />
         <LoadingContainer :loading="voteDetailLoading" v-if="voteDetail && voteDetail.amount">
           <div class="section-title">{{strCurrentVote}}</div>
@@ -155,6 +163,7 @@ import ConfirmTx from './ConfirmTx'
 import * as chainApi from '../../../common/chain-api'
 import ParameterRow from '@/components/ParameterRow'
 import LoadingContainer from '@/components/LoadingContainer'
+import AppDialog from '../../../components/AppDialog'
 
 export default {
   components: {
@@ -162,6 +171,7 @@ export default {
     ConfirmTx,
     ParameterRow,
     LoadingContainer,
+    AppDialog,
   },
   data() {
     return {

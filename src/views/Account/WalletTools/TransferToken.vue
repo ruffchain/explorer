@@ -57,6 +57,7 @@
       style="width:100%"
     >{{strTokenConfirm }}</el-button>
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
+    <AppDialog :title="sendTokenType+'转账'" @cleanForm="cleanForm(),loading=false" v-if="loading" />
   </div>
 </template>
 
@@ -68,11 +69,13 @@ import * as rules from './form-rules.js'
 import ConfirmTx from './ConfirmTx'
 import { genTransferTx } from './wallet-helper'
 import { rmAddressPrefix } from '../../../common/utils'
+import AppDialog from '../../../components/AppDialog'
 
 export default {
   components: {
     TransactionResult,
     ConfirmTx,
+    AppDialog,
   },
   data() {
     return {

@@ -95,6 +95,11 @@
       style="width:100%"
     >{{ strConfirm }}</el-button>
     <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
+    <AppDialog
+      :title="tokenExchangeType+'交易'"
+      @cleanForm="cleanForm(),loading=false"
+      v-if="loading"
+    />
   </div>
 </template>
 
@@ -106,11 +111,13 @@ import { TOKEN_EXCHANGE_TYPE } from '../../../common/enums.js'
 import * as rules from './form-rules.js'
 import ConfirmTx from './ConfirmTx'
 import { genExchangeTokenTx } from './wallet-helper'
+import AppDialog from '../../../components/AppDialog'
 
 export default {
   components: {
     TransactionResult,
     ConfirmTx,
+    AppDialog,
   },
   data() {
     return {
