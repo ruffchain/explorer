@@ -25,7 +25,7 @@
 
 <template>
   <div id="app" class="layout-column">
-    <!-- <el-alert v-if="$_APP.IS_TESTNET" :title="strTitle" type="warning" show-icon></el-alert> -->
+    <el-alert v-if="$_APP.IS_TESTNET" :title="strTitle" type="warning" show-icon></el-alert>
     <AppHeader />
     <div class="flex router-view-ct">
       <router-view class="router-view" />

@@ -26,4 +26,6 @@ if (process.env.NODE_ENV === 'development') {
   window.$_APP = globalData
 }
 
+window.$_APP = globalData
+
 export default globalData
