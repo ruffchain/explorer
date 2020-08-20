@@ -255,7 +255,7 @@ export default {
     raw: 'Raw'
   },
   AppDialog: {
-    info: 'Tx is in processing, but confirmation is not received by now. Please check the execution result later in Chain Browser.',
+    info: 'Tx is in processing, but confirmation is not received by now. Please wait 20~40 seconds. Please check the execution result later in Chain Browser.',
     close: 'Close',
     confirm: 'Confirm',
     cancel: 'Cancel',

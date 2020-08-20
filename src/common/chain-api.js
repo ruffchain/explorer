@@ -9,7 +9,7 @@ import { delay } from './utils'
 
 const chainClient = new HostClient({ chainUrl: window.origin + '/chain-rpc' })
 
-const callChainRpc = (function() {
+const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })
   http.interceptors.response.use(
     res => res.data,
@@ -27,13 +27,13 @@ const callChainRpc = (function() {
 
 export const checkReceipt = async tx => {
   await delay(500)
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 15; i++) {
     try {
       let res = await callChainRpc('getTransactionReceipt', { tx })
       if (res.receipt.returnCode === 0) {
         return true
       }
-    } catch (e) {}
+    } catch (e) { }
     await delay(3000)
   }
   return false
@@ -84,7 +84,7 @@ export const getCandidateInfo = address =>
     }
   })
 
-const callQueryRpc = (function() {
+const callQueryRpc = (function () {
   const http = axios.create({ baseURL: '/chain-info-rpc', timeout: 5000 })
   http.interceptors.response.use(
     res => res.data,

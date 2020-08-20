@@ -2,13 +2,15 @@
 
 import { register } from 'register-service-worker'
 import { Message, MessageBox } from 'element-ui'
+import { getCurrentLocale } from './common/utils'
 
+// (getCurrentLocale() === 'en') ? 'Please Input' : '请输入'
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready() {
       console.log(
         'App is being served from cache by a service worker.\n' +
-          'For more details, visit https://goo.gl/AFskqB'
+        'For more details, visit https://goo.gl/AFskqB'
       )
     },
     registered() {
@@ -19,16 +21,16 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound() {
       Message({
-        message: '检测到新版本，正在下载',
+        message: (getCurrentLocale() === 'en') ? 'New version detected, downloading' : '检测到新版本，正在下载',
         type: 'info'
       })
       console.log('New content is downloading.')
     },
     updated() {
       MessageBox({
-        title: '更新',
-        message: '新版本内容下载完成，点击确定按钮立即使用新版',
-        confirmButtonText: '确定',
+        title: (getCurrentLocale() === 'en') ? 'Update' : '更新',
+        message: (getCurrentLocale() === 'en') ? 'After downloading the new version, click OK to use the new version immediately' : '新版本内容下载完成，点击确定按钮立即使用新版',
+        confirmButtonText: (getCurrentLocale() === 'en') ? 'Confirm' : '确定',
         type: 'success',
         callback(action) {
           if (action === 'confirm') {
