@@ -83,6 +83,7 @@ const NavItemEnums = {
   CreateToken: 'CreateToken',
   Exchange: 'Exchange',
   Vote: 'Vote',
+  Earnings: 'Earnings'
 }
 
 export default {
@@ -129,6 +130,9 @@ export default {
     strVote() {
       return this.$t('Wallet.vote')
     },
+    strEarnings() {
+      return this.$t('Wallet.earnings')
+    },
     newNavItems() {
       return [
         {
@@ -151,6 +155,10 @@ export default {
           type: NavItemEnums.Vote,
           name: this.strVote,
         },
+        {
+          type: NavItemEnums.Earnings,
+          name: this.strEarnings,
+        }
       ]
     },
   },

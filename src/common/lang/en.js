@@ -112,6 +112,7 @@ export default {
     create: 'Create Token',
     exchange: 'Exchange Smart Token',
     vote: 'Vote',
+    earnings: 'Earnings',
   },
   ConfirmTx: {
     title: 'Confirm Tx',
