@@ -39,7 +39,8 @@
         <i class="header-icon el-icon-sugar"></i>
         </div>
         <ul>
-          <li>Deposit Address is: {{ $_APP.ADDRESS_PREFIX +$_APP.DEPOSIT_ADDRESS }}</li>
+          <li>1. {{ description1 }}: {{ $_APP.ADDRESS_PREFIX + $_APP.DEPOSIT_ADDRESS }}</li>
+          <li>2. {{ description2 }} </li>
         </ul>
       </el-collapse-item>
     </el-collapse>
@@ -62,18 +63,17 @@ export default {
   },
   beforeMount(){
     console.log("Earnings Mount")
-    console.log(":" )
-    console.log(globalData.loading)
-    console.log(globalData.DEPOSIT_ADDRESS)
-    console.log(process.env)
   },
   computed:{
     strTitle(){
       return this.$t('Earnings.title')
     },
-    strDepositAddress(){
-      return 'ruff' 
-    }
+    description1(){
+      return this.$t('Earnings.description1')
+    },
+    description2(){
+      return this.$t('Earnings.description2')
+    },
   }
 }
 </script>

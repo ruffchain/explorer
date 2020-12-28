@@ -220,7 +220,9 @@ export default {
     failCatch: 'Something\'s Wrong'
   },
   Earnings:{
-    title: 'Earnings Explanation',
+    title: 'Earnings Description',
+    description1: 'Please transfer 500,000 Ruff to address',
+    description2: 'Earnings after 3 months bla bla bla'
   },
   BPList: {
     title: 'Super Node List',
