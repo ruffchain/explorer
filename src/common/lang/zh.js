@@ -225,7 +225,13 @@ export default {
     description1: '请质押50万Ruff到地址',
     description2: '3个月后将获得收益 bla bla bla',
     usdtTitle: 'USDT地址',
-    
+    usdtEdit: '修改地址',
+    usdtEarning: 'USDT总收益 ',
+    deposit: '质押总数 ',
+    earningAmount: '收益',
+    earningTime: '日期',
+    earningStatus: '状态',
+    depositAmount:'质押数量'
   },
   BPList: {
     title: '超级节点列表',

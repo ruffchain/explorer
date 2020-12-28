@@ -36,7 +36,7 @@
       <el-collapse-item name="1">
         <div slot="title" class="section-title">
         {{ strTitle }}
-        <i class="header-icon el-icon-sugar"></i>
+        <em class="header-icon el-icon-sugar"></em>
         </div>
         <ul>
           <li>1. {{ description1 }}: {{ $_APP.ADDRESS_PREFIX + $_APP.DEPOSIT_ADDRESS }}</li>
@@ -44,22 +44,45 @@
         </ul>
       </el-collapse-item>
       <el-collapse-item name="address">
-        <div slot="title" class="section-title">{{ strUsdtTitle }} </div>
-        <el-link type="danger">{{ usdtAddress }}</el-link>
+        <div slot="title" class="section-title">{{ strUsdtTitle }} : <el-link type="danger">{{ usdtAddress }}</el-link></div>
+        
+        <el-button type="info" size="small" plain>{{ strUsdtEdit }}</el-button>
+      </el-collapse-item>
+      <el-collapse-item name="earning">
+        <div slot="title" class="section-title">{{ strUsdtEarning }} : {{ earning }}</div>
+        <ul class="freeze-list">
+          <li class="freeze-row freeze-header">
+            <div class="amount">{{ strEarningAmount}} </div>
+            <div class="time" > {{ strEarningTime }} </div>
+            <div class="status"> {{ strEarningStatus }} </div>
+          </li>
+        </ul>
+      </el-collapse-item>
+      <el-collapse-item name="deposit">
+        <div slot="title" class="section-title">{{ strDeposit }} : {{ deposit }} </div>
+        <ul class="freeze-list">
+          <li class="freeze-row freeze-header">
+            <div class="amount">{{ strDepositAmount}} </div>
+            <div class="time" > {{ strEarningTime }} </div>
+            <div class="status"> {{ strEarningStatus }} </div>
+          </li>
+        </ul>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 
 <script>
-import globalData from '@/common/global-data'
+
 export default {
   components: {
 
   },
   data(){
     return {
-      usdtAddress: "Empty"
+      usdtAddress: "Empty",
+      earning: 0,
+      deposit: 0,
     }
   },
   mounted: function (){
@@ -81,9 +104,27 @@ export default {
     strUsdtTitle(){
       return this.$t('Earnings.usdtTitle')
     },
-    // strUsdtAddress(){
-    //   return this.$t('Earnings.usdtAddress')
-    // }
+    strUsdtEdit(){
+      return this.$t('Earnings.usdtEdit')
+    },
+    strUsdtEarning(){
+      return this.$t('Earnings.usdtEarning')
+    },
+    strDeposit(){
+      return this.$t('Earnings.deposit')
+    },
+    strEarningAmount(){
+      return this.$t('Earnings.earningAmount')
+    },
+    strEarningTime(){
+      return this.$t('Earnings.earningTime')
+    },
+    strEarningStatus(){
+      return this.$t('Earnings.earningStatus')
+    },
+    strDepositAmount(){
+      return this.$t('Earnings.depositAmount')
+    }
   }
 }
 </script>

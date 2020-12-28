@@ -223,7 +223,14 @@ export default {
     title: 'Earnings Description',
     description1: 'Please transfer 500,000 Ruff to address',
     description2: 'Earnings after 3 months bla bla bla',
-    usdtTitle: 'USDT Address'
+    usdtTitle: 'USDT Address',
+    usdtEdit: 'Edit Address',
+    usdtEarning: 'USDT total earning ',
+    deposit: 'Total Deposit ',
+    earningAmount: 'Amount',
+    earningTime: 'Date',
+    earningStatus: 'Status',
+    depositAmount: 'Deposit Amount'
   },
   BPList: {
     title: 'Super Node List',
