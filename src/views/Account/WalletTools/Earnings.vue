@@ -56,6 +56,11 @@
             <div class="time" > {{ strEarningTime }} </div>
             <div class="status"> {{ strEarningStatus }} </div>
           </li>
+          <li v-for="(item, index) in earningStackList" :key="index" class="freeze-row">
+            <div class="amount">{{ item.amount }}</div>
+            <div class="time">{{ item.date | toLoaclString }}</div>
+            <div class="status">{{ item.status }}</div>
+          </li>
         </ul>
       </el-collapse-item>
       <el-collapse-item name="deposit">
@@ -65,6 +70,11 @@
             <div class="amount">{{ strDepositAmount}} </div>
             <div class="time" > {{ strEarningTime }} </div>
             <div class="status"> {{ strEarningStatus }} </div>
+          </li>
+           <li v-for="(item, index) in depositStackList" :key="index" class="freeze-row">
+            <div class="amount">{{ item.amount }}</div>
+            <div class="time">{{ item.date | toLoaclString }}</div>
+            <div class="status">{{ item.status }}</div>
           </li>
         </ul>
       </el-collapse-item>
@@ -83,6 +93,9 @@ export default {
       usdtAddress: "Empty",
       earning: 0,
       deposit: 0,
+      earningStackList: [],
+      depositStackList: [],
+      loading: false,
     }
   },
   mounted: function (){
