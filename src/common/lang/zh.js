@@ -113,7 +113,6 @@ export default {
     exchange: '智能Token交易',
     vote: '投票',
     earnings: '收益',
-
   },
   ConfirmTx: {
     title: '确认交易内容',
@@ -220,6 +219,9 @@ export default {
     sendOK: '成功，交易内容如下：',
     sendFail: '交易发送成功，但是在短时间内还没获取到交易成功执行的信息，请自行确认交易是否被链执行。交易内容如下：',
     failCatch: '出错'
+  },
+  Earnings:{
+    title: '收益说明',
   },
   BPList: {
     title: '超级节点列表',

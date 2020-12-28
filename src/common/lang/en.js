@@ -219,6 +219,9 @@ export default {
     sendFail: 'Transaction sent. But by now transaction execution info not received yet. Please check the chain for sure. Details of the transaction:',
     failCatch: 'Something\'s Wrong'
   },
+  Earnings:{
+    title: 'Earnings Explanation',
+  },
   BPList: {
     title: 'Super Node List',
     rank: 'Rank',

@@ -8,7 +8,8 @@ const globalData = new Vue({
       CORE_SYMBOL: process.env.VUE_APP_CORE_SYMBOL,
       IS_TESTNET: process.env.VUE_APP_IS_TESTNET === 'true',
       ADDRESS_PREFIX: process.env.VUE_APP_ADDRESS_PREFIX,
-      privateKey: ''
+      privateKey: '',
+      DEPOSIT_ADDRESS: process.env.VUE_APP_DEPOSIT_ADDRESS,
     }
   },
   computed: {

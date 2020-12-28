@@ -94,3 +94,4 @@ export const rmAddressPrefix = address => {
     return address.slice(ADDRESS_PREFIX.length, address.length)
   return address
 }
+
