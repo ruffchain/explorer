@@ -32,7 +32,7 @@
 
 <template>
   <div class="earnings-view">
-    <el-collapse :value="['1']">
+    <el-collapse :value="['1', 'address']">
       <el-collapse-item name="1">
         <div slot="title" class="section-title">
         {{ strTitle }}
@@ -42,6 +42,10 @@
           <li>1. {{ description1 }}: {{ $_APP.ADDRESS_PREFIX + $_APP.DEPOSIT_ADDRESS }}</li>
           <li>2. {{ description2 }} </li>
         </ul>
+      </el-collapse-item>
+      <el-collapse-item name="address">
+        <div slot="title" class="section-title">{{ strUsdtTitle }} </div>
+        <el-link type="danger">{{ usdtAddress }}</el-link>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -55,7 +59,7 @@ export default {
   },
   data(){
     return {
-
+      usdtAddress: "Empty"
     }
   },
   mounted: function (){
@@ -74,6 +78,12 @@ export default {
     description2(){
       return this.$t('Earnings.description2')
     },
+    strUsdtTitle(){
+      return this.$t('Earnings.usdtTitle')
+    },
+    // strUsdtAddress(){
+    //   return this.$t('Earnings.usdtAddress')
+    // }
   }
 }
 </script>

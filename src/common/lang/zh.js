@@ -223,7 +223,9 @@ export default {
   Earnings:{
     title: '收益说明',
     description1: '请质押50万Ruff到地址',
-    description2: '3个月后将获得收益 bla bla bla'
+    description2: '3个月后将获得收益 bla bla bla',
+    usdtTitle: 'USDT地址',
+    
   },
   BPList: {
     title: '超级节点列表',
