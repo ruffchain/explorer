@@ -84,6 +84,7 @@
 
 <script>
 import * as chainApi from '../../../common/chain-api'
+import * as chainLib from '../../../common/chain-lib'
 
 export default {
   components: {
@@ -104,8 +105,12 @@ export default {
   },
   beforeMount(){
     console.log("Earnings Mount")
+    console.log(this.$_APP.privateKey)
+    let privateKey = this.$_APP.privateKey
+    let address = chainLib.addressFromSecretKey(privateKey)
+    console.log(address)
     chainApi
-      .getEarningsAccount('xxxxxx')
+      .getEarningsAccount('address')
       .then((res)=>{
         console.log(res);
       })
