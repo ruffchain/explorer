@@ -45,14 +45,14 @@
 
         <h3 v-if="!validAccount" >欢迎参加!</h3>
       </el-collapse-item>
-      <el-collapse-item name="address">
+      <el-collapse-item name="address" v-if="validAccount">
         
         <div slot="title" class="section-title">{{ strUsdtTitle }} : <el-link type="danger">{{ usdtAddress }}</el-link></div>
         <LoadingContainer :loading="loading">
-        <el-button type="info" size="small" plain>{{ strUsdtEdit }}</el-button>
+        <el-button  type="info" size="small" plain>{{ strUsdtEdit }}</el-button>
         </LoadingContainer>
       </el-collapse-item>
-      <el-collapse-item name="earning">
+      <el-collapse-item name="earning" v-if="validAccount">
         <div slot="title" class="section-title">{{ strUsdtEarning }} : {{ earning }}</div>
         <LoadingContainer :loading="loading">
         <ul class="freeze-list">
@@ -69,7 +69,7 @@
         </ul>
         </LoadingContainer>
       </el-collapse-item>
-      <el-collapse-item name="deposit">
+      <el-collapse-item name="deposit" v-if="validAccount">
         <div slot="title" class="section-title">{{ strDeposit }} : {{ deposit }} </div>
         <LoadingContainer :loading="loading">
         <ul class="freeze-list">
@@ -107,7 +107,7 @@ export default {
       earningStackList: [],
       depositStackList: [],
       loading: true,
-      validAccount: true,
+      validAccount: false,
 
     }
   },
@@ -126,6 +126,13 @@ export default {
       .getEarningsAccount(address)
       .then((res)=>{
         console.log(res);
+        // if 
+        if(res.err === 0){
+          // account exists
+          if(res.data.account){
+            this.validAccount = true
+          }
+        }
       })
       .finally(() =>{
         console.log('load ending')
