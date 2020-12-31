@@ -42,14 +42,19 @@
           <li>1. {{ description1 }}: {{ $_APP.ADDRESS_PREFIX + $_APP.DEPOSIT_ADDRESS }}</li>
           <li>2. {{ description2 }} </li>
         </ul>
+
+        <h3 v-if="!validAccount" >欢迎参加!</h3>
       </el-collapse-item>
       <el-collapse-item name="address">
-        <div slot="title" class="section-title">{{ strUsdtTitle }} : <el-link type="danger">{{ usdtAddress }}</el-link></div>
         
+        <div slot="title" class="section-title">{{ strUsdtTitle }} : <el-link type="danger">{{ usdtAddress }}</el-link></div>
+        <LoadingContainer :loading="loading">
         <el-button type="info" size="small" plain>{{ strUsdtEdit }}</el-button>
+        </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="earning">
         <div slot="title" class="section-title">{{ strUsdtEarning }} : {{ earning }}</div>
+        <LoadingContainer :loading="loading">
         <ul class="freeze-list">
           <li class="freeze-row freeze-header">
             <div class="amount">{{ strEarningAmount}} </div>
@@ -62,9 +67,11 @@
             <div class="status">{{ item.status }}</div>
           </li>
         </ul>
+        </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="deposit">
         <div slot="title" class="section-title">{{ strDeposit }} : {{ deposit }} </div>
+        <LoadingContainer :loading="loading">
         <ul class="freeze-list">
           <li class="freeze-row freeze-header">
             <div class="amount">{{ strDepositAmount}} </div>
@@ -77,6 +84,7 @@
             <div class="status">{{ item.status }}</div>
           </li>
         </ul>
+        </LoadingContainer>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -85,10 +93,11 @@
 <script>
 import * as chainApi from '../../../common/chain-api'
 import * as chainLib from '../../../common/chain-lib'
+import LoadingContainer from '@/components/LoadingContainer'
 
 export default {
   components: {
-
+    LoadingContainer, 
   },
   data(){
     return {
@@ -97,25 +106,30 @@ export default {
       deposit: 0,
       earningStackList: [],
       depositStackList: [],
-      loading: false,
+      loading: true,
+      validAccount: true,
+
     }
   },
   mounted: function (){
-
+    console.log("Earnings mounted")
   },
   beforeMount(){
-    console.log("Earnings Mount")
+    console.log("Earnings beforeMount")
     console.log(this.$_APP.privateKey)
     let privateKey = this.$_APP.privateKey
     let address = chainLib.addressFromSecretKey(privateKey)
     console.log(address)
+
+    this.loading = true;
     chainApi
-      .getEarningsAccount('address')
+      .getEarningsAccount(address)
       .then((res)=>{
         console.log(res);
       })
       .finally(() =>{
         console.log('load ending')
+        this.loading = false;
       })
   },
   computed:{
