@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import * as chainApi from '../../../common/chain-api'
 
 export default {
   components: {
@@ -103,6 +104,14 @@ export default {
   },
   beforeMount(){
     console.log("Earnings Mount")
+    chainApi
+      .getEarningsAccount('xxxxxx')
+      .then((res)=>{
+        console.log(res);
+      })
+      .finally(() =>{
+        console.log('load ending')
+      })
   },
   computed:{
     strTitle(){

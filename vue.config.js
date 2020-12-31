@@ -14,7 +14,14 @@ module.exports = {
         pathRewrite: {
           '^/chain-info-rpc': '/rpc'
         }
-      }
+      },
+      '/chain-earnings-rpc': {
+        target: 'http://127.0.0.1:30001',
+        changeOrigin: true,
+        pathRewrite:{
+          '^/chain-earnings-rpc': '/api/v1/account'
+        }
+      },
     }
   },
   configureWebpack: config => {

@@ -9,7 +9,36 @@ import { delay } from './utils'
 
 const chainClient = new HostClient({ chainUrl: window.origin + '/chain-rpc' })
 
-const callChainRpc = (function() {
+// Added 2020-12-30
+const callEarningsRpc = (function () {
+  const http = axios.create({ baseURL: '/chain-earnings-rpc', timeout: 5000 })
+
+  http.interceptors.request.use((config)=>{
+    config.headers.Authorization = '16heLGkcJepHVjYFfGDtViKnXM8u7MdRAU'
+    return config
+  })
+
+  http.interceptors.response.use(
+    res => res.data,
+    err => {
+      throw err
+    }
+  )
+
+  return (args = {}) =>
+    http.post('', args)
+})()
+
+export const getEarningsAccount = address =>
+  callEarningsRpc( {
+    method: 'get-account',
+    args:{
+      account: address 
+    }
+  })
+
+//////////////////////////////////////////
+const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })
   http.interceptors.response.use(
     res => res.data,
@@ -33,7 +62,7 @@ export const checkReceipt = async tx => {
       if (res.receipt.returnCode === 0) {
         return true
       }
-    } catch (e) {}
+    } catch (e) { }
     await delay(3000)
   }
   return false
@@ -84,7 +113,7 @@ export const getCandidateInfo = address =>
     }
   })
 
-const callQueryRpc = (function() {
+const callQueryRpc = (function () {
   const http = axios.create({ baseURL: '/chain-info-rpc', timeout: 5000 })
   http.interceptors.response.use(
     res => res.data,
