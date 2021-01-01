@@ -51,21 +51,21 @@
       <el-collapse-item name="address" v-if="validAccount">
         <div slot="title" class="section-title">
           {{ strUsdtTitle }} :
-          <el-link type="danger">{{ usdtAddress }}</el-link>
+          <el-link type="success">{{ usdtAddress }}</el-link>
         </div>
         <el-switch
           v-model="usdtEditEnable"
           active-color="#13ce66"
-          inactive-color="#ff4949"
+          inactive-color="#DCDFE6"
         >
         </el-switch>
         <LoadingContainer :loading="loading">
           <el-form v-if="usdtEditEnable" ref="usdtForm" :model="usdtForm" label-width="150px">
             <el-form-item prop="address" label="USDT Address">
-              <el-input type="string" v-model="usdtAddress"> </el-input>
+              <el-input type="string" v-model="usdtForm.address"> </el-input>
             </el-form-item>
             <el-form-item size="small">
-              <el-button  type="info" size="small" plain>{{
+              <el-button  type="info" plain :loading="usdtLoading" @click="operateUsdt">{{
                 strUsdtEdit
               }}</el-button>
             </el-form-item>
@@ -144,7 +144,9 @@ export default {
       validAccount: false,
       usdtForm: {
         address: ''
-      }
+      },
+      usdtLoading:false,
+      usdtEditHint:''
     }
   },
   mounted: function() {
@@ -247,6 +249,30 @@ export default {
           console.log('load ending')
           this.loading = false
         })
+    },
+    async operateUsdt(){
+      console.log('Edit usdt')
+      this.usdtLoading = true
+      // let {address} = this.usdtForm
+      console.log(this.usdtForm.address.trim())
+      let usdt_address = this.usdtForm.address.trim()
+      let privateKey = this.$_APP.privateKey
+      let address = chainLib.addressFromSecretKey(privateKey)
+      chainApi
+        .setEarningsAccount(address, usdt_address, "pubkey", 'sign')
+        .then( res => {
+          console.log(res)
+          if(res.err){
+            alert('修改失败!')
+          }else{
+            alert('修改成功!')
+            this.usdtAddress = res.data
+          }
+        })
+        .finally(()=>{
+          this.usdtLoading = false
+        })
+      
     }
   }
 }

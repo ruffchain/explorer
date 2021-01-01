@@ -230,7 +230,8 @@ export default {
     earningAmount: 'Amount',
     earningTime: 'Date',
     earningStatus: 'Status',
-    depositAmount: 'Deposit Amount'
+    depositAmount: 'Deposit Amount',
+    
   },
   BPList: {
     title: 'Super Node List',

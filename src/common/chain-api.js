@@ -41,7 +41,16 @@ export const getEarningsConfig = () =>
     method: 'get-config',
     args:{}
   })
-
+export const setEarningsAccount = (address, usdt, pubkey,sign) =>
+  callEarningsRpc({
+    method: 'set-account',
+    args:{
+      account: address,
+      usdt_address: usdt,
+      pubkey: pubkey,
+      signature: sign
+    }
+  })
 
 //////////////////////////////////////////
 const callChainRpc = (function () {
