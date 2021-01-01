@@ -36,6 +36,12 @@ export const getEarningsAccount = address =>
       account: address 
     }
   })
+export const getEarningsConfig = () =>
+  callEarningsRpc({
+    method: 'get-config',
+    args:{}
+  })
+
 
 //////////////////////////////////////////
 const callChainRpc = (function () {

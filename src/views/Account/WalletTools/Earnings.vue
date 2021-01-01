@@ -35,55 +35,74 @@
     <el-collapse :value="['1', 'address']">
       <el-collapse-item name="1">
         <div slot="title" class="section-title">
-        {{ strTitle }}
-        <em class="header-icon el-icon-sugar"></em>
+          {{ strTitle }}
+          <em class="header-icon el-icon-sugar"></em>
         </div>
         <ul>
-          <li>1. {{ description1 }}: {{ $_APP.ADDRESS_PREFIX + $_APP.DEPOSIT_ADDRESS }}</li>
-          <li>2. {{ description2 }} </li>
+          <li>
+            1. {{ description1 }}:
+            {{ $_APP.ADDRESS_PREFIX + depositAddress }}
+          </li>
+          <li>2. {{ description2 }}</li>
         </ul>
 
-        <h3 v-if="!validAccount" >欢迎参加!</h3>
+        <h3 v-if="!validAccount">欢迎参加!</h3>
       </el-collapse-item>
       <el-collapse-item name="address" v-if="validAccount">
-        
-        <div slot="title" class="section-title">{{ strUsdtTitle }} : <el-link type="danger">{{ usdtAddress }}</el-link></div>
+        <div slot="title" class="section-title">
+          {{ strUsdtTitle }} :
+          <el-link type="danger">{{ usdtAddress }}</el-link>
+        </div>
         <LoadingContainer :loading="loading">
-        <el-button  type="info" size="small" plain>{{ strUsdtEdit }}</el-button>
+          <el-button type="info" size="small" plain>{{
+            strUsdtEdit
+          }}</el-button>
         </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="earning" v-if="validAccount">
-        <div slot="title" class="section-title">{{ strUsdtEarning }} : {{ earning }}</div>
+        <div slot="title" class="section-title">
+          {{ strUsdtEarning }} : {{ earning }}
+        </div>
         <LoadingContainer :loading="loading">
-        <ul class="freeze-list">
-          <li class="freeze-row freeze-header">
-            <div class="amount">{{ strEarningAmount}} </div>
-            <div class="time" > {{ strEarningTime }} </div>
-            <div class="status"> {{ strEarningStatus }} </div>
-          </li>
-          <li v-for="(item, index) in earningStackList" :key="index" class="freeze-row">
-            <div class="amount">{{ item.amount }}</div>
-            <div class="time">{{ item.date | toLoaclString }}</div>
-            <div class="status">{{ item.status }}</div>
-          </li>
-        </ul>
+          <ul class="freeze-list">
+            <li class="freeze-row freeze-header">
+              <div class="amount">{{ strEarningAmount }}</div>
+              <div class="time">{{ strEarningTime }}</div>
+              <div class="status">{{ strEarningStatus }}</div>
+            </li>
+            <li
+              v-for="(item, index) in earningStackList"
+              :key="index"
+              class="freeze-row"
+            >
+              <div class="amount">{{ item.amount }}</div>
+              <div class="time">{{ item.date | toLoaclString }}</div>
+              <div class="status">{{ item.status }}</div>
+            </li>
+          </ul>
         </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="deposit" v-if="validAccount">
-        <div slot="title" class="section-title">{{ strDeposit }} : {{ deposit }} </div>
+        <div slot="title" class="section-title">
+          {{ strDeposit }} : {{ deposit }}
+        </div>
         <LoadingContainer :loading="loading">
-        <ul class="freeze-list">
-          <li class="freeze-row freeze-header">
-            <div class="amount">{{ strDepositAmount}} </div>
-            <div class="time" > {{ strEarningTime }} </div>
-            <div class="status"> {{ strEarningStatus }} </div>
-          </li>
-           <li v-for="(item, index) in depositStackList" :key="index" class="freeze-row">
-            <div class="amount">{{ item.amount }}</div>
-            <div class="time">{{ item.date | toLoaclString }}</div>
-            <div class="status">{{ item.status }}</div>
-          </li>
-        </ul>
+          <ul class="freeze-list">
+            <li class="freeze-row freeze-header">
+              <div class="amount">{{ strDepositAmount }}</div>
+              <div class="time">{{ strEarningTime }}</div>
+              <div class="status">{{ strEarningStatus }}</div>
+            </li>
+            <li
+              v-for="(item, index) in depositStackList"
+              :key="index"
+              class="freeze-row"
+            >
+              <div class="amount">{{ item.amount }}</div>
+              <div class="time">{{ item.date | toLoaclString }}</div>
+              <div class="status">{{ item.status }}</div>
+            </li>
+          </ul>
         </LoadingContainer>
       </el-collapse-item>
     </el-collapse>
@@ -97,81 +116,101 @@ import LoadingContainer from '@/components/LoadingContainer'
 
 export default {
   components: {
-    LoadingContainer, 
+    LoadingContainer
   },
-  data(){
+  data() {
     return {
-      usdtAddress: "Empty",
+      depositAddress:'Address',
+      usdtAddress: 'Empty',
       earning: 0,
       deposit: 0,
       earningStackList: [],
       depositStackList: [],
       loading: true,
-      validAccount: false,
-
+      validAccount: false
     }
   },
-  mounted: function (){
-    console.log("Earnings mounted")
+  mounted: function() {
+    console.log('Earnings mounted')
   },
-  beforeMount(){
-    console.log("Earnings beforeMount")
+  beforeMount() {
+    console.log('Earnings beforeMount')
     console.log(this.$_APP.privateKey)
     let privateKey = this.$_APP.privateKey
     let address = chainLib.addressFromSecretKey(privateKey)
     console.log(address)
 
-    this.loading = true;
-    chainApi
-      .getEarningsAccount(address)
-      .then((res)=>{
-        console.log(res);
-        // if 
-        if(res.err === 0){
-          // account exists
-          if(res.data.account){
-            this.validAccount = true
-          }
-        }
-      })
-      .finally(() =>{
-        console.log('load ending')
-        this.loading = false;
-      })
+    this.updateConfig()
+    this.updateAccount(address)
   },
-  computed:{
-    strTitle(){
+  computed: {
+    strTitle() {
       return this.$t('Earnings.title')
     },
-    description1(){
+    description1() {
       return this.$t('Earnings.description1')
     },
-    description2(){
+    description2() {
       return this.$t('Earnings.description2')
     },
-    strUsdtTitle(){
+    strUsdtTitle() {
       return this.$t('Earnings.usdtTitle')
     },
-    strUsdtEdit(){
+    strUsdtEdit() {
       return this.$t('Earnings.usdtEdit')
     },
-    strUsdtEarning(){
+    strUsdtEarning() {
       return this.$t('Earnings.usdtEarning')
     },
-    strDeposit(){
+    strDeposit() {
       return this.$t('Earnings.deposit')
     },
-    strEarningAmount(){
+    strEarningAmount() {
       return this.$t('Earnings.earningAmount')
     },
-    strEarningTime(){
+    strEarningTime() {
       return this.$t('Earnings.earningTime')
     },
-    strEarningStatus(){
+    strEarningStatus() {
       return this.$t('Earnings.earningStatus')
     },
-    strDepositAmount(){
+    strDepositAmount() {
       return this.$t('Earnings.depositAmount')
+    }
+  },
+  methods: {
+    async updateConfig() {
+      chainApi
+        .getEarningsConfig()
+        .then((res)=>{
+          console.log("config",res)
+          if(res.data.address){
+            this.depositAddress =  res.data.address
+          }
+        })
+        .finally(()=>{
+          console.log("config ended")
+        })
+    },
+    async updateAccount(address) {
+      this.loading = true
+      chainApi
+        .getEarningsAccount(address)
+        .then(res => {
+          console.log(res)
+          if (res.err === 0) {
+            if (res.data.account) {
+              this.validAccount = true
+            }
+            if(res.data.account.usdt){
+              this.usdtAddress = res.data.account.usdt
+            }
+          }
+        })
+        .finally(() => {
+          console.log('load ending')
+          this.loading = false
+        })
     }
   }
 }
