@@ -60,9 +60,16 @@
         >
         </el-switch>
         <LoadingContainer :loading="loading">
-          <el-button v-if="usdtEditEnable" type="info" size="small" plain>{{
-            strUsdtEdit
-          }}</el-button>
+          <el-form v-if="usdtEditEnable" ref="usdtForm" :model="usdtForm" label-width="150px">
+            <el-form-item prop="address" label="USDT Address">
+              <el-input type="string" v-model="usdtAddress"> </el-input>
+            </el-form-item>
+            <el-form-item size="small">
+              <el-button  type="info" size="small" plain>{{
+                strUsdtEdit
+              }}</el-button>
+            </el-form-item>
+          </el-form>
         </LoadingContainer>
       </el-collapse-item>
       <el-collapse-item name="earning" v-if="validAccount">
@@ -134,7 +141,10 @@ export default {
       earningStackList: [],
       depositStackList: [],
       loading: true,
-      validAccount: false
+      validAccount: false,
+      usdtForm: {
+        address: ''
+      }
     }
   },
   mounted: function() {
