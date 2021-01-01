@@ -44,6 +44,11 @@
             {{ $_APP.ADDRESS_PREFIX + depositAddress }}
           </li>
           <li>2. {{ description2 }}</li>
+          <li>3. {{ description3 }}</li>
+          <li>4. {{ description4 }}</li>
+          <li>5. {{ description5 }}</li>
+          <li>6. {{ description6 }}</li>
+          <li>7. {{ description7 }}</li>
         </ul>
 
         <h3 v-if="!validAccount">欢迎参加! Join Now!</h3>
@@ -60,14 +65,23 @@
         >
         </el-switch>
         <LoadingContainer :loading="loading">
-          <el-form v-if="usdtEditEnable" ref="usdtForm" :model="usdtForm" label-width="150px">
+          <el-form
+            v-if="usdtEditEnable"
+            ref="usdtForm"
+            :model="usdtForm"
+            label-width="150px"
+          >
             <el-form-item prop="address" label="USDT Address">
               <el-input type="string" v-model="usdtForm.address"> </el-input>
             </el-form-item>
             <el-form-item size="small">
-              <el-button  type="info" plain :loading="usdtLoading" @click="operateUsdt">{{
-                strUsdtEdit
-              }}</el-button>
+              <el-button
+                type="info"
+                plain
+                :loading="usdtLoading"
+                @click="operateUsdt"
+                >{{ strUsdtEdit }}</el-button
+              >
             </el-form-item>
           </el-form>
         </LoadingContainer>
@@ -145,8 +159,8 @@ export default {
       usdtForm: {
         address: ''
       },
-      usdtLoading:false,
-      usdtEditHint:''
+      usdtLoading: false,
+      usdtEditHint: ''
     }
   },
   mounted: function() {
@@ -171,6 +185,21 @@ export default {
     },
     description2() {
       return this.$t('Earnings.description2')
+    },
+    description3() {
+      return this.$t('Earnings.description3')
+    },
+    description4() {
+      return this.$t('Earnings.description4')
+    },
+    description5() {
+      return this.$t('Earnings.description5')
+    },
+    description6() {
+      return this.$t('Earnings.description6')
+    },
+    description7() {
+      return this.$t('Earnings.description7')
     },
     strUsdtTitle() {
       return this.$t('Earnings.usdtTitle')
@@ -220,29 +249,29 @@ export default {
           if (res.err === 0) {
             if (res.data.account) {
               this.validAccount = true
+              if (res.data.account.usdt) {
+                this.usdtAddress = res.data.account.usdt
+              }
+              this.earningStackList = []
+              for (let earning of res.data.earnings) {
+                this.earningStackList.push({
+                  amount: earning.value,
+                  date: earning.date,
+                  status: earning.status
+                })
+              }
+              this.depositStackList = []
+              let depositSum = 0
+              for (let deposit of res.data.deposit) {
+                this.depositStackList.push({
+                  amount: deposit.value,
+                  date: deposit.date,
+                  status: deposit.status
+                })
+                depositSum += parseFloat(deposit.value)
+              }
+              this.deposit = depositSum
             }
-            if (res.data.account.usdt) {
-              this.usdtAddress = res.data.account.usdt
-            }
-            this.earningStackList = []
-            for (let earning of res.data.earnings) {
-              this.earningStackList.push({
-                amount: earning.value,
-                date: earning.date,
-                status: earning.status
-              })
-            }
-            this.depositStackList = []
-            let depositSum = 0
-            for (let deposit of res.data.deposit) {
-              this.depositStackList.push({
-                amount: deposit.value,
-                date: deposit.date,
-                status: deposit.status
-              })
-              depositSum += parseFloat(deposit.value)
-            }
-            this.deposit = depositSum
           }
         })
         .finally(() => {
@@ -250,7 +279,7 @@ export default {
           this.loading = false
         })
     },
-    async operateUsdt(){
+    async operateUsdt() {
       console.log('Edit usdt')
       this.usdtLoading = true
       // let {address} = this.usdtForm
@@ -259,20 +288,19 @@ export default {
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
       chainApi
-        .setEarningsAccount(address, usdt_address, "pubkey", 'sign')
-        .then( res => {
+        .setEarningsAccount(address, usdt_address, 'pubkey', 'sign')
+        .then(res => {
           console.log(res)
-          if(res.err){
+          if (res.err) {
             alert('修改失败!')
-          }else{
+          } else {
             alert('修改成功!')
             this.usdtAddress = res.data
           }
         })
-        .finally(()=>{
+        .finally(() => {
           this.usdtLoading = false
         })
-      
     }
   }
 }
