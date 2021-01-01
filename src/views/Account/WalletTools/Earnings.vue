@@ -46,15 +46,21 @@
           <li>2. {{ description2 }}</li>
         </ul>
 
-        <h3 v-if="!validAccount">欢迎参加!</h3>
+        <h3 v-if="!validAccount">欢迎参加! Join Now!</h3>
       </el-collapse-item>
       <el-collapse-item name="address" v-if="validAccount">
         <div slot="title" class="section-title">
           {{ strUsdtTitle }} :
           <el-link type="danger">{{ usdtAddress }}</el-link>
         </div>
+        <el-switch
+          v-model="usdtEditEnable"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        >
+        </el-switch>
         <LoadingContainer :loading="loading">
-          <el-button type="info" size="small" plain>{{
+          <el-button v-if="usdtEditEnable" type="info" size="small" plain>{{
             strUsdtEdit
           }}</el-button>
         </LoadingContainer>
@@ -120,8 +126,9 @@ export default {
   },
   data() {
     return {
-      depositAddress:'Address',
+      depositAddress: 'Address',
       usdtAddress: 'Empty',
+      usdtEditEnable: false,
       earning: 0,
       deposit: 0,
       earningStackList: [],
@@ -182,14 +189,14 @@ export default {
     async updateConfig() {
       chainApi
         .getEarningsConfig()
-        .then((res)=>{
-          console.log("config",res)
-          if(res.data.address){
-            this.depositAddress =  res.data.address
+        .then(res => {
+          console.log('config', res)
+          if (res.data.address) {
+            this.depositAddress = res.data.address
           }
         })
-        .finally(()=>{
-          console.log("config ended")
+        .finally(() => {
+          console.log('config ended')
         })
     },
     async updateAccount(address) {
@@ -202,11 +209,11 @@ export default {
             if (res.data.account) {
               this.validAccount = true
             }
-            if(res.data.account.usdt){
+            if (res.data.account.usdt) {
               this.usdtAddress = res.data.account.usdt
             }
             this.earningStackList = []
-            for(let earning of res.data.earnings){
+            for (let earning of res.data.earnings) {
               this.earningStackList.push({
                 amount: earning.value,
                 date: earning.date,
@@ -215,7 +222,7 @@ export default {
             }
             this.depositStackList = []
             let depositSum = 0
-            for(let deposit of res.data.deposit){
+            for (let deposit of res.data.deposit) {
               this.depositStackList.push({
                 amount: deposit.value,
                 date: deposit.date,
