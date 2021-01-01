@@ -225,7 +225,7 @@ export default {
     description2: 'Earnings after 3 months bla bla bla',
     usdtTitle: 'USDT Address',
     usdtEdit: 'Edit Address',
-    usdtEarning: 'USDT total earning ',
+    usdtEarning: 'Total earning ',
     deposit: 'Total Deposit ',
     earningAmount: 'Amount',
     earningTime: 'Date',

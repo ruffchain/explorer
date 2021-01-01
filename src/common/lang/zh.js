@@ -226,7 +226,7 @@ export default {
     description2: '3个月后将获得收益 bla bla bla',
     usdtTitle: 'USDT地址',
     usdtEdit: '修改地址',
-    usdtEarning: 'USDT总收益 ',
+    usdtEarning: '总收益 ',
     deposit: '质押总数 ',
     earningAmount: '收益',
     earningTime: '日期',

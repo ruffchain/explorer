@@ -32,7 +32,7 @@
 
 <template>
   <div class="earnings-view">
-    <el-collapse :value="['1', 'address']">
+    <el-collapse :value="['1', 'address', 'earning', 'deposit']">
       <el-collapse-item name="1">
         <div slot="title" class="section-title">
           {{ strTitle }}
@@ -205,6 +205,25 @@ export default {
             if(res.data.account.usdt){
               this.usdtAddress = res.data.account.usdt
             }
+            this.earningStackList = []
+            for(let earning of res.data.earnings){
+              this.earningStackList.push({
+                amount: earning.value,
+                date: earning.date,
+                status: earning.status
+              })
+            }
+            this.depositStackList = []
+            let depositSum = 0
+            for(let deposit of res.data.deposit){
+              this.depositStackList.push({
+                amount: deposit.value,
+                date: deposit.date,
+                status: deposit.status
+              })
+              depositSum += parseFloat(deposit.value)
+            }
+            this.deposit = depositSum
           }
         })
         .finally(() => {
