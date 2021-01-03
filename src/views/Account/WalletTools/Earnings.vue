@@ -50,6 +50,7 @@
           <li>6. {{ description6 }}</li>
           <li>7. {{ description7 }}</li>
         </ul>
+        <a href="http://RUFFCHAIN.mikecrm.com/4kX1Bft">http://RUFFCHAIN.mikecrm.com/4kX1Bft</a>
 
         <h3 v-if="!validAccount">欢迎参加! Join Now!</h3>
       </el-collapse-item>

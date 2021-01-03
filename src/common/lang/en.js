@@ -227,7 +227,7 @@ export default {
     description4:'Ruff lock-up mining for 90 days, after 90 days, users can withdraw Ruff and the corresponding Usdt and Ruff income',
     description5:'If the total amount of open locks exceeds 100 million, there will be a 10% bonus. When it reaches 150 million, the bonus rate is 15%, and when it reaches 200 million, the rate is 20%',
     description6:'Through lock-up mining, 50% of the pickle coins mined are used to reward lock-up users after being realized, 30% are used to buy back ruff on the market and then placed to lock-up customers, and 20% are used to cover gas fees, management fees and risk reserves',
-    description7:'Before the event starts, Ruff will collect the lock-up mining whitelist within a week from now. Those on the whitelist will participate in the lock-up mining and receive an additional 1% Bonus. Fill in the white list and click this link to enter: http://RUFFCHAIN.mikecrm.com/4kX1Bft',
+    description7:'Before the event starts, Ruff will collect the lock-up mining whitelist within a week from now. Those on the whitelist will participate in the lock-up mining and receive an additional 1% Bonus. Fill in the white list and click below link to enter: ',
     usdtTitle: 'USDT Address',
     usdtEdit: 'Edit Address',
     usdtEarning: 'Total earning ',

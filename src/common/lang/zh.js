@@ -228,7 +228,7 @@ export default {
     description4: 'Ruff锁仓挖矿为期90天，90天后用户可提取Ruff和相应的Usdt和Ruff收益',
     description5: '开启总锁仓量超过1亿则有10%的额外奖励， 达到1.5亿时额外奖励比例为15%， 达到2亿时比例为20%',
     description6: '通过锁仓挖矿，挖到的pickle币， 其中50%变现后用于奖励投放给锁仓用户，30%用于市场上回购ruff后投放给锁仓客户， 20%用于覆盖gas费，管费以及风险储备',
-    description7:'在活动开启前，Ruff会从现在开始的一周内收集锁仓挖矿白名单，在白名单内的人参与锁仓挖矿，届时可获得额外的1% Bonus。白名单填写点此链接进入：http://RUFFCHAIN.mikecrm.com/4kX1Bft ',
+    description7:'在活动开启前，Ruff会从现在开始的一周内收集锁仓挖矿白名单，在白名单内的人参与锁仓挖矿，届时可获得额外的1% Bonus。白名单填写点链接进入：',
     usdtTitle: 'USDT地址',
     usdtEdit: '修改地址',
     usdtEarning: '总收益 ',
