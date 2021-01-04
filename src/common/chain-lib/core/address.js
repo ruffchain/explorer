@@ -5,6 +5,7 @@ import { StaticWriter } from './lib/staticwriter'
 import * as base58 from './lib/base58'
 import { isString } from 'util'
 import { BufferReader } from './lib/reader'
+
 // prefix can identify different network
 // will be readed from consensus params
 const defaultPrefix = 0x00
@@ -96,4 +97,9 @@ export function isValidAddress(address) {
     return false
   }
   return true
+}
+
+// Add by YangJ
+export function hash256(data){
+  return digest.hash256(data)
 }

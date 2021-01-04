@@ -42,6 +42,14 @@ export const getEarningsConfig = () =>
     args:{}
   })
 export const setEarningsAccount = (address, usdt, pubkey,sign) =>
+  // console.log('setEarningsAccount')
+  // console.log({
+  //   account: address,
+  //   usdt_address: usdt,
+  //   pubkey: pubkey,
+  //   signature: sign
+  // })
+
   callEarningsRpc({
     method: 'set-account',
     args:{

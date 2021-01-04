@@ -288,12 +288,21 @@ export default {
       let usdt_address = this.usdtForm.address.trim()
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
+      let pubkey = chainLib.publicKeyFromSecretKey(privateKey)
+      let hash = chainLib.hash256(Buffer.from(address + usdt_address))
+      let sign = chainLib.sign(hash, privateKey)
+      // console.log(address)
+      // console.log(usdt_address)
+      // console.log(hash.toString('hex'))
+      // console.log(pubkey.toString('hex'))
+      // console.log(sign.toString('hex'))
+
       chainApi
-        .setEarningsAccount(address, usdt_address, 'pubkey', 'sign')
+        .setEarningsAccount(address, usdt_address, pubkey.toString('hex'), sign.toString('hex'))
         .then(res => {
           console.log(res)
           if (res.err) {
-            alert('修改失败!')
+            alert('修改失败! ' + res.message)
           } else {
             alert('修改成功!')
             this.usdtAddress = res.data
