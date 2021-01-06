@@ -254,9 +254,9 @@ export default {
     strRule1() {
       return (
         this.$t('Vote.rule1') +
-        $_APP.CORE_SYMBOL +
+        this.$_APP.CORE_SYMBOL +
         this.$t('Vote.rule11') +
-        $_APP.CORE_SYMBOL +
+        this.$_APP.CORE_SYMBOL +
         this.$t('Vote.rule12')
       )
     },
@@ -270,10 +270,10 @@ export default {
       return this.$t('Vote.rule4')
     },
     strRule5() {
-      return this.$t('Vote.rule5') + $_APP.CORE_SYMBOL + this.$t('Vote.rule51')
+      return this.$t('Vote.rule5') + this.$_APP.CORE_SYMBOL + this.$t('Vote.rule51')
     },
     strRule6() {
-      return $_APP.CORE_SYMBOL + this.$t('Vote.rule6')
+      return this.$_APP.CORE_SYMBOL + this.$t('Vote.rule6')
     },
     strSectionTitle() {
       return this.$t('Vote.sectionTitle')
