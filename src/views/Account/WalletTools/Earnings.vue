@@ -165,14 +165,14 @@ export default {
     }
   },
   mounted: function() {
-    console.log('Earnings mounted')
+    // console.log('Earnings mounted')
   },
   beforeMount() {
-    console.log('Earnings beforeMount')
-    console.log(this.$_APP.privateKey)
+    // console.log('Earnings beforeMount')
+    // console.log(this.$_APP.privateKey)
     let privateKey = this.$_APP.privateKey
     let address = chainLib.addressFromSecretKey(privateKey)
-    console.log(address)
+    // console.log(address)
 
     this.updateConfig()
     this.updateAccount(address)
@@ -232,13 +232,13 @@ export default {
       chainApi
         .getEarningsConfig()
         .then(res => {
-          console.log('config', res)
+          // console.log('config', res)
           if (res.data.address) {
             this.depositAddress = res.data.address
           }
         })
         .finally(() => {
-          console.log('config ended')
+          // console.log('config ended')
         })
     },
     async updateAccount(address) {
@@ -246,7 +246,7 @@ export default {
       chainApi
         .getEarningsAccount(address)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.err === 0) {
             if (res.data.account) {
               this.validAccount = true
@@ -276,15 +276,15 @@ export default {
           }
         })
         .finally(() => {
-          console.log('load ending')
+          // console.log('load ending')
           this.loading = false
         })
     },
     async operateUsdt() {
-      console.log('Edit usdt')
+      // console.log('Edit usdt')
       this.usdtLoading = true
       // let {address} = this.usdtForm
-      console.log(this.usdtForm.address.trim())
+      // console.log(this.usdtForm.address.trim())
       let usdt_address = this.usdtForm.address.trim()
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
@@ -300,11 +300,11 @@ export default {
       chainApi
         .setEarningsAccount(address, usdt_address, pubkey.toString('hex'), sign.toString('hex'))
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.err) {
-            alert('修改失败! ' + res.message)
+            alert('修改失败! Edit Fail! ' + res.message)
           } else {
-            alert('修改成功!')
+            alert('修改成功! Edit OK!')
             this.usdtAddress = res.data
           }
         })
