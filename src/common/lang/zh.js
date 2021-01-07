@@ -232,6 +232,8 @@ export default {
     usdtTitle: 'USDT地址',
     usdtEdit: '修改地址',
     usdtEarning: '总收益 ',
+    usdtEditFail: '修改失败! ',
+    usdtEditSuccess: '修改成功! ',
     deposit: '质押总数 ',
     earningAmount: '收益',
     earningTime: '日期',

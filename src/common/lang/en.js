@@ -231,6 +231,8 @@ export default {
     usdtTitle: 'USDT Address',
     usdtEdit: 'Edit Address',
     usdtEarning: 'Total earning ',
+    usdtEditFail: 'Edit Fail! ',
+    usdtEditSuccess: 'Edit Success! ',
     deposit: 'Total Deposit ',
     earningAmount: 'Amount',
     earningTime: 'Date',

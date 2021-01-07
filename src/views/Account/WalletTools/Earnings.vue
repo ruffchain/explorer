@@ -211,6 +211,12 @@ export default {
     strUsdtEarning() {
       return this.$t('Earnings.usdtEarning')
     },
+    strUsdtEditFail(){
+      return this.$t('Earnings.usdtEditFail')
+    },
+    strUsdtEditSuccess(){
+      return this.$t('Earnings.usdtEditSuccess')
+    },
     strDeposit() {
       return this.$t('Earnings.deposit')
     },
@@ -281,30 +287,22 @@ export default {
         })
     },
     async operateUsdt() {
-      // console.log('Edit usdt')
+
       this.usdtLoading = true
-      // let {address} = this.usdtForm
-      // console.log(this.usdtForm.address.trim())
       let usdt_address = this.usdtForm.address.trim()
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
       let pubkey = chainLib.publicKeyFromSecretKey(privateKey)
       let hash = chainLib.hash256(Buffer.from(address + usdt_address))
       let sign = chainLib.sign(hash, privateKey)
-      // console.log(address)
-      // console.log(usdt_address)
-      // console.log(hash.toString('hex'))
-      // console.log(pubkey.toString('hex'))
-      // console.log(sign.toString('hex'))
 
       chainApi
         .setEarningsAccount(address, usdt_address, pubkey.toString('hex'), sign.toString('hex'))
         .then(res => {
-          // console.log(res)
           if (res.err) {
-            alert('修改失败! Edit Fail! ' + res.message)
+            alert( this.$t('Earnings.usdtEditFail') + res.message)
           } else {
-            alert('修改成功! Edit OK!')
+            alert( this.$t('Earnings.usdtEditSuccess'))
             this.usdtAddress = res.data
           }
         })
