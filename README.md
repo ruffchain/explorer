@@ -22,3 +22,10 @@ npm run serve
 ```
 npm run build
 ```
+
+## Updates
+
+```
+0.2.3  2021-01-11 Add earnings page
+
+```
