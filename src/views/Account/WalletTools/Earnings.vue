@@ -151,7 +151,7 @@ export default {
       depositAddress: 'Address',
       usdtAddress: 'Empty',
       usdtEditEnable: false,
-      earning: 0,
+      earning: "",
       deposit: 0,
       earningStackList: [],
       depositStackList: [],
@@ -249,6 +249,9 @@ export default {
     },
     async updateAccount(address) {
       this.loading = true
+      let sumRuff = 0.0;
+      let sumUsdt = 0.0;
+
       chainApi
         .getEarningsAccount(address)
         .then(res => {
@@ -261,12 +264,22 @@ export default {
               }
               this.earningStackList = []
               for (let earning of res.data.earnings) {
+
+                if(earning.status.toUpperCase() === 'USDT'){
+                  sumUsdt += parseFloat(earning.value)
+                }else if(earning.status.toUpperCase() === 'RUFF'){
+                  sumRuff += parseFloat(earning.value)
+                }
+                
                 this.earningStackList.push({
                   amount: earning.value,
                   date: earning.date,
                   status: earning.status
                 })
               }
+
+              this.earning = sumRuff + ' RUFF, ' + sumUsdt + ' USDT'
+
               this.depositStackList = []
               let depositSum = 0
               for (let deposit of res.data.deposit) {
