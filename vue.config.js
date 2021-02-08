@@ -16,7 +16,7 @@ module.exports = {
         }
       },
       '/chain-earnings-rpc': {
-        target: 'http://127.0.0.1:30001',
+        target: 'https://earnings.ruffcorp.com',
         changeOrigin: true,
         pathRewrite:{
           '^/chain-earnings-rpc': '/api/v1/account'
