@@ -138,6 +138,9 @@ export default {
     strEarnings() {
       return this.$t('Wallet.earnings')
     },
+    strMintage(){
+      return this.$t('Wallet.mintage')
+    },
     newNavItems() {
       return [
         {
@@ -166,7 +169,7 @@ export default {
         },
         {
           type: NavItemEnums.Mintage,
-          name: 'RUSDT'
+          name: this.strMintage,
         }
       ]
     },

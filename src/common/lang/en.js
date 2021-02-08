@@ -113,6 +113,7 @@ export default {
     exchange: 'Exchange Smart Token',
     vote: 'Vote',
     earnings: 'Earnings',
+    mintage: 'RUSDT'
   },
   ConfirmTx: {
     title: 'Confirm Tx',
