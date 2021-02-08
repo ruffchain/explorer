@@ -397,9 +397,6 @@ export default {
     strChooseDateTime() {
       return this.$t('CreateToken.chooseDateTime')
     },
-    strLockAmount() {
-      return this.$t('CreateToken.lockAmount')
-    },
     strLockErr() {
       return this.$t('CreateToken.lockErr')
     },

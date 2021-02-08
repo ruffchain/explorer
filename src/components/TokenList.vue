@@ -84,7 +84,7 @@ export default {
           this.tokens = await chainApi.getTokensByAddress(this.address)
         } catch (e) {}
         this.loading = false
-        await delay(5000)
+        await delay(10000)
       }
     }
   },
