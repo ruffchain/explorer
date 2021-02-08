@@ -86,7 +86,8 @@ const NavItemEnums = {
   CreateToken: 'CreateToken',
   Exchange: 'Exchange',
   Vote: 'Vote',
-  Earnings: 'Earnings'
+  Earnings: 'Earnings',
+  Mintage: 'RUSDT'
 }
 
 export default {
@@ -162,6 +163,10 @@ export default {
         {
           type: NavItemEnums.Earnings,
           name: this.strEarnings,
+        },
+        {
+          type: NavItemEnums.Mintage,
+          name: 'RUSDT'
         }
       ]
     },

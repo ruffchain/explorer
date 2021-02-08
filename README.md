@@ -28,4 +28,6 @@ npm run build
 ```
 0.2.3  2021-01-11 Add earnings page
 
+0.2.4  2021-02-10 Add usdt transfer page
+
 ```
