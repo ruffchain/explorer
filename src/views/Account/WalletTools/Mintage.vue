@@ -37,8 +37,7 @@
     </section>
     <SubscribedUser v-if="bSubscribedUser === true" :value="value">
     </SubscribedUser>
-    <AdminUser v-if="bAdminUser === true" :value="value">
-    </AdminUser>
+    <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken"> </AdminUser>
   </div>
 </template>
 
@@ -50,8 +49,8 @@ import SubscribedUser from './Mintage/SubscribedUser'
 
 export default {
   components: {
-      AdminUser,
-      SubscribedUser
+    AdminUser,
+    SubscribedUser
   },
   data() {
     return {
@@ -76,11 +75,7 @@ export default {
     console.log('mintage addr:', this.mintageAddr)
     console.log('mintageToken: ', this.mintageToken)
 
-    if (this.address === this.mintageAddr) {
-      this.bAdminUser = true
-    } else {
-      this.chooseUser()
-    }
+    this.chooseUser()
   },
   computed: {},
   methods: {
@@ -89,17 +84,20 @@ export default {
         let tokens = await chainApi.getTokensByAddress(this.address)
         // console.log('tokens: ', tokens)
 
-        let token = tokens.find((tok)=>{
-            return (tok.token === this.mintageToken)
+        let token = tokens.find(tok => {
+          return tok.token === this.mintageToken
         })
         console.log(token)
-        if(token === undefined){
-            this.bNormalUser = true;
-        }else{
-            this.bSubscribedUser = true;
-            this.value = token.value;
+        if (token === undefined) {
+          this.bNormalUser = true
+        } else {
+          this.value = token.value
+          if (this.address === this.mintageAddr) {
+            this.bAdminUser = true
+          } else {
+            this.bSubscribedUser = true
+          }
         }
-
       } catch (e) {
         console.log(e)
       }
