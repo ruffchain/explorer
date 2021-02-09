@@ -47,6 +47,7 @@
       <!-- 展示表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionPurchase">
         <div>
+            <h2>未处理的请求:</h2>
           <ul class="tx-list">
             <el-row class=" list-header" tag="li">
               <el-col :span="5">usdt地址</el-col>
@@ -75,7 +76,7 @@
                   {{ tx.value }}
                 </el-col>
                 <el-col :span="3">
-                    {{ tx.date}}
+                  {{ tx.date }}
                 </el-col>
                 <el-col :span="2">
                   {{ tx.bHandled }}
@@ -98,22 +99,70 @@
             />
           </div>
         </div>
+        <div>
+            <h2>已处理的请求</h2>
+        </div>
       </LoadingContainer>
       <!-- 展示cashback request表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionCashback">
         <div>
-          <ul class="tx-list"></ul>
-          <div class="pagination-container" v-if="txs && txs.total > 0">
+          <h2>未处理的兑换请求:</h2>
+          <ul class="tx-list">
+            <el-row class=" list-header" tag="li">
+              <el-col :span="5">ruff地址</el-col>
+              <el-col :span="5">USDT地址</el-col>
+              <el-col :span="4">数量</el-col>
+              <el-col :span="3">日期</el-col>
+              <el-col :span="2">处理与否</el-col>
+              <el-col :span="5">状态</el-col>
+            </el-row>
+            <template v-if="cashbacks">
+              <el-row
+                v-for="cashback in dataCashbacks"
+                :key="cashback.ruffAddr"
+                type="flex"
+                tag="li"
+              >
+                <el-col :span="5">
+                  <div class="text-ellipsis">
+                    {{ cashback.ruffAddr }}
+                  </div>
+                </el-col>
+                <el-col :span="5">
+                  {{ cashback.foreignAddr }}
+                </el-col>
+                <el-col :span="4">
+                  {{ cashback.value }}
+                </el-col>
+                <el-col :span="3">
+                  {{ cashback.date }}
+                </el-col>
+                <el-col :span="2">
+                  {{ cashback.bHandled }}
+                </el-col>
+                <el-col :span="5">
+                  {{ cashback.status }}
+                </el-col>
+              </el-row>
+            </template>
+          </ul>
+          <div
+            class="pagination-container"
+            v-if="cashbacks && cashbacks.total > 0"
+          >
             <el-pagination
-              @size-change="updateTxs"
-              @current-change="updateTxs"
+              @size-change="updateCashbacks"
+              @current-change="updateCashbacks"
               :current-page.sync="page"
               :page-size.sync="pageSize"
               :page-sizes="[10, 20]"
               layout="total,sizes,prev,pager,next,jumper"
-              :total="txs.total"
+              :total="cashbacks.total"
             />
           </div>
+        </div>
+        <div>
+            <h2>已处理的兑换请求:</h2>
         </div>
       </LoadingContainer>
     </section>
@@ -143,7 +192,8 @@ export default {
       loading: false,
       txs: null,
       page: 1,
-      pageSize: 10
+      pageSize: 10,
+      cashbacks: null
     }
   },
   computed: {
@@ -161,6 +211,9 @@ export default {
     },
     dataTxs() {
       return this.txs.data
+    },
+    dataCashbacks(){
+        return this.cashbacks.data
     }
   },
   beforeMount() {
@@ -176,9 +229,37 @@ export default {
       console.log('change')
       if (this.action === this.actionPurchase) {
         this.strAlert = this.strActionPurchase
+        this.updateTxs()
       } else {
         this.strAlert = this.strActionCashback
+        this.updateCashbacks()
       }
+    },
+    async updateCashbacks() {
+      this.loading = true
+      this.cashbacks = {
+        total: 1,
+        data: [
+          {
+            ruffAddr: '1bagabbbbbaaaaacccddeeff',
+            foreignAddr: '0xEcsdfsdfsadfuosdifsd',
+            value: 234234,
+            date: '2021-02-09T13:17:26.434Z',
+            bHandled: false,
+            status: ''
+          },
+          {
+            ruffAddr: '1b00bbbbaaaaacccddeeff',
+            foreignAddr: '0xe435sdffsdf',
+            value: 234234,
+            date: '2021-03-09T13:17:26.434Z',
+            bHandled: false,
+            status: ''
+          }
+        ]
+      }
+
+      this.loading = false
     },
     async updateTxs() {
       this.loading = true
@@ -189,7 +270,7 @@ export default {
             foreignAddr: '1sfsfsdfsdfdff',
             ruffAddr: '10056bbbb434344',
             value: 2000000,
-            date: new Date(),
+            date: '2021-02-09T13:16:54.551Z',
             bHandled: false,
             status: '未经处理'
           },
@@ -197,7 +278,7 @@ export default {
             foreignAddr: '2fsfsdfsdfdff',
             ruffAddr: '11156bbbb434344',
             value: 2000000,
-            date: new Date(),
+            date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
             status: '未经处理'
           },
@@ -205,7 +286,7 @@ export default {
             foreignAddr: '3sfsfsdfsdfdff',
             ruffAddr: '1346bbbb434344',
             value: 2000000,
-            date: new Date(),
+            date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
             status: '未经处理'
           },
@@ -213,7 +294,7 @@ export default {
             foreignAddr: '4sfsfsdfsdfdff',
             ruffAddr: '12356bbbb434344',
             value: 2000000,
-            date: new Date(),
+            date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
             status: '未经处理'
           }
