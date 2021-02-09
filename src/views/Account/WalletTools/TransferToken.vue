@@ -10,7 +10,11 @@
   <div class="transfer-token">
     <section>
       <div class="top-radio-selecter">
-        <el-radio-group size="mini" v-model="sendTokenType" @change="typeChange">
+        <el-radio-group
+          size="mini"
+          v-model="sendTokenType"
+          @change="typeChange"
+        >
           <el-radio-button :label="getTokenSys"></el-radio-button>
           <el-radio-button :label="getTokenNormal"></el-radio-button>
           <el-radio-button :label="getTokenSmart"></el-radio-button>
@@ -23,9 +27,17 @@
         type="info"
         show-icon
       ></el-alert>
-      <el-form ref="form" :model="formData" :rules="formRules" label-width="90px">
+      <el-form
+        ref="form"
+        :model="formData"
+        :rules="formRules"
+        label-width="90px"
+      >
         <el-form-item prop="to" :label="strToAccount">
-          <el-input v-model="formData.to" @input="formData.to = formData.to.replace(' ', '')"></el-input>
+          <el-input
+            v-model="formData.to"
+            @input="formData.to = formData.to.replace(' ', '')"
+          ></el-input>
         </el-form-item>
         <el-form-item
           v-if="sendTokenType !== getTokenSys"
@@ -39,12 +51,16 @@
             @blur="tokenIdBlur"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="amount" :rules="amountRules" :label="strTokenAmount">
+        <el-form-item
+          prop="amount"
+          :rules="amountRules"
+          :label="strTokenAmount"
+        >
           <el-input v-model="formData.amount" type="number"></el-input>
         </el-form-item>
         <el-form-item prop="fee" label="Gasfee">
           <el-input v-model="formData.fee" placeholder>
-            <template slot="append">{{$_APP.CORE_SYMBOL}}</template>
+            <template slot="append">{{ $_APP.CORE_SYMBOL }}</template>
           </el-input>
         </el-form-item>
       </el-form>
@@ -55,11 +71,16 @@
       type="primary"
       @click="confirm()"
       style="width:100%"
-    >{{strTokenConfirm }}</el-button>
-    <ConfirmTx :visible.sync="showConfirmTx" :tx="txData" @confirm="confirmSendTx" />
+      >{{ strTokenConfirm }}</el-button
+    >
+    <ConfirmTx
+      :visible.sync="showConfirmTx"
+      :tx="txData"
+      @confirm="confirmSendTx"
+    />
     <AppDialog
-      :title="sendTokenType+ transfer"
-      @cleanForm="cleanForm(),loading=false"
+      :title="sendTokenType + transfer"
+      @cleanForm="cleanForm(), (loading = false)"
       v-if="loading"
     />
   </div>
@@ -79,7 +100,7 @@ export default {
   components: {
     TransactionResult,
     ConfirmTx,
-    AppDialog,
+    AppDialog
   },
   data() {
     return {
@@ -90,16 +111,16 @@ export default {
         to: '',
         tokenId: '',
         amount: '',
-        fee: '',
+        fee: ''
       },
       showConfirmTx: false,
-      txData: {},
+      txData: {}
     }
   },
   watch: {
-    getTokenNormal: function () {
+    getTokenNormal: function() {
       this.sendTokenType = process.env.VUE_APP_CORE_SYMBOL + ' Token'
-    },
+    }
   },
   computed: {
     tokenIdRules() {
@@ -159,7 +180,7 @@ export default {
     },
     transfer() {
       return this.$t('TransferToken.transfer')
-    },
+    }
   },
   beforeMount() {
     const required = rules.required()
@@ -171,7 +192,7 @@ export default {
       to: [required, validAdress],
       tokenId: [required, validTokenId],
       amount: [required, gt0, rules.amountTooBig()],
-      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)],
+      fee: [required, rules.maxDecimalCount(9), rules.greaterOrEqualThan(0.1)]
     }
   },
 
@@ -198,7 +219,7 @@ export default {
       formData.to = rmAddressPrefix(formData.to)
       this.txData = genTransferTx({
         ...formData,
-        tokenType: this.transformTokenType(this.sendTokenType),
+        tokenType: this.transformTokenType(this.sendTokenType)
       })
       this.showConfirmTx = true
     },
@@ -210,14 +231,14 @@ export default {
           message: res.confirmed
             ? this.$t('TransferToken.confirmedOk')
             : this.$t('TransferToken.confirmedFail'),
-          json: res.tx,
+          json: res.tx
         }
         if (res.confirmed) {
           this.cleanForm()
         }
       } catch (e) {
         this.result = {
-          message: this.$t('TransferToken.resultCatch') + e,
+          message: this.$t('TransferToken.resultCatch') + e
         }
       } finally {
         this.loading = false
@@ -260,14 +281,14 @@ export default {
       }
       const res = {
         validator,
-        trigger: ['blur'],
+        trigger: ['blur']
       }
       return res
     },
     cleanForm() {
       this.$refs.form.resetFields()
       this.formData = this.$options.data().formData
-    },
-  },
+    }
+  }
 }
 </script>

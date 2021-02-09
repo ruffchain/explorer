@@ -140,6 +140,7 @@ export default {
           pageSize: this.pageSize,
         })
         .then((res) => {
+          console.log(res)
           res.data.forEach((item) => {
             item.timeAgo = timeAgo(new Date(item.timestamp * 1000))
             return item
