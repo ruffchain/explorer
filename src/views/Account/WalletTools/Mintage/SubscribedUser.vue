@@ -16,14 +16,21 @@
 
 <script>
 export default {
+  props: {
+    value: {
+      default: 0
+    }
+  },
   components: {},
   data() {
-      return{
-          name:''
-      }
+    return {
+      name: ''
+    }
   },
   computed: {},
-  beforeMount() {},
+  beforeMount() {
+    console.log('')
+  },
   methods: {}
 }
 </script>

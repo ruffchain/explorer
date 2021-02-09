@@ -16,6 +16,11 @@
 
 <script>
 export default {
+  props:{
+      value:{
+          default: 0
+      }
+  },
   components: {},
   data() {
       return{
@@ -23,7 +28,9 @@ export default {
       }
   },
   computed: {},
-  beforeMount() {},
+  beforeMount() {
+      console.log('value: ', this.value)
+  },
   methods: {}
 }
 </script>

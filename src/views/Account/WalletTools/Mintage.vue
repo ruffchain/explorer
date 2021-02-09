@@ -35,9 +35,9 @@
     <section v-if="bNormalUser === true">
       <h1>参加RUSDT项目,... bla bla bla</h1>
     </section>
-    <SubscribedUser v-if="bSubscribedUser === true">
+    <SubscribedUser v-if="bSubscribedUser === true" :value="value">
     </SubscribedUser>
-    <AdminUser v-if="bAdminUser === true">
+    <AdminUser v-if="bAdminUser === true" :value="value">
     </AdminUser>
   </div>
 </template>
