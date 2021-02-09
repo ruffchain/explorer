@@ -33,23 +33,26 @@
 <template>
   <div class="mintage-view">
     <section v-if="bNormalUser === true">
-      <h1>I am Normal</h1>
+      <h1>参加RUSDT项目,... bla bla bla</h1>
     </section>
-    <section v-else-if="bSubscribedUser === true">
-      <h1>I am subscribed</h1>
-    </section>
-    <section v-else-if="bAdminUser === true">
-      <h1>I am admin</h1>
-    </section>
+    <SubscribedUser v-if="bSubscribedUser === true">
+    </SubscribedUser>
+    <AdminUser v-if="bAdminUser === true">
+    </AdminUser>
   </div>
 </template>
 
 <script>
 import * as chainApi from '../../../common/chain-api'
 import * as chainLib from '../../../common/chain-lib'
+import AdminUser from './Mintage/AdminUser'
+import SubscribedUser from './Mintage/SubscribedUser'
 
 export default {
-  components: {},
+  components: {
+      AdminUser,
+      SubscribedUser
+  },
   data() {
     return {
       address: '',
