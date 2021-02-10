@@ -35,7 +35,7 @@
     <section v-if="bNormalUser === true">
       <h1>参加RUSDT项目,... bla bla bla</h1>
     </section>
-    <SubscribedUser v-if="bSubscribedUser === true" :value="value">
+    <SubscribedUser v-if="bSubscribedUser === true" :value="value" :token="mintageToken">
     </SubscribedUser>
     <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken"> </AdminUser>
   </div>
@@ -43,7 +43,7 @@
 
 <script>
 import * as chainApi from '../../../common/chain-api'
-import * as chainLib from '../../../common/chain-lib'
+// import * as chainLib from '../../../common/chain-lib'
 import AdminUser from './Mintage/AdminUser'
 import SubscribedUser from './Mintage/SubscribedUser'
 

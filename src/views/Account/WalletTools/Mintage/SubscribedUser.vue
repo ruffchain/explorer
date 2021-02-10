@@ -9,7 +9,10 @@
 <template>
   <div class="subscribed-user">
     <section>
-      <h2>subscribed user page</h2>
+      <h2>Subscribed user page: {{ value }} {{ strToken }}</h2>
+      <el-alert :closable="false" :title="strAlert" type="info" show-icon>
+      </el-alert>
+      
     </section>
   </div>
 </template>
@@ -19,17 +22,25 @@ export default {
   props: {
     value: {
       default: 0
+    },
+    token: {
+      default: ''
     }
   },
   components: {},
   data() {
     return {
-      name: ''
+      name: '',
+      strAlert: '将' + this.token + '兑换成USDT'
     }
   },
-  computed: {},
+  computed: {
+    strToken() {
+      return this.token
+    }
+  },
   beforeMount() {
-    console.log('')
+    console.log('value:', this.value)
   },
   methods: {}
 }
