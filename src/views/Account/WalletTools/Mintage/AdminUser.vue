@@ -47,15 +47,15 @@
       <!-- 展示表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionPurchase">
         <div>
-            <h2>未处理的请求:</h2>
+            <h2>换币请求:</h2>
           <ul class="tx-list">
             <el-row class=" list-header" tag="li">
-              <el-col :span="5">usdt地址</el-col>
-              <el-col :span="5">ruff地址</el-col>
-              <el-col :span="4">数量</el-col>
-              <el-col :span="3">日期</el-col>
+              <el-col :span="8">usdt地址</el-col>
+              <el-col :span="8">ruff地址</el-col>
+              <el-col :span="2">数量</el-col>
+              <el-col :span="4">日期</el-col>
               <el-col :span="2">处理与否</el-col>
-              <el-col :span="5">状态</el-col>
+              <el-col :span="2">状态</el-col>
             </el-row>
             <template v-if="txs">
               <el-row
@@ -64,24 +64,24 @@
                 type="flex"
                 tag="li"
               >
-                <el-col :span="5">
+                <el-col :span="8">
                   <div class="text-ellipsis">
                     {{ tx.foreignAddr }}
                   </div>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="8">
                   {{ tx.ruffAddr }}
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="2">
                   {{ tx.value }}
                 </el-col>
-                <el-col :span="3">
+                <el-col :span="4">
                   {{ tx.date }}
                 </el-col>
                 <el-col :span="2">
                   {{ tx.bHandled }}
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="2">
                   {{ tx.status }}
                 </el-col>
               </el-row>
@@ -99,14 +99,11 @@
             />
           </div>
         </div>
-        <div>
-            <h2>已处理的请求</h2>
-        </div>
       </LoadingContainer>
       <!-- 展示cashback request表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionCashback">
         <div>
-          <h2>未处理的兑换请求:</h2>
+          <h2>兑换请求:</h2>
           <ul class="tx-list">
             <el-row class=" list-header" tag="li">
               <el-col :span="5">ruff地址</el-col>
@@ -160,9 +157,6 @@
               :total="cashbacks.total"
             />
           </div>
-        </div>
-        <div>
-            <h2>已处理的兑换请求:</h2>
         </div>
       </LoadingContainer>
     </section>
@@ -241,16 +235,16 @@ export default {
         total: 1,
         data: [
           {
-            ruffAddr: '1bagabbbbbaaaaacccddeeff',
-            foreignAddr: '0xEcsdfsdfsadfuosdifsd',
+            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
             value: 234234,
             date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
             status: ''
           },
           {
-            ruffAddr: '1b00bbbbaaaaacccddeeff',
-            foreignAddr: '0xe435sdffsdf',
+            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
             value: 234234,
             date: '2021-03-09T13:17:26.434Z',
             bHandled: false,
@@ -267,32 +261,32 @@ export default {
         total: 2,
         data: [
           {
-            foreignAddr: '1sfsfsdfsdfdff',
-            ruffAddr: '10056bbbb434344',
+            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
             value: 2000000,
             date: '2021-02-09T13:16:54.551Z',
             bHandled: false,
             status: '未经处理'
           },
           {
-            foreignAddr: '2fsfsdfsdfdff',
-            ruffAddr: '11156bbbb434344',
+            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
             value: 2000000,
             date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
             status: '未经处理'
           },
           {
-            foreignAddr: '3sfsfsdfsdfdff',
-            ruffAddr: '1346bbbb434344',
+            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
             value: 2000000,
             date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
             status: '未经处理'
           },
           {
-            foreignAddr: '4sfsfsdfsdfdff',
-            ruffAddr: '12356bbbb434344',
+            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
             value: 2000000,
             date: '2021-02-09T13:17:26.434Z',
             bHandled: false,
