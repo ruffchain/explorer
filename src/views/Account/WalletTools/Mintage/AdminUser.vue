@@ -24,6 +24,15 @@
       justify-content: center;
     }
   }
+  .el-table {
+    .warning-row {
+    background: rgb(231, 11, 22);
+  }
+  .success-row {
+    background: #da9619;
+  }
+  }
+
   .pagination-container {
     display: flex;
     justify-content: flex-end;
@@ -47,46 +56,26 @@
       <!-- 展示表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionPurchase">
         <div>
-            <h2>换币请求:</h2>
-          <ul class="tx-list">
-            <el-row class=" list-header" tag="li">
-              <el-col :span="8">usdt地址</el-col>
-              <el-col :span="8">ruff地址</el-col>
-              <el-col :span="2">数量</el-col>
-              <el-col :span="4">日期</el-col>
-              <el-col :span="2">处理与否</el-col>
-              <el-col :span="2">状态</el-col>
-            </el-row>
-            <template v-if="txs">
-              <el-row
-                v-for="tx in dataTxs"
-                :key="tx.foreignAddr"
-                type="flex"
-                tag="li"
-              >
-                <el-col :span="8">
-                  <div class="text-ellipsis">
-                    {{ tx.foreignAddr }}
-                  </div>
-                </el-col>
-                <el-col :span="8">
-                  {{ tx.ruffAddr }}
-                </el-col>
-                <el-col :span="2">
-                  {{ tx.value }}
-                </el-col>
-                <el-col :span="4">
-                  {{ tx.date }}
-                </el-col>
-                <el-col :span="2">
-                  {{ tx.bHandled }}
-                </el-col>
-                <el-col :span="2">
-                  {{ tx.status }}
-                </el-col>
-              </el-row>
-            </template>
-          </ul>
+          <h2>换币请求:</h2>
+          <el-table
+            :data="dataTxs"
+            highlight-current-row
+            @current-change="handleCurrentTx"
+            :row-class-name="txRowClassName"
+            style="width: 100%"
+          >
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="foreignAddr" label="USDT地址">
+            </el-table-column>
+            <el-table-column prop="ruffAddr" label="RUFF地址">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="80">
+            </el-table-column>
+            <el-table-column prop="bHandled" label="处理" width="100">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
           <div class="pagination-container" v-if="txs && txs.total > 0">
             <el-pagination
               @size-change="updateTxs"
@@ -98,6 +87,10 @@
               :total="txs.total"
             />
           </div>
+          <!-- button -->
+          <div style="margin-top: 20px">
+    <el-button @click="hanldeTx">Handle Request</el-button>
+  </div>
         </div>
       </LoadingContainer>
       <!-- 展示cashback request表格 -->
@@ -187,7 +180,8 @@ export default {
       txs: null,
       page: 1,
       pageSize: 10,
-      cashbacks: null
+      cashbacks: null,
+      currentRowTx: 0
     }
   },
   computed: {
@@ -206,18 +200,18 @@ export default {
     dataTxs() {
       return this.txs.data
     },
-    dataCashbacks(){
-        return this.cashbacks.data
+    dataCashbacks() {
+      return this.cashbacks.data
     }
   },
   beforeMount() {
     console.log('value: ', this.value)
     this.strAlert = this.strActionPurchase
     this.action = this.actionPurchase
-  },
-  mounted() {
+
     this.updateTxs()
   },
+  mounted() {},
   methods: {
     actionChange() {
       console.log('change')
@@ -235,19 +229,19 @@ export default {
         total: 1,
         data: [
           {
-            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
             foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
             value: 234234,
-            date: '2021-02-09T13:17:26.434Z',
-            bHandled: false,
+            date: '2021-02-09 13:17',
+            bHandled: 'false',
             status: ''
           },
           {
-            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
             foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
             value: 234234,
-            date: '2021-03-09T13:17:26.434Z',
-            bHandled: false,
+            date: '2021-03-09 13:17',
+            bHandled: 'false',
             status: ''
           }
         ]
@@ -258,43 +252,63 @@ export default {
     async updateTxs() {
       this.loading = true
       this.txs = {
-        total: 2,
+        total: 1,
         data: [
           {
             foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000000,
-            date: '2021-02-09T13:16:54.551Z',
-            bHandled: false,
+            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            value: 2000001,
+            date: '2021-02-09 13:16',
+            bHandled: 'false',
             status: '未经处理'
           },
           {
             foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
             ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000000,
-            date: '2021-02-09T13:17:26.434Z',
-            bHandled: false,
+            value: 2000002,
+            date: '2021-02-09 13:17',
+            bHandled: 'false',
             status: '未经处理'
           },
           {
             foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000000,
-            date: '2021-02-09T13:17:26.434Z',
-            bHandled: false,
+            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            value: 2000003,
+            date: '2021-02-09 13:17',
+            bHandled: 'false',
             status: '未经处理'
           },
           {
             foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000000,
-            date: '2021-02-09T13:17:26.434Z',
-            bHandled: false,
+            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+            value: 2000004,
+            date: '2021-02-09 13:17',
+            bHandled: 'false',
             status: '未经处理'
           }
         ]
       }
       this.loading = false
+    },
+    handleCurrentTx(val) {
+      this.currentRowTx = val
+      console.log(this.currentRowTx)
+    },
+    hanldeTx(){
+      console.log('hanleTx()')
+    },
+    txRowClassName({row, rowIndex}){
+      // if(this.dataTxs[row].bHandled === 'false'){
+      //   return 'warning-row';
+      // }else{
+      //   return 'success-row';
+      // }
+      if (rowIndex === 1) {
+          return 'warning-row';
+        } else if (rowIndex === 3) {
+          return 'success-row';
+        }
+        return '';
     }
   }
 }
