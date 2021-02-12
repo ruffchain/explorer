@@ -3,6 +3,7 @@
   .el-alert {
     margin: 20px 0;
   }
+  flex: 1;
 }
 </style>
 
@@ -12,7 +13,6 @@
       <h2>Subscribed user page: {{ value }} {{ strToken }}</h2>
       <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
-      <!--  交易表格  -->
       <el-form
         ref="form"
         :model="formData"
@@ -26,61 +26,59 @@
           <el-input v-model="formData.amount" type="number"> </el-input>
         </el-form-item>
       </el-form>
-      <TransactionResult v-if="result" :data="result" />
-          <el-button
+    </section>
+    <TransactionResult v-if="result" :data="result" />
+    <el-button
       :loading="txLoading"
-      type="promary"
+      type="primary"
       @click="confirm()"
-      sytle="width:100%"
+      style="width:100%;"
     >
       {{ strTxConfirm }}
     </el-button>
-    </section>
 
-    <section>
-      <!-- 展示表格 -->
-      <LoadingContainer :loading="loading">
-        <div>
-          <h2>已提交的换币请求:</h2>
-          <el-table
-            :data="dataCashbacks"
-            highlight-current-row
-            @current-change="handleCurrentCashback"
-            :row-class-name="cashbackRowClassName"
-            style="width: 100%"
-          >
-            <el-table-column prop="date" label="日期" width="150">
-            </el-table-column>
-            <el-table-column prop="foreignAddr" label="USDT地址">
-            </el-table-column>
-            <el-table-column prop="value" label="数量" width="80">
-            </el-table-column>
-            <el-table-column prop="bHandled" label="处理" width="100">
-            </el-table-column>
-            <el-table-column prop="status" label="状态"> </el-table-column>
-          </el-table>
-          <div
-            class="pagination-container"
-            v-if="cashbacks && cashbacks.total > 0"
-          >
-            <el-pagination
-              @size-change="updateCashbacks"
-              @current-change="updateCashbacks"
-              :current-page.sync="page"
-              :page-size.sync="pageSize"
-              :page-sizes="[10, 20]"
-              layout="total,sizes,prev,pager,next,jumper"
-              :total="cashbacks.total"
-            />
-          </div>
-          <!-- button -->
+    <!-- 展示表格 -->
+    <LoadingContainer :loading="loading">
+      <div>
+        <h2>已提交的换币请求:</h2>
+        <el-table
+          :data="dataCashbacks"
+          highlight-current-row
+          @current-change="handleCurrentCashback"
+          :row-class-name="cashbackRowClassName"
+          style="width: 100%"
+        >
+          <el-table-column prop="date" label="日期" width="150">
+          </el-table-column>
+          <el-table-column prop="foreignAddr" label="USDT地址">
+          </el-table-column>
+          <el-table-column prop="value" label="数量" width="80">
+          </el-table-column>
+          <el-table-column prop="bHandled" label="处理" width="100">
+          </el-table-column>
+          <el-table-column prop="status" label="状态"> </el-table-column>
+        </el-table>
+        <div
+          class="pagination-container"
+          v-if="cashbacks && cashbacks.total > 0"
+        >
+          <el-pagination
+            @size-change="updateCashbacks"
+            @current-change="updateCashbacks"
+            :current-page.sync="page"
+            :page-size.sync="pageSize"
+            :page-sizes="[10, 20]"
+            layout="total,sizes,prev,pager,next,jumper"
+            :total="cashbacks.total"
+          />
         </div>
-      </LoadingContainer>
-    </section>
+      </div>
+    </LoadingContainer>
   </div>
 </template>
 
 <script>
+import TransactionResult from '../TransactionResult'
 import LoadingContainer from '@/components/LoadingContainer'
 import * as rules from '../form-rules.js'
 
@@ -94,7 +92,8 @@ export default {
     }
   },
   components: {
-    LoadingContainer
+    LoadingContainer,
+    TransactionResult
   },
   data() {
     return {
@@ -110,7 +109,7 @@ export default {
         amount: ''
       },
       formRules: {},
-      result: null,
+      result: "let's go",
       txLoading: false
     }
   },
