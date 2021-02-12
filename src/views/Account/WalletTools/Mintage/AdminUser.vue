@@ -161,10 +161,10 @@ export default {
       return 'cashback'
     },
     strActionPurchase() {
-      return '列举换币交易, USDT换' + this.token
+      return '列举换币交易, USDT换' + this.token + ', 选择表中的一行，进行处理'
     },
     strActionCashback() {
-      return this.token + '兑换回USDT'
+      return this.token + '兑换回USDT, 选择表中的一行，进行处理'
     },
     dataTxs() {
       return this.txs.data
