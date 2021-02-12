@@ -3,7 +3,11 @@
   .el-alert {
     margin: 20px 0;
   }
-  flex: 1;
+    .pagination-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 }
 </style>
 
@@ -88,6 +92,9 @@ export default {
       default: 0
     },
     token: {
+      default: ''
+    },
+    mintageAddr:{
       default: ''
     }
   },

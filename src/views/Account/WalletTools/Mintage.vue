@@ -36,9 +36,9 @@
     <section v-if="bNormalUser === true">
       <h1>参加RUSDT项目,... bla bla bla</h1>
     </section>
-    <SubscribedUser v-if="bSubscribedUser === true" :value="value" :token="mintageToken">
+    <SubscribedUser v-if="bSubscribedUser === true" :value="value" :token="mintageToken"  :mintageAddr="mintageAddr" :mintageToken="mintageToken">
     </SubscribedUser>
-    <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken"> </AdminUser>
+    <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken" :mintageAddr="mintageAddr" :mintageToken="mintageToken"> </AdminUser>
   </div>
 </template>
 
