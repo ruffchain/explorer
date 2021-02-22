@@ -71,15 +71,26 @@ export default {
     // get
     console.log('cur addr:', this.$_APP.address)
     this.address = this.$_APP.address
-    this.mintageAddr = '1t7yJ98894ttf2U9UuRbx3rkWzF6ASd6W'
-    this.mintageToken = 'AEIT'
-    console.log('mintage addr:', this.mintageAddr)
-    console.log('mintageToken: ', this.mintageToken)
-
-    this.chooseUser()
+    // get token, address from server
+    this.updateMintageConfig()
   },
   computed: {},
   methods: {
+    async updateMintageConfig(){
+      chainApi.getPurchasedConfig()
+        .then(res=>{
+          console.log(res)
+          if(res.err ===0){
+            this.mintageToken = res.data.mintage_token
+            this.mintageAddr = res.data.mintage_account
+
+            this.chooseUser()
+          }
+        })
+        .finally(()=>{
+          console.log('get config done')
+        })
+    },
     async chooseUser() {
       try {
         let tokens = await chainApi.getTokensByAddress(this.address)

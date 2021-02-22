@@ -228,44 +228,50 @@ export default {
     },
     async updateTxs() {
       this.loading = true
-      // this.txs = {
-      //   data:[]
-      // }
+      console.log("this.page:", this.page, " ", this.pageSize)
+      // chainApi
+      //   .getPurchased(this.page -1, this.pageSize, {})
+      //   .then(res =>{
+      //     console.log(res)
+      //   })
+      //   .finally(()=>{
+      //     this.loading = false
+      //   })
       this.txs = {
         total: 1,
         data: [
-          {
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000001,
-            date: '2021-02-09 13:16',
-            bHandled: 'false',
-            status: '未经处理'
-          },
-          {
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000002,
-            date: '2021-02-09 13:17',
-            bHandled: 'false',
-            status: '未经处理'
-          },
-          {
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000003,
-            date: '2021-02-09 13:17',
-            bHandled: 'false',
-            status: '未经处理'
-          },
-          {
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            value: 2000004,
-            date: '2021-02-09 13:17',
-            bHandled: 'false',
-            status: '未经处理'
-          }
+          // {
+          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+          //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+          //   value: 2000001,
+          //   date: '2021-02-09 13:16',
+          //   bHandled: 'false',
+          //   status: '未经处理'
+          // },
+          // {
+          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+          //   ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+          //   value: 2000002,
+          //   date: '2021-02-09 13:17',
+          //   bHandled: 'false',
+          //   status: '未经处理'
+          // },
+          // {
+          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+          //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+          //   value: 2000003,
+          //   date: '2021-02-09 13:17',
+          //   bHandled: 'false',
+          //   status: '未经处理'
+          // },
+          // {
+          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+          //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+          //   value: 2000004,
+          //   date: '2021-02-09 13:17',
+          //   bHandled: 'false',
+          //   status: '未经处理'
+          // }
         ]
       }
       this.loading = false

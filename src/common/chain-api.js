@@ -29,6 +29,26 @@ const callEarningsRpc = (function () {
     http.post('', args)
 })()
 
+// Added 2020-2-20
+const callMintageRpc = (function () {
+  const http = axios.create({ baseURL: '/chain-mintage-rpc', timeout: 5000 })
+
+  http.interceptors.request.use((config)=>{
+    config.headers.Authorization = '16heLGkcJepHVjYFfGDtViKnXM8u7MdRAU'
+    return config
+  })
+
+  http.interceptors.response.use(
+    res => res.data,
+    err => {
+      throw err
+    }
+  )
+
+  return (args = {}) =>
+    http.post('', args)
+})()
+
 export const getEarningsAccount = address =>
   callEarningsRpc( {
     method: 'get-account',
@@ -59,6 +79,21 @@ export const setEarningsAccount = (address, usdt, pubkey,sign) =>
       signature: sign
     }
   })
+
+  export const getPurchased =  (index, pagesize, inAuth) =>
+    callMintageRpc({
+      method: 'get-purchased',
+      args:{
+        page:index,
+        page_size: pagesize
+      },
+      auth: inAuth
+    })
+ export const getPurchasedConfig = () => 
+    callMintageRpc({
+      method: 'get-config',
+      args:{}
+    })
 
 //////////////////////////////////////////
 const callChainRpc = (function () {

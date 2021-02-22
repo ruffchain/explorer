@@ -22,6 +22,13 @@ module.exports = {
           '^/chain-earnings-rpc': '/api/v1/account'
         }
       },
+      '/chain-mintage-rpc': {
+        target: 'https://earnings.ruffcorp.com',
+        changeOrigin: true,
+        pathRewrite:{
+          '^/chain-mintage-rpc': '/api/v1/mintage'
+        }
+      }
     }
   },
   configureWebpack: config => {
