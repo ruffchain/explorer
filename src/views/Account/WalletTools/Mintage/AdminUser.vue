@@ -72,7 +72,7 @@
             />
           </div>
           <!-- button -->
-
+          <TransactionResult v-if="result" :data="result" />
           <div style="margin-top: 20px">
             <el-form :inline="true" :model="purchased" v-if="currentRowTx!==null">
               <el-form-item label="Ratio:">
@@ -93,7 +93,6 @@
               <el-form-item>
                 <el-button 
                   :disabled="buttonDisabled"
-                  :loading="loading"
                   type="primary" 
                   v-if="action === actionPurchase" @click="hanldeTx"
                   >Confirm</el-button>
@@ -148,6 +147,16 @@
         </div>
       </LoadingContainer>
     </section>
+    <ConfirmTx
+      :visible.sync="showConfirmTx"
+      :tx="txData"
+      @confirm="confirmSendTx"
+    />
+    <AppDialog
+      :title="token"
+      @cleanForm="cleanTxForm(), (loading = false)"
+      v-if="loading"
+    />
   </div>
 </template>
 
@@ -155,6 +164,12 @@
 import LoadingContainer from '@/components/LoadingContainer'
 import * as chainApi from '../../../../common/chain-api'
 import * as chainLib from '../../../../common/chain-lib'
+import ConfirmTx from '../ConfirmTx'
+import AppDialog from '../../../../components/AppDialog'
+import { genTransferTx } from '../wallet-helper'
+import { TokenType } from '../../../../common/enums'
+import TransactionResult from '../TransactionResult'
+
 export default {
   props: {
     value: {
@@ -165,7 +180,10 @@ export default {
     }
   },
   components: {
-    LoadingContainer
+    LoadingContainer,
+    ConfirmTx,
+    AppDialog,
+    TransactionResult
   },
   data() {
     return {
@@ -188,7 +206,10 @@ export default {
       cashback: {
         ratio: 1.0
       },
-      buttonDisabled: false
+      buttonDisabled: false,
+      showConfirmTx: false,
+      txData: {},
+      result : null
     }
   },
   computed: {
@@ -332,10 +353,12 @@ export default {
       
       if (this.action === this.actionPurchase) {
         this.strAlert = this.strActionPurchase
+        this.page = 1
         this.updateTxs()
         this.currentRowTx = null
       } else {
         this.strAlert = this.strActionCashback
+        this.page = 1
         this.updateCashbacks()
         this.currentRowCashback = null
       }
@@ -366,7 +389,7 @@ export default {
 
       this.loading = false
     },
-    async updateTxs() {
+    async updateTxs( ) {
       this.loading = true
       console.log('this.page:', this.page, ' ', this.pageSize)
 
@@ -389,6 +412,10 @@ export default {
         })
     },
     handleCurrentTx(val) {
+      if(!val){
+        return
+      }
+      this.result = null
       this.currentRowTx = val
       console.log(this.currentRowTx)
       let index = this.currentRowTx.index
@@ -398,10 +425,7 @@ export default {
         this.buttonDisabled =  false;
       }
     },
-    hanldeTx() {
-      console.log('hanleTx()')
-
-    },
+  
     txRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
         return 'warning-row'
@@ -424,6 +448,42 @@ export default {
     indexTxMethod(index) {
         return index;
       },
+    cleanTxForm(){
+      this.currentRowTx = null
+      this.updateTxs(this.page)
+    },
+      hanldeTx() {
+      console.log('hanleTx()')
+      this.result = null
+      this.txData = genTransferTx({
+        to: this.addrPurchased,
+        tokenId: this.token,
+        amount: this.valPurchased + '',
+        fee: '0.1',
+        tokenType: TokenType.normal
+      })
+      this.showConfirmTx = true
+    },
+    async confirmSendTx(tx){
+      try{
+        this.loading=true
+        let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
+        this.result = {
+          message: res.confirmed?"Transaction OK":"Transaction Failed", json: res.tx
+        }
+        if(res.confirmed){ this.cleanTxForm()}
+      }
+      catch(e){
+        this.result = {
+          message: "Error " + e
+        }
+
+      }finally{
+        this.loading = false
+      }
+
+    
+    },
     handleCurrentCashback(val) {
       this.currentRowCashback = val
       console.log(this.currentRowCashback)
