@@ -84,10 +84,10 @@
                   :min="0.5"
                 ></el-input-number>
               </el-form-item>
-              <el-form-item label="Sum:">
-                <div type="color:red">{{ valPurchased }}</div>
+              <el-form-item label="Send ">
+                <div style="color:red">{{ valPurchased }} {{ token }} </div>
               </el-form-item>
-              <el-form-item label="Address:">
+              <el-form-item label="To">
                 {{$_APP.ADDRESS_PREFIX}}{{ addrPurchased }}
               </el-form-item>
               <el-form-item>
@@ -236,7 +236,7 @@ export default {
       }
     },
     addrPurchased(){
-      if(this.currentRowTx && !this.checkTxHandled(this.currentRowTx)){
+      if(this.currentRowTx && !this.checkTxHandled(this.currentRowTx) && this.checkTxValid(this.currentRowTx)){
         return (this.currentRowTx.ruffAddr)
       }else{
         return ''
@@ -254,7 +254,15 @@ export default {
   mounted() {},
   methods: {
     checkTxHandled(tx){
-      return this.txs.data[tx.index].bHandled || this.txs.data[tx.index].type === 0
+      if(this.txs.data[tx.index].bHandled === true){
+        return true
+      }
+
+    },
+    checkTxValid(tx){
+      if(this.txs.data[tx.index].type === 0){
+        return true
+      } 
     },
     getStrHandled(bHandled) {
       if (bHandled) {
@@ -423,9 +431,13 @@ export default {
     },
     selectedTxStyle({row, rowIndex}){
       if(this.txs.data[rowIndex].type !== 0){
-      return {
-        "background-color": "#F56C6C"
-      }
+        return {
+          "background-color": "#F56C6C"
+        }
+      }else if(this.txs.data[rowIndex].bHandled === true){
+        return {
+          "background-color": "#67C23A"
+        }
       }
     },
     indexTxMethod(index) {
