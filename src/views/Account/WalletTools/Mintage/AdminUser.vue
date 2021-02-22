@@ -91,8 +91,12 @@
                 {{$_APP.ADDRESS_PREFIX}}{{ addrPurchased }}
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-if="action === actionPurchase" @click="hanldeTx"
-                  >Transfer</el-button>
+                <el-button 
+                  :disabled="buttonDisabled"
+                  :loading="loading"
+                  type="primary" 
+                  v-if="action === actionPurchase" @click="hanldeTx"
+                  >Confirm</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -183,7 +187,8 @@ export default {
       },
       cashback: {
         ratio: 1.0
-      }
+      },
+      buttonDisabled: false
     }
   },
   computed: {
@@ -324,12 +329,15 @@ export default {
     },
     actionChange() {
       console.log('change')
+      
       if (this.action === this.actionPurchase) {
         this.strAlert = this.strActionPurchase
         this.updateTxs()
+        this.currentRowTx = null
       } else {
         this.strAlert = this.strActionCashback
         this.updateCashbacks()
+        this.currentRowCashback = null
       }
     },
     async updateCashbacks() {
@@ -379,43 +387,16 @@ export default {
         .finally(() => {
           this.loading = false
         })
-
-      // {
-      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-      //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-      //   value: 2000001,
-      //   date: '2021-02-09 13:16',
-      //   bHandled: 'false',
-      //   status: '未经处理'
-      // },
-      // {
-      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-      //   ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-      //   value: 2000002,
-      //   date: '2021-02-09 13:17',
-      //   bHandled: 'false',
-      //   status: '未经处理'
-      // },
-      // {
-      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-      //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-      //   value: 2000003,
-      //   date: '2021-02-09 13:17',
-      //   bHandled: 'false',
-      //   status: '未经处理'
-      // },
-      // {
-      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-      //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-      //   value: 2000004,
-      //   date: '2021-02-09 13:17',
-      //   bHandled: 'false',
-      //   status: '未经处理'
-      // }
     },
     handleCurrentTx(val) {
       this.currentRowTx = val
       console.log(this.currentRowTx)
+      let index = this.currentRowTx.index
+      if( this.txs.data[index].bHandled === true || this.txs.data[index].type !== 0){
+        this.buttonDisabled = true
+      }else{
+        this.buttonDisabled =  false;
+      }
     },
     hanldeTx() {
       console.log('hanleTx()')
