@@ -37,13 +37,18 @@
         <div>
           <h2>换币请求:</h2>
           <el-table
+            type="index"
             :data="dataTxs"
             highlight-current-row
             @current-change="handleCurrentTx"
             :row-class-name="txRowClassName"
+            :row-style="selectedTxStyle"
             style="width: 100%"
           >
-            <el-table-column prop="date" label="日期" width="150">
+            <el-table-column prop="index" label="" width="20"
+            ></el-table-column>
+            <el-table-column prop="date" label="日期" width="150"
+            >
             </el-table-column>
             <el-table-column prop="foreignAddr" label="USDT地址">
             </el-table-column>
@@ -51,7 +56,7 @@
             </el-table-column>
             <el-table-column prop="value" label="数量" width="120">
             </el-table-column>
-            <el-table-column prop="bHandled" label="处理" width="100">
+            <el-table-column prop="bHandled" label="处理" width="50">
             </el-table-column>
             <el-table-column prop="status" label="状态"> </el-table-column>
           </el-table>
@@ -67,10 +72,29 @@
             />
           </div>
           <!-- button -->
+
           <div style="margin-top: 20px">
-            <el-button v-if="action === actionPurchase" @click="hanldeTx"
-              >Handle Request</el-button
-            >
+            <el-form :inline="true" :model="purchased" v-if="currentRowTx!==null">
+              <el-form-item label="Ratio:">
+                <el-input-number
+                  v-model="purchased.ratio"
+                  :precision="2"
+                  :step="0.01"
+                  :max="5"
+                  :min="0.5"
+                ></el-input-number>
+              </el-form-item>
+              <el-form-item label="Sum:">
+                <div type="color:red">{{ valPurchased }}</div>
+              </el-form-item>
+              <el-form-item label="Address:">
+                {{$_APP.ADDRESS_PREFIX}}{{ addrPurchased }}
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" v-if="action === actionPurchase" @click="hanldeTx"
+                  >Transfer</el-button>
+              </el-form-item>
+            </el-form>
           </div>
         </div>
       </LoadingContainer>
@@ -152,8 +176,14 @@ export default {
       page: 1,
       pageSize: 5,
       cashbacks: null,
-      currentRowTx: 0,
-      currentRowCashback: 0
+      currentRowTx: null,
+      currentRowCashback: null,
+      purchased: {
+        ratio: 1.0
+      },
+      cashback: {
+        ratio: 1.0
+      }
     }
   },
   computed: {
@@ -179,9 +209,10 @@ export default {
     dataTxs() {
       // get data from txs.data
       let out = []
-
-      for (let record of this.txs.data){
+      let i= 0
+      for (let record of this.txs.data) {
         out.push({
+          index: i++,
           date: this.getStrDate(record.date),
           foreignAddr: record.foreignAddr,
           ruffAddr: record.ruffAddr,
@@ -195,6 +226,21 @@ export default {
     },
     dataCashbacks() {
       return this.cashbacks.data
+    },
+    valPurchased(){
+      if(this.currentRowTx){
+        let val = (typeof this.currentRowTx.value === 'string')?parseFloat(this.currentRowTx.value):this.currentRowTx.value
+        return (this.purchased.ratio * val)
+      }else{
+        return 0
+      }
+    },
+    addrPurchased(){
+      if(this.currentRowTx && !this.checkTxHandled(this.currentRowTx)){
+        return (this.currentRowTx.ruffAddr)
+      }else{
+        return ''
+      }
     }
   },
   beforeMount() {
@@ -207,46 +253,57 @@ export default {
   },
   mounted() {},
   methods: {
-    getStrHandled(bHandled){
-      if(bHandled){
-        return "Y"
-      }else{
-        return "N"
+    checkTxHandled(tx){
+      return this.txs.data[tx.index].bHandled || this.txs.data[tx.index].type === 0
+    },
+    getStrHandled(bHandled) {
+      if (bHandled) {
+        return 'Y'
+      } else {
+        return 'N'
       }
     },
-    getStrStatus(record){
+    getStrStatus(record) {
       let out = ''
-      if(record.type === 0){
-        out+='Valid'
-        if(record.bHandled === true){
-          out+=',processed'
-        }else{
-          out+=',unprocessed'
+      if (record.type === 0) {
+        out += 'Valid'
+        if (record.bHandled === true) {
+          out += ',processed'
+        } else {
+          out += ',unprocessed'
         }
-      }else{
-        out+= 'Invalid'
+      } else {
+        out += 'Invalid'
       }
       return out
     },
-    getStrDate(str){
-      try{
+    getStrDate(str) {
+      try {
         let date = new Date(str)
-        return date.getFullYear() + "-"
-        + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + "-"
-        + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + " "
-        + (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ":"
-        + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) 
-      }catch(e){
+        return (
+          date.getFullYear() +
+          '-' +
+          (date.getMonth() + 1 < 10
+            ? '0' + (date.getMonth() + 1)
+            : date.getMonth() + 1) +
+          '-' +
+          (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) +
+          ' ' +
+          (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) +
+          ':' +
+          (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+        )
+      } catch (e) {
         console.error(e)
         return ''
       }
     },
-    getAuth(){
+    getAuth() {
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
-      let pubkey = (chainLib.publicKeyFromSecretKey(privateKey)).toString('hex')
+      let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')
 
-      let num = Math.floor(new Date().getTime() / 1000)-1
+      let num = Math.floor(new Date().getTime() / 1000) - 1
 
       let hash = chainLib.hash256(Buffer.from(num + ''))
 
@@ -254,7 +311,7 @@ export default {
         date: num, // seconds
         address: address,
         pubkey: pubkey,
-        signature: (chainLib.sign(hash, privateKey)).toString('hex')
+        signature: chainLib.sign(hash, privateKey).toString('hex')
       }
     },
     actionChange() {
@@ -295,59 +352,58 @@ export default {
     },
     async updateTxs() {
       this.loading = true
-      console.log("this.page:", this.page, " ", this.pageSize)
+      console.log('this.page:', this.page, ' ', this.pageSize)
 
       chainApi
-        .getPurchased(this.page -1, this.pageSize, this.getAuth())
-        .then(res =>{
+        .getPurchased(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
           console.log('getPurchased()')
           console.log(res)
-          if(res.err === 0){
+          if (res.err === 0) {
             this.pageSize = res.data.page_size
-            this.txs.total =  res.data.page_total
+            this.txs.total = res.data.page_total
             this.txs.data = []
-            for(let ele of res.data.data){
+            for (let ele of res.data.data) {
               this.txs.data.push(ele)
             }
           }
-          
         })
-        .finally(()=>{
+        .finally(() => {
           this.loading = false
         })
 
-          // {
-          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-          //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-          //   value: 2000001,
-          //   date: '2021-02-09 13:16',
-          //   bHandled: 'false',
-          //   status: '未经处理'
-          // },
-          // {
-          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-          //   ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-          //   value: 2000002,
-          //   date: '2021-02-09 13:17',
-          //   bHandled: 'false',
-          //   status: '未经处理'
-          // },
-          // {
-          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-          //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-          //   value: 2000003,
-          //   date: '2021-02-09 13:17',
-          //   bHandled: 'false',
-          //   status: '未经处理'
-          // },
-          // {
-          //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-          //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-          //   value: 2000004,
-          //   date: '2021-02-09 13:17',
-          //   bHandled: 'false',
-          //   status: '未经处理'
-          // }
+      // {
+      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+      //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+      //   value: 2000001,
+      //   date: '2021-02-09 13:16',
+      //   bHandled: 'false',
+      //   status: '未经处理'
+      // },
+      // {
+      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+      //   ruffAddr: 'ruff124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+      //   value: 2000002,
+      //   date: '2021-02-09 13:17',
+      //   bHandled: 'false',
+      //   status: '未经处理'
+      // },
+      // {
+      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+      //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+      //   value: 2000003,
+      //   date: '2021-02-09 13:17',
+      //   bHandled: 'false',
+      //   status: '未经处理'
+      // },
+      // {
+      //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+      //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
+      //   value: 2000004,
+      //   date: '2021-02-09 13:17',
+      //   bHandled: 'false',
+      //   status: '未经处理'
+      // }
     },
     handleCurrentTx(val) {
       this.currentRowTx = val
@@ -355,6 +411,7 @@ export default {
     },
     hanldeTx() {
       console.log('hanleTx()')
+
     },
     txRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
@@ -364,6 +421,16 @@ export default {
       }
       return ''
     },
+    selectedTxStyle({row, rowIndex}){
+      if(this.txs.data[rowIndex].type !== 0){
+      return {
+        "background-color": "#F56C6C"
+      }
+      }
+    },
+    indexTxMethod(index) {
+        return index;
+      },
     handleCurrentCashback(val) {
       this.currentRowCashback = val
       console.log(this.currentRowCashback)
