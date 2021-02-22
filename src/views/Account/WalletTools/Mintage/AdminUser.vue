@@ -49,7 +49,7 @@
             </el-table-column>
             <el-table-column prop="ruffAddr" label="RUFF地址">
             </el-table-column>
-            <el-table-column prop="value" label="数量" width="80">
+            <el-table-column prop="value" label="数量" width="120">
             </el-table-column>
             <el-table-column prop="bHandled" label="处理" width="100">
             </el-table-column>
@@ -126,7 +126,7 @@
 <script>
 import LoadingContainer from '@/components/LoadingContainer'
 import * as chainApi from '../../../../common/chain-api'
-
+import * as chainLib from '../../../../common/chain-lib'
 export default {
   props: {
     value: {
@@ -145,7 +145,10 @@ export default {
       action: '',
       strAlert: '',
       loading: false,
-      txs: null,
+      txs: {
+        total: 1,
+        data: []
+      },
       page: 1,
       pageSize: 5,
       cashbacks: null,
@@ -174,7 +177,21 @@ export default {
       )
     },
     dataTxs() {
-        return this.txs.data
+      // get data from txs.data
+      let out = []
+
+      for (let record of this.txs.data){
+        out.push({
+          date: this.getStrDate(record.date),
+          foreignAddr: record.foreignAddr,
+          ruffAddr: record.ruffAddr,
+          value: record.value,
+          bHandled: this.getStrHandled(record.bHandled),
+          status: this.getStrStatus(record)
+        })
+      }
+
+      return out
     },
     dataCashbacks() {
       return this.cashbacks.data
@@ -190,6 +207,56 @@ export default {
   },
   mounted() {},
   methods: {
+    getStrHandled(bHandled){
+      if(bHandled){
+        return "Y"
+      }else{
+        return "N"
+      }
+    },
+    getStrStatus(record){
+      let out = ''
+      if(record.type === 0){
+        out+='Valid'
+        if(record.bHandled === true){
+          out+=',processed'
+        }else{
+          out+=',unprocessed'
+        }
+      }else{
+        out+= 'Invalid'
+      }
+      return out
+    },
+    getStrDate(str){
+      try{
+        let date = new Date(str)
+        return date.getFullYear() + "-"
+        + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + "-"
+        + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + " "
+        + (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ":"
+        + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) 
+      }catch(e){
+        console.error(e)
+        return ''
+      }
+    },
+    getAuth(){
+      let privateKey = this.$_APP.privateKey
+      let address = chainLib.addressFromSecretKey(privateKey)
+      let pubkey = (chainLib.publicKeyFromSecretKey(privateKey)).toString('hex')
+
+      let num = Math.floor(new Date().getTime() / 1000)-1
+
+      let hash = chainLib.hash256(Buffer.from(num + ''))
+
+      return {
+        date: num, // seconds
+        address: address,
+        pubkey: pubkey,
+        signature: (chainLib.sign(hash, privateKey)).toString('hex')
+      }
+    },
     actionChange() {
       console.log('change')
       if (this.action === this.actionPurchase) {
@@ -229,17 +296,26 @@ export default {
     async updateTxs() {
       this.loading = true
       console.log("this.page:", this.page, " ", this.pageSize)
-      // chainApi
-      //   .getPurchased(this.page -1, this.pageSize, {})
-      //   .then(res =>{
-      //     console.log(res)
-      //   })
-      //   .finally(()=>{
-      //     this.loading = false
-      //   })
-      this.txs = {
-        total: 1,
-        data: [
+
+      chainApi
+        .getPurchased(this.page -1, this.pageSize, this.getAuth())
+        .then(res =>{
+          console.log('getPurchased()')
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.txs.total =  res.data.page_total
+            this.txs.data = []
+            for(let ele of res.data.data){
+              this.txs.data.push(ele)
+            }
+          }
+          
+        })
+        .finally(()=>{
+          this.loading = false
+        })
+
           // {
           //   foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
           //   ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
@@ -272,9 +348,6 @@ export default {
           //   bHandled: 'false',
           //   status: '未经处理'
           // }
-        ]
-      }
-      this.loading = false
     },
     handleCurrentTx(val) {
       this.currentRowTx = val
