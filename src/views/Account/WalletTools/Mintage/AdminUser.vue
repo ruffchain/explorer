@@ -11,20 +11,19 @@
   }
 }
 
- .warning-row {
-    color:red;
-    background: rgb(231, 11, 22);
-
-  }
-  .success-row {
-    background: #da9619;
-  }
+.warning-row {
+  color: red;
+  background: rgb(231, 11, 22);
+}
+.success-row {
+  color: brown;
+  background: #da9619;
+}
 </style>
 
 <template>
   <div class="admin-user">
     <section>
-      <h2>管理员页面</h2>
       <div class="top-radio-selecter">
         <el-radio-group size="medium" v-model="action" @change="actionChange">
           <el-radio-button :label="actionPurchase"></el-radio-button>
@@ -62,7 +61,7 @@
               @current-change="updateTxs"
               :current-page.sync="page"
               :page-size.sync="pageSize"
-              :page-sizes="[10, 20]"
+              :page-sizes="[5, 10]"
               layout="total,sizes,prev,pager,next,jumper"
               :total="txs.total"
             />
@@ -107,7 +106,7 @@
               @current-change="updateCashbacks"
               :current-page.sync="page"
               :page-size.sync="pageSize"
-              :page-sizes="[10, 20]"
+              :page-sizes="[5, 10]"
               layout="total,sizes,prev,pager,next,jumper"
               :total="cashbacks.total"
             />
@@ -126,6 +125,7 @@
 
 <script>
 import LoadingContainer from '@/components/LoadingContainer'
+import * as chainApi from '../../../../common/chain-api'
 
 export default {
   props: {
@@ -147,7 +147,7 @@ export default {
       loading: false,
       txs: null,
       page: 1,
-      pageSize: 10,
+      pageSize: 5,
       cashbacks: null,
       currentRowTx: 0,
       currentRowCashback: 0
@@ -161,13 +161,20 @@ export default {
       return 'cashback'
     },
     strActionPurchase() {
-      return '列举换币交易, USDT换' + this.token + ', 选择表中的一行，进行处理'
+      return (
+        '管理员页面: ' +
+        '列举换币交易, USDT换' +
+        this.token +
+        ', 选择表中的一行，进行处理'
+      )
     },
     strActionCashback() {
-      return this.token + '兑换回USDT, 选择表中的一行，进行处理'
+      return (
+        '管理员页面: ' + this.token + '兑换回USDT, 选择表中的一行，进行处理'
+      )
     },
     dataTxs() {
-      return this.txs.data
+        return this.txs.data
     },
     dataCashbacks() {
       return this.cashbacks.data
@@ -221,6 +228,9 @@ export default {
     },
     async updateTxs() {
       this.loading = true
+      // this.txs = {
+      //   data:[]
+      // }
       this.txs = {
         total: 1,
         data: [
