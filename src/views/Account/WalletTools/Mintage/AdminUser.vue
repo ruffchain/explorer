@@ -45,10 +45,8 @@
             :row-style="selectedTxStyle"
             style="width: 100%"
           >
-            <el-table-column prop="index" label="" width="20"
-            ></el-table-column>
-            <el-table-column prop="date" label="日期" width="150"
-            >
+            <el-table-column prop="index" label="" width="20"></el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
             </el-table-column>
             <el-table-column prop="foreignAddr" label="USDT地址">
             </el-table-column>
@@ -74,7 +72,11 @@
           <!-- button -->
           <TransactionResult v-if="result" :data="result" />
           <div style="margin-top: 20px">
-            <el-form :inline="true" :model="purchased" v-if="currentRowTx!==null">
+            <el-form
+              :inline="true"
+              :model="purchased"
+              v-if="currentRowTx !== null"
+            >
               <el-form-item label="Ratio:">
                 <el-input-number
                   v-model="purchased.ratio"
@@ -85,17 +87,19 @@
                 ></el-input-number>
               </el-form-item>
               <el-form-item label="Send ">
-                <div style="color:red">{{ valPurchased }} {{ token }} </div>
+                <div style="color:red">{{ valPurchased }} {{ token }}</div>
               </el-form-item>
               <el-form-item label="To">
-                {{$_APP.ADDRESS_PREFIX}}{{ addrPurchased }}
+                {{ $_APP.ADDRESS_PREFIX }}{{ addrPurchased }}
               </el-form-item>
               <el-form-item>
-                <el-button 
+                <el-button
                   :disabled="buttonDisabled"
-                  type="primary" 
-                  v-if="action === actionPurchase" @click="hanldeTx"
-                  >Confirm</el-button>
+                  type="primary"
+                  v-if="action === actionPurchase"
+                  @click="hanldeTx"
+                  >Confirm</el-button
+                >
               </el-form-item>
             </el-form>
           </div>
@@ -209,7 +213,7 @@ export default {
       buttonDisabled: false,
       showConfirmTx: false,
       txData: {},
-      result : null
+      result: null
     }
   },
   computed: {
@@ -235,7 +239,7 @@ export default {
     dataTxs() {
       // get data from txs.data
       let out = []
-      let i= 0
+      let i = 0
       for (let record of this.txs.data) {
         out.push({
           index: i++,
@@ -253,18 +257,25 @@ export default {
     dataCashbacks() {
       return this.cashbacks.data
     },
-    valPurchased(){
-      if(this.currentRowTx){
-        let val = (typeof this.currentRowTx.value === 'string')?parseFloat(this.currentRowTx.value):this.currentRowTx.value
-        return (this.purchased.ratio * val)
-      }else{
+    valPurchased() {
+      if (this.currentRowTx) {
+        let val =
+          typeof this.currentRowTx.value === 'string'
+            ? parseFloat(this.currentRowTx.value)
+            : this.currentRowTx.value
+        return this.purchased.ratio * val
+      } else {
         return 0
       }
     },
-    addrPurchased(){
-      if(this.currentRowTx && !this.checkTxHandled(this.currentRowTx) && this.checkTxValid(this.currentRowTx)){
-        return (this.currentRowTx.ruffAddr)
-      }else{
+    addrPurchased() {
+      if (
+        this.currentRowTx &&
+        !this.checkTxHandled(this.currentRowTx) &&
+        this.checkTxValid(this.currentRowTx)
+      ) {
+        return this.currentRowTx.ruffAddr
+      } else {
         return ''
       }
     }
@@ -279,16 +290,15 @@ export default {
   },
   mounted() {},
   methods: {
-    checkTxHandled(tx){
-      if(this.txs.data[tx.index].bHandled === true){
+    checkTxHandled(tx) {
+      if (this.txs.data[tx.index].bHandled === true) {
         return true
       }
-
     },
-    checkTxValid(tx){
-      if(this.txs.data[tx.index].type === 0){
+    checkTxValid(tx) {
+      if (this.txs.data[tx.index].type === 0) {
         return true
-      } 
+      }
     },
     getStrHandled(bHandled) {
       if (bHandled) {
@@ -350,7 +360,7 @@ export default {
     },
     actionChange() {
       console.log('change')
-      
+
       if (this.action === this.actionPurchase) {
         this.strAlert = this.strActionPurchase
         this.page = 1
@@ -389,7 +399,7 @@ export default {
 
       this.loading = false
     },
-    async updateTxs( ) {
+    async updateTxs() {
       this.loading = true
       console.log('this.page:', this.page, ' ', this.pageSize)
 
@@ -412,20 +422,23 @@ export default {
         })
     },
     handleCurrentTx(val) {
-      if(!val){
+      if (!val) {
         return
       }
       this.result = null
       this.currentRowTx = val
       console.log(this.currentRowTx)
       let index = this.currentRowTx.index
-      if( this.txs.data[index].bHandled === true || this.txs.data[index].type !== 0){
+      if (
+        this.txs.data[index].bHandled === true ||
+        this.txs.data[index].type !== 0
+      ) {
         this.buttonDisabled = true
-      }else{
-        this.buttonDisabled =  false;
+      } else {
+        this.buttonDisabled = false
       }
     },
-  
+
     txRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
         return 'warning-row'
@@ -434,25 +447,29 @@ export default {
       }
       return ''
     },
-    selectedTxStyle({row, rowIndex}){
-      if(this.txs.data[rowIndex].type !== 0){
+    selectedTxStyle({ row, rowIndex }) {
+      if (this.txs.data[rowIndex].type !== 0) {
         return {
-          "background-color": "#F56C6C"
+          'background-color': '#F56C6C'
         }
-      }else if(this.txs.data[rowIndex].bHandled === true){
+      } else if (this.txs.data[rowIndex].bHandled === true) {
         return {
-          "background-color": "#67C23A"
+          'background-color': '#67C23A'
+        }
+      }else if (this.txs.data[rowIndex].bAccepted === true){
+        return {
+          'background-color': '#909399'
         }
       }
     },
     indexTxMethod(index) {
-        return index;
-      },
-    cleanTxForm(){
+      return index
+    },
+    cleanTxForm() {
       this.currentRowTx = null
       this.updateTxs(this.page)
     },
-      hanldeTx() {
+    hanldeTx() {
       console.log('hanleTx()')
       this.result = null
       this.txData = genTransferTx({
@@ -464,25 +481,24 @@ export default {
       })
       this.showConfirmTx = true
     },
-    async confirmSendTx(tx){
-      try{
-        this.loading=true
+    async confirmSendTx(tx) {
+      try {
+        this.loading = true
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         this.result = {
-          message: res.confirmed?"Transaction OK":"Transaction Failed", json: res.tx
+          message: res.confirmed ? 'Transaction OK' : 'Transaction Failed',
+          json: res.tx
         }
-        if(res.confirmed){ this.cleanTxForm()}
-      }
-      catch(e){
+        if (res.confirmed) {
+          this.cleanTxForm()
+        }
+      } catch (e) {
         this.result = {
-          message: "Error " + e
+          message: 'Error ' + e
         }
-
-      }finally{
+      } finally {
         this.loading = false
       }
-
-    
     },
     handleCurrentCashback(val) {
       this.currentRowCashback = val
