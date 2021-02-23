@@ -54,6 +54,8 @@
             </el-table-column>
             <el-table-column prop="value" label="数量" width="120">
             </el-table-column>
+            <el-table-column prop="sent" label="兑换" width="120">
+            </el-table-column>
             <el-table-column prop="bHandled" label="处理" width="50">
             </el-table-column>
             <el-table-column prop="status" label="状态"> </el-table-column>
@@ -247,6 +249,7 @@ export default {
           foreignAddr: record.foreignAddr,
           ruffAddr: record.ruffAddr,
           value: record.value,
+          sent: (record.ruffValue === undefined || record.ruffValue === 'undefined')?0:record.ruffValue,
           bHandled: this.getStrHandled(record.bHandled),
           status: this.getStrStatus(record)
         })
@@ -263,7 +266,7 @@ export default {
           typeof this.currentRowTx.value === 'string'
             ? parseFloat(this.currentRowTx.value)
             : this.currentRowTx.value
-        return this.purchased.ratio * val
+        return Math.round(this.purchased.ratio * val)
       } else {
         return 0
       }
@@ -275,7 +278,10 @@ export default {
         this.checkTxValid(this.currentRowTx)
       ) {
         return this.currentRowTx.ruffAddr
-      } else {
+      } else if(this.currentRowTx && this.checkTxHandled(this.currentRowTx)){
+          let index = this.currentRowTx.index
+          return   '  Done ' + this.txs.data[index].ruffValue + ' sent'
+        }else {
         return ''
       }
     }
@@ -432,6 +438,7 @@ export default {
       if (
         this.txs.data[index].bHandled === true ||
         this.txs.data[index].type !== 0
+        
       ) {
         this.buttonDisabled = true
       } else {
