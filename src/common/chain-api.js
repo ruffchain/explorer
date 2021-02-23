@@ -94,6 +94,16 @@ export const setEarningsAccount = (address, usdt, pubkey,sign) =>
       method: 'get-config',
       args:{}
     })
+  export const updatePurchasedHandled = (inTx, ruffValue, ruffTx, inAuth) =>
+    callMintageRpc({
+      method: 'update-purchased-handled',
+      args:{
+        tx: inTx,
+        ruffvalue: ruffValue,
+        rufftx: ruffTx
+      },
+      auth: inAuth
+    })
 
 //////////////////////////////////////////
 const callChainRpc = (function () {

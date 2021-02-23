@@ -485,8 +485,24 @@ export default {
       try {
         this.loading = true
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
+        console.log('tx res:')
+        console.log(res)
+         let index = this.currentRowTx.index
+        let res2 = await chainApi.updatePurchasedHandled(this.txs.data[index].foreignTx,
+          res.tx.input.amount,
+          res.tx.hash,
+          this.getAuth()
+        )
+        console.log('res2:', res2)
+        let messageUpdate = ''
+        if(res2.err === 0){
+          messageUpdate = ' ,Update OK'
+        }else{
+          messageUpdate = ' ,Update Fail'
+        }
+
         this.result = {
-          message: res.confirmed ? 'Transaction OK' : 'Transaction Failed',
+          message: (res.confirmed ? 'Transaction OK' : 'Transaction Failed') + messageUpdate,
           json: res.tx
         }
         if (res.confirmed) {
