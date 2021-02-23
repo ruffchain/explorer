@@ -35,7 +35,6 @@
       <!-- 展示表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionPurchase">
         <div>
-          <h2>换币请求:</h2>
           <el-table
             type="index"
             :data="dataTxs"
@@ -103,6 +102,7 @@
                   >Confirm</el-button
                 >
               </el-form-item>
+              
             </el-form>
           </div>
         </div>
@@ -158,11 +158,11 @@
       :tx="txData"
       @confirm="confirmSendTx"
     />
-    <AppDialog
+    <!-- <AppDialog
       :title="token"
       @cleanForm="cleanTxForm(), (loading = false)"
       v-if="loading"
-    />
+    /> -->
   </div>
 </template>
 
@@ -230,7 +230,7 @@ export default {
         '管理员页面: ' +
         '列举换币交易, USDT换' +
         this.token +
-        ', 选择表中的一行，进行处理'
+        ', 选择表中的一行，处理换币请求'
       )
     },
     strActionCashback() {
@@ -457,15 +457,15 @@ export default {
     selectedTxStyle({ row, rowIndex }) {
       if (this.txs.data[rowIndex].type !== 0) {
         return {
-          'background-color': '#F56C6C'
+          'background-color': 'rgb(253, 226, 226)'
         }
       } else if (this.txs.data[rowIndex].bHandled === true) {
         return {
-          'background-color': '#67C23A'
+          'background-color': 'rgb(225, 243, 216)'
         }
       }else if (this.txs.data[rowIndex].bAccepted === true){
         return {
-          'background-color': '#909399'
+          'background-color': 'rgb(250, 236, 216)'
         }
       }
     },
