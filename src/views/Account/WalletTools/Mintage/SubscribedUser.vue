@@ -44,12 +44,13 @@
     <!-- 展示表格 -->
     <LoadingContainer :loading="loading">
       <div>
-        <h2>已提交的换币请求:</h2>
+        <!-- <h2>已提交的换币请求:</h2> -->
         <el-table
           :data="dataCashbacks"
           highlight-current-row
           @current-change="handleCurrentCashback"
           :row-class-name="cashbackRowClassName"
+          :row-style="selectedTxStyle"
           style="width: 100%"
         >
           <el-table-column prop="index" label="" width="20"></el-table-column>
@@ -74,7 +75,7 @@
             @current-change="updateCashbacks"
             :current-page.sync="page"
             :page-size.sync="pageSize"
-            :page-sizes="[5, 10]"
+            :page-sizes="[3, 10]"
             layout="total,sizes,prev,pager,next,jumper"
             :total="cashbacks.total"
           />
@@ -126,7 +127,7 @@ export default {
       cashbacks: { total: 0, data: [] },
       currentRowCashback: 0,
       page: 1,
-      pageSize: 5,
+      pageSize: 3,
       formData: {
         toUsdt: '',
         amount: ''
@@ -245,8 +246,25 @@ export default {
       }
       return ''
     },
+    async updateValue(){
+      try {
+        let privateKey = this.$_APP.privateKey
+        let address = chainLib.addressFromSecretKey(privateKey)
+        let tokens = await chainApi.getTokensByAddress(address)
+        console.log('tokens:', tokens)
+        let token = tokens.find(tok => {
+          return tok.token === this.token
+        })
+        console.log(token)
+        this.value = token.value
+
+      }catch(e){
+        console.log(e)
+      }
+    },
     cleanTable(){
       this.updateCashbacks()
+      this.updateValue()
     },
     async confirm() {
       // check
@@ -299,6 +317,7 @@ export default {
           }else{
             messageUpdate = ' , Update Fail'
           }
+          this.cleanTable()
         }
         this.result = {
           message :(res.confirmed? 'Transaction OK':'Transaction Failed') + messageUpdate,
@@ -314,6 +333,21 @@ export default {
         this.loading = false
       }
 
+    },
+    selectedTxStyle({ row, rowIndex }) {
+      if (this.cashbacks.data[rowIndex].type !== 0) {
+        return {
+          'background-color': 'rgb(253, 226, 226)'
+        }
+      } else if (this.cashbacks.data[rowIndex].bHandled === true) {
+        return {
+          'background-color': 'rgb(225, 243, 216)'
+        }
+      } else if (this.cashbacks.data[rowIndex].bAccepted === true) {
+        return {
+          'background-color': 'rgb(250, 236, 216)'
+        }
+      }
     }
   }
 }
