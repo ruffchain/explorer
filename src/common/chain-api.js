@@ -113,6 +113,24 @@ export const setEarningsAccount = (address, usdt, pubkey,sign) =>
       },
       auth: inAuth
     })
+  export const checkUsdtAddr = (addr) =>
+    callMintageRpc({
+      method: 'check-usdt-address',
+      args:{
+        addr: addr
+      }
+    })
+
+  export const setCashback = (inForeignAddr, inValue, inTx, inAuth) =>
+    callMintageRpc({
+      method: 'set-cashback',
+      args:{
+        foreign_addr: inForeignAddr,
+        value: inValue,
+        ruff_tx: inTx
+      },
+      auth: inAuth
+    })
 
 //////////////////////////////////////////
 const callChainRpc = (function () {

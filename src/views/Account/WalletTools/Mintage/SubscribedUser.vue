@@ -31,7 +31,7 @@
         </el-form-item>
       </el-form>
     </section>
-    <TransactionResult v-if="result" :data="result" />
+
     <el-button
       :loading="txLoading"
       type="primary"
@@ -40,7 +40,7 @@
     >
       {{ strTxConfirm }}
     </el-button>
-
+     <TransactionResult v-if="result" :data="result" />
     <!-- 展示表格 -->
     <LoadingContainer :loading="loading">
       <div>
@@ -86,6 +86,7 @@
       :tx="txData"
       @confirm="confirmSendTx"
     />
+   
   </div>
 </template>
 
@@ -97,6 +98,8 @@ import * as chainApi from '../../../../common/chain-api'
 import * as chainLib from '../../../../common/chain-lib'
 import ConfirmTx from '../ConfirmTx'
 import { getStrDate, getStrHandled } from '../../../../common/utils'
+import { genTransferTx } from '../wallet-helper'
+import { TokenType } from '../../../../common/enums'
 
 export default {
   props: {
@@ -113,7 +116,7 @@ export default {
   components: {
     LoadingContainer,
     TransactionResult,
-    ConfirmTx,
+    ConfirmTx
   },
   data() {
     return {
@@ -242,15 +245,74 @@ export default {
       }
       return ''
     },
+    cleanTable(){
+      this.updateCashbacks()
+    },
     async confirm() {
-      this.showConfirmTx = true
+      // check
+      this.result = null
 
-      console.log('confirm tx')
-      this.showConfirmTx = false
+      if (this.formData.toUsdt.length < 1) {
+        this.result = {
+          message: 'No usdt address',
+        }
+        return
+      }
+
+      let res = await chainApi.checkUsdtAddr(this.formData.toUsdt);
+
+      console.log(res)
+      if(res.err !== 0){
+        this.result = {
+          message: 'Invalid usdt address'
+        }
+        return
+      }
+
+      this.txData = genTransferTx({
+        to: this.mintageAddr,
+        tokenId: this.token,
+        amount: this.formData.amount + '',
+        fee: '0.1',
+        tokenType: TokenType.normal
+      })
+
+      this.showConfirmTx = true
     },
     async confirmSendTx(tx) {
+      try{
+        this.loading = true
+        let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
+        console.log('tx res:')
+        console.log(res)
 
+        let messageUpdate = ''
+        if(res.confirmed){
+          let res2 = await chainApi.setCashback(
+              this.formData.toUsdt,
+              this.formData.amount, 
+              res.tx.hash, 
+              this.getAuthNormal())
+          console.log('res2:', res2)
+          if(res2.err === 0){
+            messageUpdate = ' , Update OK'
+          }else{
+            messageUpdate = ' , Update Fail'
+          }
+        }
+        this.result = {
+          message :(res.confirmed? 'Transaction OK':'Transaction Failed') + messageUpdate,
+          json: res.tx
+        }
 
+      }catch(e){
+        this.result = {
+          message: 'Error: ' + e
+        }
+
+      }finally{
+        this.loading = false
+      }
 
     }
   }
