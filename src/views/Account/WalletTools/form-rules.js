@@ -66,7 +66,16 @@ export const tokenPrecision = () => ({
   },
   trigger: ['change', 'blur']
 })
-
+export const amountOver = (val) =>({
+  validator: (rule ,value,callback) =>{
+    let err 
+    if( value >val){
+      err = 'Over limit val'
+      handleCb(callback, err)
+    }
+  },
+  trigger: ['change', 'blur']
+})
 export const amountTooBig = () => ({
   validator: (rule, value, callback) => {
     let err

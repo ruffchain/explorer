@@ -81,6 +81,11 @@
         </div>
       </div>
     </LoadingContainer>
+    <ConfirmTx
+      :visible.sync="showConfirmTx"
+      :tx="txData"
+      @confirm="confirmSendTx"
+    />
   </div>
 </template>
 
@@ -91,7 +96,7 @@ import * as rules from '../form-rules.js'
 import * as chainApi from '../../../../common/chain-api'
 import * as chainLib from '../../../../common/chain-lib'
 import ConfirmTx from '../ConfirmTx'
-import { getStrDate, getStrHandled} from '../../../../common/utils'
+import { getStrDate, getStrHandled } from '../../../../common/utils'
 
 export default {
   props: {
@@ -107,14 +112,15 @@ export default {
   },
   components: {
     LoadingContainer,
-    TransactionResult
+    TransactionResult,
+    ConfirmTx,
   },
   data() {
     return {
       name: '',
       loading: false,
       strAlert: '将' + this.token + '兑换成USDT',
-      cashbacks: {total:0, data:[]},
+      cashbacks: { total: 0, data: [] },
       currentRowCashback: 0,
       page: 1,
       pageSize: 5,
@@ -124,7 +130,9 @@ export default {
       },
       formRules: {},
       result: null,
-      txLoading: false
+      txLoading: false,
+      showConfirmTx: false,
+      txData: {}
     }
   },
   computed: {
@@ -134,16 +142,16 @@ export default {
     dataCashbacks() {
       // return this.cashbacks.data
       let out = []
-      let index =0;
-      for(let record of this.cashbacks.data){
+      let index = 0
+      for (let record of this.cashbacks.data) {
         out.push({
-            index : index++,
-            date: getStrDate(record.date),
-            foreignAddr: record.foreignAddr,
-            value: record.value,
-            sent: record.foreignValue,
-            bHandled: getStrHandled(record.bHandled),
-            status: this.getStrStatus(record)
+          index: index++,
+          date: getStrDate(record.date),
+          foreignAddr: record.foreignAddr,
+          value: record.value,
+          sent: record.foreignValue,
+          bHandled: getStrHandled(record.bHandled),
+          status: this.getStrStatus(record)
         })
       }
       return out
@@ -155,9 +163,9 @@ export default {
       return 'Amount'
     },
     amountRules() {
-      let maxDecimalCount = rules.maxDecimalCount(9)
+      let maxCount = rules.amountOver(this.value)
 
-      return [...this.formRules.amount, maxDecimalCount]
+      return [...this.formRules.amount, maxCount]
     },
     strTxConfirm() {
       return 'Confirm'
@@ -175,8 +183,8 @@ export default {
     this.updateCashbacks()
   },
   methods: {
-    getStrStatus(record){
-       let out = ''
+    getStrStatus(record) {
+      let out = ''
       if (record.type === 0) {
         out += 'Valid'
         if (record.bHandled === true) {
@@ -213,35 +221,14 @@ export default {
         .then(res => {
           console.log('getCashbackByAddr()')
           console.log(res)
-          if(res.err === 0){
-            this.cashbacks.total = res.data.page_total;
+          if (res.err === 0) {
+            this.cashbacks.total = res.data.page_total
             this.cashbacks.data = res.data.data
           }
         })
-        .finally(()=>{
-                this.loading = false
+        .finally(() => {
+          this.loading = false
         })
-      // this.cashbacks = {
-      //   total: 1,
-      //   data: [
-      //     {
-      //       foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-      //       value: 234234,
-      //       date: '2021-02-09 13:17',
-      //       bHandled: 'false',
-      //       status: ''
-      //     },
-      //     {
-      //       foreignAddr: '0xB8101C3eC9AA1985f6c747E25c28324E4A361ec1',
-      //       value: 2342500,
-      //       date: '2021-02-10 13:17',
-      //       bHandled: 'false',
-      //       status: ''
-      //     }
-      //   ]
-      // }
-
-
     },
     handleCurrentCashback(val) {
       this.currentRowCashback = val
@@ -256,10 +243,15 @@ export default {
       return ''
     },
     async confirm() {
-      this.txLoading = true
+      this.showConfirmTx = true
 
       console.log('confirm tx')
-      this.txLoading = false
+      this.showConfirmTx = false
+    },
+    async confirmSendTx(tx) {
+
+
+
     }
   }
 }
