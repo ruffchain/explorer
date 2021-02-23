@@ -19,28 +19,31 @@
       </el-alert>
       <el-form
         ref="form"
+        :inline="false"
         :model="formData"
         :rules="formRules"
-        label-width="180px"
+        label-width="150px"
       >
-        <el-form-item prop="toUsdt" :label="strToUsdt">
-          <el-input v-model="formData.toUsdt"> </el-input>
+        <el-form-item type="text" maxlength="32" prop="toUsdt" :label="strToUsdt">
+          <el-input type="text" v-model="formData.toUsdt" minlength="30"> </el-input>
         </el-form-item>
         <el-form-item prop="amount" :rules="amountRules" :label="strAmount">
           <el-input v-model="formData.amount" type="number"> </el-input>
         </el-form-item>
+        <el-form-item>
+          <el-button
+            :loading="txLoading"
+            type="primary"
+            @click="confirm()"
+            style="width:100%;"
+          >
+            {{ strTxConfirm }}
+          </el-button>
+        </el-form-item>
       </el-form>
     </section>
 
-    <el-button
-      :loading="txLoading"
-      type="primary"
-      @click="confirm()"
-      style="width:100%;"
-    >
-      {{ strTxConfirm }}
-    </el-button>
-     <TransactionResult v-if="result" :data="result" />
+    <TransactionResult v-if="result" :data="result" />
     <!-- 展示表格 -->
     <LoadingContainer :loading="loading">
       <div>
@@ -87,7 +90,6 @@
       :tx="txData"
       @confirm="confirmSendTx"
     />
-   
   </div>
 </template>
 
@@ -246,7 +248,7 @@ export default {
       }
       return ''
     },
-    async updateValue(){
+    async updateValue() {
       try {
         let privateKey = this.$_APP.privateKey
         let address = chainLib.addressFromSecretKey(privateKey)
@@ -257,14 +259,13 @@ export default {
         })
         console.log(token)
         this.value = token.value
-
-      }catch(e){
+      } catch (e) {
         console.log(e)
       }
     },
-    cleanTable(){
+    cleanTable() {
       this.updateCashbacks()
-      this.updateValue()
+      // this.updateValue(), too late to update token value,
     },
     async confirm() {
       // check
@@ -272,15 +273,15 @@ export default {
 
       if (this.formData.toUsdt.length < 1) {
         this.result = {
-          message: 'No usdt address',
+          message: 'No usdt address'
         }
         return
       }
 
-      let res = await chainApi.checkUsdtAddr(this.formData.toUsdt);
+      let res = await chainApi.checkUsdtAddr(this.formData.toUsdt)
 
       console.log(res)
-      if(res.err !== 0){
+      if (res.err !== 0) {
         this.result = {
           message: 'Invalid usdt address'
         }
@@ -298,41 +299,41 @@ export default {
       this.showConfirmTx = true
     },
     async confirmSendTx(tx) {
-      try{
+      try {
         this.loading = true
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         console.log('tx res:')
         console.log(res)
 
         let messageUpdate = ''
-        if(res.confirmed){
+        if (res.confirmed) {
           let res2 = await chainApi.setCashback(
-              this.formData.toUsdt,
-              this.formData.amount, 
-              res.tx.hash, 
-              this.getAuthNormal())
+            this.formData.toUsdt,
+            this.formData.amount,
+            res.tx.hash,
+            this.getAuthNormal()
+          )
           console.log('res2:', res2)
-          if(res2.err === 0){
+          if (res2.err === 0) {
             messageUpdate = ' , Update OK'
-          }else{
+          } else {
             messageUpdate = ' , Update Fail'
           }
           this.cleanTable()
         }
         this.result = {
-          message :(res.confirmed? 'Transaction OK':'Transaction Failed') + messageUpdate,
+          message:
+            (res.confirmed ? 'Transaction OK' : 'Transaction Failed') +
+            messageUpdate,
           json: res.tx
         }
-
-      }catch(e){
+      } catch (e) {
         this.result = {
           message: 'Error: ' + e
         }
-
-      }finally{
+      } finally {
         this.loading = false
       }
-
     },
     selectedTxStyle({ row, rowIndex }) {
       if (this.cashbacks.data[rowIndex].type !== 0) {
