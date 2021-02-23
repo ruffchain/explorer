@@ -3,7 +3,7 @@
   .el-alert {
     margin: 20px 0;
   }
-    .pagination-container {
+  .pagination-container {
     display: flex;
     justify-content: flex-end;
     margin-top: 10px;
@@ -14,7 +14,7 @@
 <template>
   <div class="subscribed-user">
     <section>
-      <h2>Subscribed user page: {{ value }} {{ strToken }}</h2>
+      <h2>Subscribed Users: {{ value }} {{ strToken }}</h2>
       <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
       <el-form
@@ -52,13 +52,16 @@
           :row-class-name="cashbackRowClassName"
           style="width: 100%"
         >
+          <el-table-column prop="index" label="" width="20"></el-table-column>
           <el-table-column prop="date" label="日期" width="150">
           </el-table-column>
           <el-table-column prop="foreignAddr" label="USDT地址">
           </el-table-column>
-          <el-table-column prop="value" label="数量" width="80">
+          <el-table-column prop="value" label="数量" width="120">
           </el-table-column>
-          <el-table-column prop="bHandled" label="处理" width="100">
+          <el-table-column prop="sent" label="兑换" width="120">
+          </el-table-column>
+          <el-table-column prop="bHandled" label="处理" width="50">
           </el-table-column>
           <el-table-column prop="status" label="状态"> </el-table-column>
         </el-table>
@@ -71,7 +74,7 @@
             @current-change="updateCashbacks"
             :current-page.sync="page"
             :page-size.sync="pageSize"
-            :page-sizes="[10, 20]"
+            :page-sizes="[5, 10]"
             layout="total,sizes,prev,pager,next,jumper"
             :total="cashbacks.total"
           />
@@ -85,6 +88,10 @@
 import TransactionResult from '../TransactionResult'
 import LoadingContainer from '@/components/LoadingContainer'
 import * as rules from '../form-rules.js'
+import * as chainApi from '../../../../common/chain-api'
+import * as chainLib from '../../../../common/chain-lib'
+import ConfirmTx from '../ConfirmTx'
+import { getStrDate, getStrHandled} from '../../../../common/utils'
 
 export default {
   props: {
@@ -94,7 +101,7 @@ export default {
     token: {
       default: ''
     },
-    mintageAddr:{
+    mintageAddr: {
       default: ''
     }
   },
@@ -107,16 +114,16 @@ export default {
       name: '',
       loading: false,
       strAlert: '将' + this.token + '兑换成USDT',
-      cashbacks: null,
+      cashbacks: {total:0, data:[]},
       currentRowCashback: 0,
       page: 1,
-      pageSize: 10,
+      pageSize: 5,
       formData: {
         toUsdt: '',
         amount: ''
       },
       formRules: {},
-      result: "let's go",
+      result: null,
       txLoading: false
     }
   },
@@ -125,7 +132,21 @@ export default {
       return this.token
     },
     dataCashbacks() {
-      return this.cashbacks.data
+      // return this.cashbacks.data
+      let out = []
+      let index =0;
+      for(let record of this.cashbacks.data){
+        out.push({
+            index : index++,
+            date: getStrDate(record.date),
+            foreignAddr: record.foreignAddr,
+            value: record.value,
+            sent: record.foreignValue,
+            bHandled: getStrHandled(record.bHandled),
+            status: this.getStrStatus(record)
+        })
+      }
+      return out
     },
     strToUsdt() {
       return 'USDT Address'
@@ -154,30 +175,73 @@ export default {
     this.updateCashbacks()
   },
   methods: {
+    getStrStatus(record){
+       let out = ''
+      if (record.type === 0) {
+        out += 'Valid'
+        if (record.bHandled === true) {
+          out += ',processed'
+        } else {
+          out += ',unprocessed'
+        }
+      } else {
+        out += 'Invalid'
+      }
+      return out
+    },
+    getAuthNormal() {
+      let privateKey = this.$_APP.privateKey
+      let address = chainLib.addressFromSecretKey(privateKey)
+      let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')
+
+      let num = Math.floor(new Date().getTime() / 1000) - 1
+
+      let hash = chainLib.hash256(Buffer.from(num + ''))
+
+      return {
+        date: num, // seconds
+        address: address,
+        pubkey: pubkey,
+        signature: chainLib.sign(hash, privateKey).toString('hex')
+      }
+    },
     async updateCashbacks() {
       this.loading = true
-
-      this.cashbacks = {
-        total: 1,
-        data: [
-          {
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            value: 234234,
-            date: '2021-02-09 13:17',
-            bHandled: 'false',
-            status: ''
-          },
-          {
-            foreignAddr: '0xB8101C3eC9AA1985f6c747E25c28324E4A361ec1',
-            value: 2342500,
-            date: '2021-02-10 13:17',
-            bHandled: 'false',
-            status: ''
+      console.log('page :', this.page, 'pagesize:', this.pageSize)
+      chainApi
+        .getCashbackByAddr(this.page - 1, this.pageSize, this.getAuthNormal())
+        .then(res => {
+          console.log('getCashbackByAddr()')
+          console.log(res)
+          if(res.err === 0){
+            this.cashbacks.total = res.data.page_total;
+            this.cashbacks.data = res.data.data
           }
-        ]
-      }
+        })
+        .finally(()=>{
+                this.loading = false
+        })
+      // this.cashbacks = {
+      //   total: 1,
+      //   data: [
+      //     {
+      //       foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
+      //       value: 234234,
+      //       date: '2021-02-09 13:17',
+      //       bHandled: 'false',
+      //       status: ''
+      //     },
+      //     {
+      //       foreignAddr: '0xB8101C3eC9AA1985f6c747E25c28324E4A361ec1',
+      //       value: 2342500,
+      //       date: '2021-02-10 13:17',
+      //       bHandled: 'false',
+      //       status: ''
+      //     }
+      //   ]
+      // }
 
-      this.loading = false
+
     },
     handleCurrentCashback(val) {
       this.currentRowCashback = val

@@ -104,6 +104,15 @@ export const setEarningsAccount = (address, usdt, pubkey,sign) =>
       },
       auth: inAuth
     })
+  export const getCashbackByAddr = (index, pagesize, inAuth) =>
+    callMintageRpc({
+      method : 'get-cashback-byaddr',
+      args:{
+        page: index,
+        page_size: pagesize
+      },
+      auth: inAuth
+    })
 
 //////////////////////////////////////////
 const callChainRpc = (function () {
