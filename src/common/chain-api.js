@@ -11,7 +11,7 @@ const chainClient = new HostClient({ chainUrl: window.origin + '/chain-rpc' })
 
 // Added 2020-12-30
 const callEarningsRpc = (function () {
-  const http = axios.create({ baseURL: '/chain-earnings-rpc', timeout: 5000 })
+  const http = axios.create({ baseURL: '/chain-earnings-rpc', timeout: 8000 })
 
   http.interceptors.request.use((config) => {
     config.headers.Authorization = '16heLGkcJepHVjYFfGDtViKnXM8u7MdRAU'
@@ -31,7 +31,7 @@ const callEarningsRpc = (function () {
 
 // Added 2020-2-20
 const callMintageRpc = (function () {
-  const http = axios.create({ baseURL: '/chain-mintage-rpc', timeout: 5000 })
+  const http = axios.create({ baseURL: '/chain-mintage-rpc', timeout: 8000 })
 
   http.interceptors.request.use((config) => {
     config.headers.Authorization = '16heLGkcJepHVjYFfGDtViKnXM8u7MdRAU'
