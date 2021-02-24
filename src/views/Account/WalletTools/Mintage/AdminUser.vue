@@ -114,6 +114,7 @@
             highlight-current-row
             @current-change="handleCurrentCashback"
             :row-class-name="cashbackRowClassName"
+            :row-style="selectedCashbackStyle"
             style="width: 100%"
           >
             <el-table-column prop="index" label="" width="20"></el-table-column>
@@ -149,10 +150,20 @@
           <TransactionResult v-if="result" :data="result" />
           <div style="margin-top: 20px">
             <el-form
-              :inline="true"
+              :inline="false"
               :model="cashbackModel"
               v-if="currentRowCashback !== null"
+              label-width="90px"
             >
+              <el-form-item label="USDT:">
+                <el-input
+                  v-model="cashbackModel.txHash"
+                  placeholder="USDT transfer TX hash"
+                  v-if="currentRowCashback !== null"
+                >
+                  <template slot="prepend">Hash</template>
+                </el-input>
+              </el-form-item>
               <el-form-item label="Ratio:">
                 <el-input-number
                   v-model="cashbackModel.ratio"
@@ -162,24 +173,27 @@
                   :min="0.2"
                 ></el-input-number>
               </el-form-item>
-              <el-form-item label="Send">
-                <div style="color:red">{{ valCashback }} USDT</div>
+              <el-form-item label="Value:">
+                {{ valCashback }}
               </el-form-item>
-              <el-form-item label="TX Hash">
-                <el-input
-                  v-model="cashbackModel.txHash"
-                  placeholder="USDT transfer TX hash"
+              <el-form-item label="">
+                <el-button
+                  type="warning"
+                  :disabled="buttonDisabled"
+                  @click="handleCashback"
+                  >Update Cashback</el-button
                 >
-                </el-input>
               </el-form-item>
             </el-form>
-            <el-button
+
+            <!-- <div
               v-if="action === actionCashback && currentRowCashback !== null"
-              type="warning"
-              :disabled="buttonDisabled"
-              @click="handleCashback"
-              >Handle Cashback</el-button
             >
+          
+                <div style="color:red">{{ valCashback }} USDT</div>
+
+              
+            </div> -->
           </div>
         </div>
       </LoadingContainer>
@@ -189,11 +203,11 @@
       :tx="txData"
       @confirm="confirmSendTx"
     />
-    <!-- <AppDialog
+    <AppDialog
       :title="token"
-      @cleanForm="cleanTxForm(), (loading = false)"
-      v-if="loading"
-    /> -->
+      @cleanForm="cleanTxForm(), (apploading = false)"
+      v-if="apploading"
+    />
   </div>
 </template>
 
@@ -250,7 +264,8 @@ export default {
       buttonDisabled: false,
       showConfirmTx: false,
       txData: {},
-      result: null
+      result: null,
+      apploading: false
     }
   },
   computed: {
@@ -524,12 +539,37 @@ export default {
         }
       }
     },
+    selectedCashbackStyle({ row, rowIndex }) {
+      if (this.cashbacks.data[rowIndex].type !== 0) {
+        return {
+          'background-color': 'rgb(253, 226, 226)'
+        }
+      } else if (this.cashbacks.data[rowIndex].bHandled === true) {
+        return {
+          'background-color': 'rgb(225, 243, 216)'
+        }
+      } else if (this.cashbacks.data[rowIndex].bAccepted === true) {
+        return {
+          'background-color': 'rgb(250, 236, 216)'
+        }
+      }
+    },
     indexTxMethod(index) {
       return index
     },
     cleanTxForm() {
-      this.currentRowTx = null
-      this.updateTxs(this.page)
+      if (this.action === this.actionPurchase) {
+        this.currentRowTx = null
+        console.log('cleanTxForm purchased')
+        this.updateTxs()
+      } else if (this.action === this.actionCashback) {
+        this.currentRowCashback = null
+        console.log('cleanTxForm cashback')
+        this.updateCashbacks()
+      } else {
+        console.log('cleanTxForm')
+        console.log('unknown action')
+      }
     },
     hanldeTx() {
       console.log('hanleTx()')
@@ -545,7 +585,7 @@ export default {
     },
     async confirmSendTx(tx) {
       try {
-        this.loading = true
+        this.apploading = true
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         console.log('tx res:')
         console.log(res)
@@ -582,7 +622,7 @@ export default {
           message: 'Error ' + e
         }
       } finally {
-        this.loading = false
+        this.apploading = false
       }
     },
     handleCurrentCashback(val) {
@@ -601,8 +641,48 @@ export default {
         this.buttonDisabled = false
       }
     },
-    handleCashback() {
+    async handleCashback() {
       console.log('handleCashback()')
+      this.result = null
+      this.apploading = true
+      let index = this.currentRowCashback.index
+
+      console.log('index', index)
+      console.log(this.cashbacks.data[index])
+      let ruffTx = this.cashbacks.data[index].ruffTx
+      console.log(ruffTx)
+
+
+      if (this.cashbackModel.txHash.length < 1) {
+        this.result = {
+          message: 'Error: Must input TX Hash!'
+        }
+        this.apploading = false
+        return
+      }
+
+      try {
+        let res = await chainApi.updateCashbackHandled(
+          ruffTx,
+          this.valCashback,
+          this.cashbackModel.txHash,
+          this.getAuth()
+        )
+
+        console.log(res)
+        if(res.err === 0){
+          this.result = {
+            message: 'Update cashback record OK'
+          }
+          this.cleanTxForm()
+        }
+      } catch (e) {
+        this.result = {
+          message: 'Error:' + e
+        }
+      } finally {
+        this.apploading = false
+      }
     },
     cashbackRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {

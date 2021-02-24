@@ -142,6 +142,17 @@ export const setCashback = (inForeignAddr, inValue, inTx, inAuth) =>
     auth: inAuth
   })
 
+export const updateCashbackHandled = (tx, foreignvalue, foreigntx , inAuth)=>
+  callMintageRpc({
+    method: 'update-cashback-handled',
+    args:{
+      tx: tx,
+      foreign_value: foreignvalue,
+      foreign_tx: foreigntx,
+    },
+    auth:inAuth
+  })
+
 //////////////////////////////////////////
 const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })
