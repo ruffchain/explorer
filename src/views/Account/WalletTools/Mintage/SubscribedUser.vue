@@ -90,6 +90,11 @@
       :tx="txData"
       @confirm="confirmSendTx"
     />
+    <AppDialog
+      :title="token"
+      @cleanForm="cleanTable(), (apploading = false)"
+      v-if="apploading"
+    />
   </div>
 </template>
 
@@ -138,7 +143,8 @@ export default {
       result: null,
       txLoading: false,
       showConfirmTx: false,
-      txData: {}
+      txData: {},
+      apploading: false,
     }
   },
   computed: {

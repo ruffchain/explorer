@@ -13,7 +13,7 @@ const chainClient = new HostClient({ chainUrl: window.origin + '/chain-rpc' })
 const callEarningsRpc = (function () {
   const http = axios.create({ baseURL: '/chain-earnings-rpc', timeout: 5000 })
 
-  http.interceptors.request.use((config)=>{
+  http.interceptors.request.use((config) => {
     config.headers.Authorization = '16heLGkcJepHVjYFfGDtViKnXM8u7MdRAU'
     return config
   })
@@ -33,7 +33,7 @@ const callEarningsRpc = (function () {
 const callMintageRpc = (function () {
   const http = axios.create({ baseURL: '/chain-mintage-rpc', timeout: 5000 })
 
-  http.interceptors.request.use((config)=>{
+  http.interceptors.request.use((config) => {
     config.headers.Authorization = '16heLGkcJepHVjYFfGDtViKnXM8u7MdRAU'
     return config
   })
@@ -50,18 +50,18 @@ const callMintageRpc = (function () {
 })()
 
 export const getEarningsAccount = address =>
-  callEarningsRpc( {
+  callEarningsRpc({
     method: 'get-account',
-    args:{
-      account: address 
+    args: {
+      account: address
     }
   })
 export const getEarningsConfig = () =>
   callEarningsRpc({
     method: 'get-config',
-    args:{}
+    args: {}
   })
-export const setEarningsAccount = (address, usdt, pubkey,sign) =>
+export const setEarningsAccount = (address, usdt, pubkey, sign) =>
   // console.log('setEarningsAccount')
   // console.log({
   //   account: address,
@@ -72,7 +72,7 @@ export const setEarningsAccount = (address, usdt, pubkey,sign) =>
 
   callEarningsRpc({
     method: 'set-account',
-    args:{
+    args: {
       account: address,
       usdt_address: usdt,
       pubkey: pubkey,
@@ -80,57 +80,67 @@ export const setEarningsAccount = (address, usdt, pubkey,sign) =>
     }
   })
 
-  export const getPurchased =  (index, pagesize, inAuth) =>
-    callMintageRpc({
-      method: 'get-purchased',
-      args:{
-        page:index,
-        page_size: pagesize
-      },
-      auth: inAuth
-    })
- export const getPurchasedConfig = () => 
-    callMintageRpc({
-      method: 'get-config',
-      args:{}
-    })
-  export const updatePurchasedHandled = (inTx, ruffValue, ruffTx, inAuth) =>
-    callMintageRpc({
-      method: 'update-purchased-handled',
-      args:{
-        tx: inTx,
-        ruffvalue: ruffValue,
-        rufftx: ruffTx
-      },
-      auth: inAuth
-    })
-  export const getCashbackByAddr = (index, pagesize, inAuth) =>
-    callMintageRpc({
-      method : 'get-cashback-byaddr',
-      args:{
-        page: index,
-        page_size: pagesize
-      },
-      auth: inAuth
-    })
-  export const checkUsdtAddr = (addr) =>
-    callMintageRpc({
-      method: 'check-usdt-address',
-      args:{
-        addr: addr
-      }
-    })
+export const getPurchased = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-purchased',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getPurchasedConfig = () =>
+  callMintageRpc({
+    method: 'get-config',
+    args: {}
+  })
+export const updatePurchasedHandled = (inTx, ruffValue, ruffTx, inAuth) =>
+  callMintageRpc({
+    method: 'update-purchased-handled',
+    args: {
+      tx: inTx,
+      ruffvalue: ruffValue,
+      rufftx: ruffTx
+    },
+    auth: inAuth
+  })
+export const getCashbackByAddr = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-cashback-byaddr',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const checkUsdtAddr = (addr) =>
+  callMintageRpc({
+    method: 'check-usdt-address',
+    args: {
+      addr: addr
+    }
+  })
+export const getCashback = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-cashback',
+    args:{
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
 
-  export const setCashback = (inForeignAddr, inValue, inTx, inAuth) =>
-    callMintageRpc({
-      method: 'set-cashback',
-      args:{
-        foreign_addr: inForeignAddr,
-        value: inValue,
-        ruff_tx: inTx
-      },
-      auth: inAuth
-    })
+
+export const setCashback = (inForeignAddr, inValue, inTx, inAuth) =>
+  callMintageRpc({
+    method: 'set-cashback',
+    args: {
+      foreign_addr: inForeignAddr,
+      value: inValue,
+      ruff_tx: inTx
+    },
+    auth: inAuth
+  })
 
 //////////////////////////////////////////
 const callChainRpc = (function () {

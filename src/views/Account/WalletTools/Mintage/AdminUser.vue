@@ -84,7 +84,7 @@
                   :precision="2"
                   :step="0.01"
                   :max="5"
-                  :min="0.5"
+                  :min="0.2"
                 ></el-input-number>
               </el-form-item>
               <el-form-item label="Send ">
@@ -102,7 +102,6 @@
                   >Confirm</el-button
                 >
               </el-form-item>
-              
             </el-form>
           </div>
         </div>
@@ -110,7 +109,6 @@
       <!-- 展示cashback request表格 -->
       <LoadingContainer :loading="loading" v-if="action === actionCashback">
         <div>
-          <h2>兑换请求:</h2>
           <el-table
             :data="dataCashbacks"
             highlight-current-row
@@ -118,15 +116,18 @@
             :row-class-name="cashbackRowClassName"
             style="width: 100%"
           >
+            <el-table-column prop="index" label="" width="20"></el-table-column>
             <el-table-column prop="date" label="日期" width="150">
             </el-table-column>
             <el-table-column prop="ruffAddr" label="RUFF地址">
             </el-table-column>
             <el-table-column prop="foreignAddr" label="USDT地址">
             </el-table-column>
-            <el-table-column prop="value" label="数量" width="80">
+            <el-table-column prop="value" label="数量" width="120">
             </el-table-column>
-            <el-table-column prop="bHandled" label="处理" width="100">
+            <el-table-column prop="sent" label="Usdt" width="120">
+            </el-table-column>
+            <el-table-column prop="bHandled" label="处理" width="80">
             </el-table-column>
             <el-table-column prop="status" label="状态"> </el-table-column>
           </el-table>
@@ -145,8 +146,38 @@
             />
           </div>
           <!-- button -->
+          <TransactionResult v-if="result" :data="result" />
           <div style="margin-top: 20px">
-            <el-button v-if="action === actionCashback" @click="handleCashback"
+            <el-form
+              :inline="true"
+              :model="cashbackModel"
+              v-if="currentRowCashback !== null"
+            >
+              <el-form-item label="Ratio:">
+                <el-input-number
+                  v-model="cashbackModel.ratio"
+                  :precision="2"
+                  :step="0.01"
+                  :max="5"
+                  :min="0.2"
+                ></el-input-number>
+              </el-form-item>
+              <el-form-item label="Send">
+                <div style="color:red">{{ valCashback }} USDT</div>
+              </el-form-item>
+              <el-form-item label="TX Hash">
+                <el-input
+                  v-model="cashbackModel.txHash"
+                  placeholder="USDT transfer TX hash"
+                >
+                </el-input>
+              </el-form-item>
+            </el-form>
+            <el-button
+              v-if="action === actionCashback && currentRowCashback !== null"
+              type="warning"
+              :disabled="buttonDisabled"
+              @click="handleCashback"
               >Handle Cashback</el-button
             >
           </div>
@@ -203,14 +234,18 @@ export default {
       },
       page: 1,
       pageSize: 5,
-      cashbacks: null,
+      cashbacks: {
+        total: 1,
+        data: []
+      },
       currentRowTx: null,
       currentRowCashback: null,
       purchased: {
         ratio: 1.0
       },
-      cashback: {
-        ratio: 1.0
+      cashbackModel: {
+        ratio: 1.0,
+        txHash: ''
       },
       buttonDisabled: false,
       showConfirmTx: false,
@@ -249,7 +284,10 @@ export default {
           foreignAddr: record.foreignAddr,
           ruffAddr: record.ruffAddr,
           value: record.value,
-          sent: (record.ruffValue === undefined || record.ruffValue === 'undefined')?0:record.ruffValue,
+          sent:
+            record.ruffValue === undefined || record.ruffValue === 'undefined'
+              ? 0
+              : record.ruffValue,
           bHandled: this.getStrHandled(record.bHandled),
           status: this.getStrStatus(record)
         })
@@ -258,7 +296,21 @@ export default {
       return out
     },
     dataCashbacks() {
-      return this.cashbacks.data
+      let out = []
+      let i = 0
+      for (let record of this.cashbacks.data) {
+        out.push({
+          index: i++,
+          date: this.getStrDate(record.date),
+          ruffAddr: record.ruffAddr,
+          foreignAddr: record.foreignAddr,
+          value: record.value,
+          sent: record.foreignValue,
+          bHandled: this.getStrHandled(record.bHandled),
+          status: this.getStrStatus(record)
+        })
+      }
+      return out
     },
     valPurchased() {
       if (this.currentRowTx) {
@@ -278,11 +330,22 @@ export default {
         this.checkTxValid(this.currentRowTx)
       ) {
         return this.currentRowTx.ruffAddr
-      } else if(this.currentRowTx && this.checkTxHandled(this.currentRowTx)){
-          let index = this.currentRowTx.index
-          return   '  Done ' + this.txs.data[index].ruffValue + ' sent'
-        }else {
+      } else if (this.currentRowTx && this.checkTxHandled(this.currentRowTx)) {
+        let index = this.currentRowTx.index
+        return '  Done ' + this.txs.data[index].ruffValue + ' sent'
+      } else {
         return ''
+      }
+    },
+    valCashback() {
+      if (this.currentRowCashback) {
+        let val =
+          typeof this.currentRowCashback.value === 'string'
+            ? parseFloat(this.currentRowCashback.value)
+            : this.currentRowCashback.value
+        return Math.round(this.cashbackModel.ratio * val)
+      } else {
+        return 0
       }
     }
   },
@@ -353,7 +416,7 @@ export default {
       let address = chainLib.addressFromSecretKey(privateKey)
       let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')
 
-      let num = Math.floor(new Date().getTime() / 1000) - 1
+      let num = Math.floor(new Date().getTime() / 1000)
 
       let hash = chainLib.hash256(Buffer.from(num + ''))
 
@@ -381,29 +444,22 @@ export default {
     },
     async updateCashbacks() {
       this.loading = true
-      this.cashbacks = {
-        total: 1,
-        data: [
-          {
-            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            value: 234234,
-            date: '2021-02-09 13:17',
-            bHandled: 'false',
-            status: ''
-          },
-          {
-            ruffAddr: '124anBEm6dMzAQDoS3Zp91sQ3HiRu6zwJ2',
-            foreignAddr: '0xB8001C3eC9AA1985f6c747E25c28324E4A361ec1',
-            value: 234234,
-            date: '2021-03-09 13:17',
-            bHandled: 'false',
-            status: ''
-          }
-        ]
-      }
+      console.log('cashback this.page: ', this.page, ' ', this.pageSize)
 
-      this.loading = false
+      chainApi
+        .getCashback(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
+          console.log('getCashback')
+          console.log(res)
+          if (res.err === 0) {
+            this.pageSize = res.data.page_size
+            this.cashbacks.total = res.data.page_total
+            this.cashbacks.data = res.data.data
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     async updateTxs() {
       this.loading = true
@@ -438,7 +494,6 @@ export default {
       if (
         this.txs.data[index].bHandled === true ||
         this.txs.data[index].type !== 0
-        
       ) {
         this.buttonDisabled = true
       } else {
@@ -463,7 +518,7 @@ export default {
         return {
           'background-color': 'rgb(225, 243, 216)'
         }
-      }else if (this.txs.data[rowIndex].bAccepted === true){
+      } else if (this.txs.data[rowIndex].bAccepted === true) {
         return {
           'background-color': 'rgb(250, 236, 216)'
         }
@@ -494,22 +549,29 @@ export default {
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         console.log('tx res:')
         console.log(res)
-         let index = this.currentRowTx.index
-        let res2 = await chainApi.updatePurchasedHandled(this.txs.data[index].foreignTx,
-          res.tx.input.amount,
-          res.tx.hash,
-          this.getAuth()
-        )
-        console.log('res2:', res2)
+
         let messageUpdate = ''
-        if(res2.err === 0){
-          messageUpdate = ' ,Update OK'
-        }else{
-          messageUpdate = ' ,Update Fail'
+        if (res.confirmed) {
+          let index = this.currentRowTx.index
+          let res2 = await chainApi.updatePurchasedHandled(
+            this.txs.data[index].foreignTx,
+            res.tx.input.amount,
+            res.tx.hash,
+            this.getAuth()
+          )
+          console.log('res2:', res2)
+
+          if (res2.err === 0) {
+            messageUpdate = ' ,Update OK'
+          } else {
+            messageUpdate = ' ,Update Fail'
+          }
         }
 
         this.result = {
-          message: (res.confirmed ? 'Transaction OK' : 'Transaction Failed') + messageUpdate,
+          message:
+            (res.confirmed ? 'Transaction OK' : 'Transaction Failed') +
+            messageUpdate,
           json: res.tx
         }
         if (res.confirmed) {
@@ -524,8 +586,20 @@ export default {
       }
     },
     handleCurrentCashback(val) {
+      if (!val) return
+
+      this.result = null
       this.currentRowCashback = val
       console.log(this.currentRowCashback)
+      let index = this.currentRowCashback.index
+      if (
+        this.cashbacks.data[index].bHandled === true ||
+        this.cashbacks.data[index].type !== 0
+      ) {
+        this.buttonDisabled = true
+      } else {
+        this.buttonDisabled = false
+      }
     },
     handleCashback() {
       console.log('handleCashback()')
