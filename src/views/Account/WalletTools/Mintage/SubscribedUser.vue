@@ -108,6 +108,7 @@ import ConfirmTx from '../ConfirmTx'
 import { getStrDate, getStrHandled } from '../../../../common/utils'
 import { genTransferTx } from '../wallet-helper'
 import { TokenType } from '../../../../common/enums'
+import AppDialog from '../../../../components/AppDialog'
 
 export default {
   props: {
@@ -124,7 +125,8 @@ export default {
   components: {
     LoadingContainer,
     TransactionResult,
-    ConfirmTx
+    ConfirmTx,
+    AppDialog,
   },
   data() {
     return {
@@ -306,7 +308,7 @@ export default {
     },
     async confirmSendTx(tx) {
       try {
-        this.loading = true
+        this.apploading = true
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
         console.log('tx res:')
         console.log(res)
@@ -338,7 +340,7 @@ export default {
           message: 'Error: ' + e
         }
       } finally {
-        this.loading = false
+        this.apploading = false
       }
     },
     selectedTxStyle({ row, rowIndex }) {
