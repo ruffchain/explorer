@@ -1,10 +1,14 @@
 <style scoped lang="scss">
 .app-footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px;
   background: rgb(58, 78, 103);
   color: #fff;
-  padding: 5px 0;
-  font-size: 12px;
-  display: flex;
+  font-size: 15px;
+  display: block;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -23,22 +27,43 @@
     color: #fff;
     text-decoration: underline;
   }
+  span{
+    display: block;
+    padding:5px,10px, 5px;
+
+  }
 }
 </style>
 
 <template>
   <div class="app-footer">
-    Copyright ©2019 RUFF FOUNDATION LTD. All Rights Reserved
-    <div>
-      <span class="divider">|</span>
-      <a target="_blank" href="https://github.com/ruffchain/Guide/wiki">{{strHelpCenter}}</a>
-      <!-- |
-      <router-link to="/tools/address2hex">
-        地址转换工具
-      </router-link>-->
-      |
-      <a target="_blank" href="https://ruffchain.com/plan-early-birds/profit/">{{strEarlyBird}}</a>
-    </div>
+    <section>
+      <el-row :gutter="20">
+        <el-col :xs="24" :sm="12">
+          Copyright ©2019 RUFF FOUNDATION LTD. All Rights Reserved
+        </el-col>
+        <el-col :xs="24" :sm="12">
+          <!-- <span class="divider">|</span> -->
+          <div>
+            <span>
+              <a
+                target="_blank"
+                href="https://github.com/ruffchain/Guide/wiki"
+                >{{ strHelpCenter }}</a
+              >
+            </span>
+            <span> </span>
+            <span>
+              <a
+                target="_blank"
+                href="https://ruffchain.com/plan-early-birds/profit/"
+                >{{ strEarlyBird }}</a
+              >
+            </span>
+          </div>
+        </el-col>
+      </el-row>
+    </section>
   </div>
 </template>
 <script>
@@ -49,7 +74,7 @@ export default {
     },
     strEarlyBird() {
       return this.$t('AppFooter.earlyBird')
-    },
-  },
+    }
+  }
 }
 </script>

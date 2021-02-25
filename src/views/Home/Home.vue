@@ -1,16 +1,20 @@
 <style lang="scss" scoped>
 .home-page {
   .chain-info {
+    padding-top: 0px;
+    padding-bottom: 0px;
     .piece {
       margin: 20px 0;
       text-align: center;
       .name {
+        color: #5D7184;
       }
       .value {
-        margin-top: 10px;
+        margin-top: 5px;
         display: block;
-        font-size: 30px;
-        font-weight: bolder;
+        font-size: 26px;
+        font-weight: normal;
+        color: #00C8CA;
       }
     }
   }
