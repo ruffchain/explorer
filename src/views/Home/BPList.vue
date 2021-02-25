@@ -53,6 +53,9 @@
     }
     .name {
       flex: 1;
+      a{
+        color: #3498DB;
+      }
     }
     .address {
       flex: 1;
@@ -94,7 +97,7 @@
             {{ index + 1 }}
           </span>
         </div>
-        <div class="name vertical-center">{{ bp.name | slice(1) }}</div>
+        <div class="name vertical-center"> <a>{{ bp.name | slice(1) }}</a></div>
         <div class="address vertical-center">
           <!-- <div>
             <a :href="bp.url.slice(1)" target="_blank">

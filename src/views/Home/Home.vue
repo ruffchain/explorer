@@ -55,6 +55,12 @@
       .tx{
         border-radius: 20px;
       }
+      .miner{
+        display: flex;
+        flex: 1;
+        align-items: center;
+       
+      }
       .lf-box {
         flex: 1;
         overflow: hidden;
@@ -62,9 +68,13 @@
       }
       .time {
         font-size: 12px;
-        padding-left: 10px;
+        margin:10px 0px 10px 0px;
+        padding: 0px 10px 0px 20px;
         display: flex;
         align-items: center;
+        background: #77838F1A;
+        border-width: 2px;
+        border-radius: 5px;
       }
       a {
         color: #3498db;
@@ -137,6 +147,9 @@
                 </div>
                 <div>{{ strContain }} {{ block.txs }} {{ strTransaction }}</div>
               </div>
+              <div class="miner" v-if="bpList !== []">
+                 {{ strMinerName }} &nbsp; <a> {{ block.minerName}}</a>
+              </div>
               <div class="time">{{ block.timeAgo }}</div>
             </li>
           </transition-group>
@@ -192,13 +205,16 @@ export default {
         txCount: '-'
       },
       blocks: [],
-      transactions: []
+      transactions: [],
+      bpList:[],
     }
   },
   mounted() {
     this.$_APP.loading = true
+    this.getBpList()
     this.autoUpdate()
     this.autoUpdateTimeAgo()
+
   },
   computed: {
     strBlock() {
@@ -233,26 +249,65 @@ export default {
     },
     strSender() {
       return this.$t('Home.sender')
+    },
+    strMinerName(){
+      return this.$t("Block.blockNode ") 
     }
   },
   methods: {
+    getAliasName( addr){
+      if(this.bpList.length > 0){
+        for(let bp of this.bpList){
+          if(addr === bp.candidate){
+            return bp.name
+          }
+        }
+      }
+    },
+    async getBpList (){
+      // let res = await chainApi.getCandidates()
+      // // console.log(res)
+      // this.bpList = res.candidates
+      // this.bpList = this.bpList.map((item)=>{
+      //   item.candidate = item.candidate.slice(1)
+      //   item.name = item.name.slice(1)
+      //   return item
+      // })
+      // console.log('bp:')
+      // console.log(this.bpList)
+    },
     async update() {
       try {
         const res = await Promise.all([
+          chainApi.getCandidates(),
           chainApi.getChainOverview(),
           chainApi.getLatestBlocks(),
           chainApi.getLatestTxs()
         ])
-        this.chainOverview = res[0]
-        const blocks = res[1].data
-        const transactions = res[2].data
+      this.bpList = res[0].candidates
+      this.bpList = this.bpList.map((item)=>{
+        item.candidate = item.candidate.slice(1)
+        item.name = item.name.slice(1)
+        return item
+      })
+
+        this.chainOverview = res[1]
+        const blocks = res[2].data
+
+        const transactions = res[3].data
 
         const mapFun = item => {
           item.timeAgo = newTimeAgo(new Date(item.timestamp * 1000))
+
+          item.minerName =  this.getAliasName(item.address)
+
           return item
         }
 
         this.blocks = blocks.map(mapFun)
+        console.log('blocks:')
+        console.log(this.blocks)
+
         this.transactions = transactions.map(mapFun)
       } catch (e) {
       } finally {

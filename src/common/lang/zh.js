@@ -38,8 +38,8 @@ export default {
   Block: {
     title: '区块详情',
     blockNumber: '区块 #',
-    blockTime: '出块时间:',
-    blockNode: '出块节点:',
+    blockTime: '出块时间',
+    blockNode: '出块节点',
     blockHash: '区块 hash:',
     tx: '交易',
     originalData: '原始数据'
