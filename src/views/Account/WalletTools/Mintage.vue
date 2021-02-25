@@ -33,6 +33,8 @@
 
 <template>
   <div class="mintage-view">
+    <loading-container :loading="loading">
+    </loading-container>
     <section v-if="bNormalUser === true">
       <h1>参加RUSDT项目,... bla bla bla</h1>
     </section>
@@ -44,6 +46,7 @@
 
 <script>
 import * as chainApi from '../../../common/chain-api'
+import LoadingContainer from '../../../components/LoadingContainer.vue'
 // import * as chainLib from '../../../common/chain-lib'
 import AdminUser from './Mintage/AdminUser'
 import SubscribedUser from './Mintage/SubscribedUser'
@@ -51,7 +54,8 @@ import SubscribedUser from './Mintage/SubscribedUser'
 export default {
   components: {
     AdminUser,
-    SubscribedUser
+    SubscribedUser,
+    LoadingContainer
   },
   data() {
     return {
@@ -62,7 +66,8 @@ export default {
       tokenList: [],
       bSubscribedUser: false,
       bNormalUser: false,
-      bAdminUser: false
+      bAdminUser: false,
+      loading: false,
     }
   },
   mounted() {},
@@ -77,6 +82,7 @@ export default {
   computed: {},
   methods: {
     async updateMintageConfig(){
+      this.loading = true
       chainApi.getPurchasedConfig()
         .then(res=>{
           console.log(res)
@@ -89,6 +95,7 @@ export default {
         })
         .finally(()=>{
           console.log('get config done')
+          this.loading = false
         })
     },
     async chooseUser() {
