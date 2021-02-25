@@ -254,11 +254,11 @@ export default {
     txAmount: '总交易数量',
     accountAmount: '总账户数量',
     irbNew: '最新不可逆区块',
-    blockNum: '区块#',
+    blockNum: '区块 ',
     contain: '包含',
     transaction: '个交易',
     transactionNew: '最新交易',
-    transactionNum: '交易#',
+    transactionNum: '交易 ',
     sender: '发起方'
   },
   AddressToHex: {

@@ -258,7 +258,7 @@ export default {
     contain: 'contains ',
     transaction: 'Tx',
     transactionNew: 'Latest Tx',
-    transactionNum: 'Tx #',
+    transactionNum: 'Tx ',
     sender: 'Sender'
   },
   AddressToHex: {

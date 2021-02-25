@@ -4,7 +4,7 @@
     padding-top: 0px;
     padding-bottom: 0px;
     .piece {
-      margin: 20px 0;
+      margin: 16px 0;
       text-align: center;
       .name {
         color: #5D7184;
@@ -12,15 +12,19 @@
       .value {
         margin-top: 5px;
         display: block;
-        font-size: 26px;
+        font-size: 18px;
         font-weight: normal;
         color: #00C8CA;
       }
     }
   }
   .latest-list {
-    font-size: 16px;
+    font-size: 13px;
+
     // font-weight: 200;
+    .title {
+      font-size: 14px;
+    }
     margin-top: 0;
     ul {
       height: 600px;
@@ -40,9 +44,13 @@
         white-space: nowrap;
       }
       .time {
+        font-size: 12px;
         padding-left: 10px;
         display: flex;
         align-items: center;
+      }
+      a{
+        color: #3498DB;
       }
     }
   }

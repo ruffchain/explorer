@@ -1,13 +1,13 @@
 <style scoped lang="scss">
 .app-footer {
-  margin-top: 50px;
+  margin-top: 20px;
   padding-top: 20px;
   padding-left: 50px;
   padding-right: 50px;
-  padding-bottom: 50px;
+  padding-bottom: 20px;
   background: rgb(58, 78, 103);
   color: #fff;
-  font-size: 15px;
+  font-size: 13px;
   display: block;
   justify-content: center;
   align-items: center;
