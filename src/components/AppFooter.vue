@@ -1,7 +1,7 @@
 <style scoped lang="scss">
 .app-footer {
   margin-top: 20px;
-  padding-top: 20px;
+  padding-top: 10px;
   padding-left: 50px;
   padding-right: 50px;
   padding-bottom: 20px;

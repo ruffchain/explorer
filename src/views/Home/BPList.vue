@@ -1,6 +1,10 @@
 <style lang="scss" scoped>
 .bps-list {
-  font-size: 16px;
+  font-size: 14px;
+  .title{
+    font-size: 14px;
+    margin-bottom: 0px;
+  }
   .main-content {
     min-height: 200px;
   }
@@ -28,7 +32,7 @@
       // flex: 1;
       display: flex;
       align-items: center;
-      width: 80px;
+      width: 120px;
       .rank-tag {
         display: inline-block;
         padding: 0 10px;
@@ -52,6 +56,9 @@
     }
     .address {
       flex: 1;
+      a{
+        color: #3498DB;
+      }
     }
     .website {
       flex: 1;
@@ -81,8 +88,11 @@
       </li>
       <li v-for="(bp, index) in bpList" :key="index" class="bp-row">
         <div class="rank vertical-center">
-          <span class="rank-tag" :class="{ 'top-rank-tag': index < 21 }">{{ index + 1 }}</span>
-          <span v-if="bp.candidate === workingBp" class="working-bp">{{ strWorking}}</span>
+          <!-- <span class="rank-tag" :class="{ 'top-rank-tag': index < 21 }">{{ index + 1 }}</span> -->
+          <span v-if="bp.candidate === workingBp" class="rank-tag" :class="{ 'top-rank-tag': index < 21 }"> {{ index + 1 }} {{ strWorking}}</span>
+          <span v-else class="rank-tag" :class="{ 'top-rank-tag': index < 21 }">
+            {{ index + 1 }}
+          </span>
         </div>
         <div class="name vertical-center">{{ bp.name | slice(1) }}</div>
         <div class="address vertical-center">

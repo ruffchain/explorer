@@ -7,14 +7,14 @@
       margin: 16px 0;
       text-align: center;
       .name {
-        color: #5D7184;
+        color: #5d7184;
       }
       .value {
         margin-top: 5px;
         display: block;
         font-size: 18px;
         font-weight: normal;
-        color: #00C8CA;
+        color: #00c8ca;
       }
     }
   }
@@ -38,6 +38,7 @@
       &:last-child {
         border-bottom: solid 1px #eee;
       }
+
       .lf-box {
         flex: 1;
         overflow: hidden;
@@ -49,8 +50,8 @@
         display: flex;
         align-items: center;
       }
-      a{
-        color: #3498DB;
+      a {
+        color: #3498db;
       }
     }
   }
@@ -81,8 +82,10 @@
         </el-col>
         <el-col :xs="24" :sm="6">
           <div class="piece">
-            <span class="name">{{ strIrb}}</span>
-            <span class="value">{{ chainOverview.irreversibleBlockHeight }}</span>
+            <span class="name">{{ strIrb }}</span>
+            <span class="value">{{
+              chainOverview.irreversibleBlockHeight
+            }}</span>
           </div>
         </el-col>
         <el-col :xs="24" :sm="6">
@@ -93,7 +96,7 @@
         </el-col>
         <el-col :xs="24" :sm="6">
           <div class="piece">
-            <span class="name">{{ strAccountAmount}}</span>
+            <span class="name">{{ strAccountAmount }}</span>
             <span class="value">{{ chainOverview.userCount }}</span>
           </div>
         </el-col>
@@ -103,15 +106,18 @@
     <el-row :gutter="15">
       <el-col :sm="12">
         <section class="card blocks latest-list">
-          <span class="title">{{ strIrbNew}}</span>
+          <span class="title">{{ strIrbNew }}</span>
           <transition-group name="flip-list" tag="ul">
             <li v-for="block in blocks" :key="block.number" class="list-item">
+
               <div class="lf-box">
                 <div>
                   {{ strBlockNum }}
-                  <router-link :to="'/block/' + block.number">{{ block.number }}</router-link>
+                  <router-link :to="'/block/' + block.number">{{
+                    block.number
+                  }}</router-link>
                 </div>
-                <div>{{ strContain}} {{ block.txs }} {{ strTransaction}}</div>
+                <div>{{ strContain }} {{ block.txs }} {{ strTransaction }}</div>
               </div>
               <div class="time">{{ block.timeAgo }}</div>
             </li>
@@ -120,19 +126,22 @@
       </el-col>
       <el-col :sm="12">
         <section class="card transactions latest-list">
-          <span class="title">{{ strTransactionNew}}</span>
+          <span class="title">{{ strTransactionNew }}</span>
           <transition-group name="flip-list" tag="ul">
             <li v-for="tx in transactions" :key="tx.hash" class="list-item">
               <div class="lf-box">
                 <div>
-                  {{ strTransactionNum}}
-                  <router-link :to="'/tx/' + tx.hash">{{ tx.hash | shortHash }}</router-link>
+                  {{ strTransactionNum }}
+                  <router-link :to="'/tx/' + tx.hash">{{
+                    tx.hash | shortHash
+                  }}</router-link>
                 </div>
                 <div>
                   {{ strSender }}
-                  <router-link
-                    :to="'/address/' + tx.address"
-                  >{{$_APP.ADDRESS_PREFIX }}{{ tx.address | shortHash }}</router-link>
+                  <router-link :to="'/address/' + tx.address"
+                    >{{ $_APP.ADDRESS_PREFIX
+                    }}{{ tx.address | shortHash }}</router-link
+                  >
                 </div>
               </div>
               <div class="time">{{ tx.timeAgo }}</div>
@@ -152,17 +161,17 @@ import * as chainApi from '../../common/chain-api.js'
 
 export default {
   components: {
-    BPList,
+    BPList
   },
   data() {
     return {
       chainOverview: {
         blockHeight: '-',
         irreversibleBlockHeight: '-',
-        txCount: '-',
+        txCount: '-'
       },
       blocks: [],
-      transactions: [],
+      transactions: []
     }
   },
   mounted() {
@@ -203,7 +212,7 @@ export default {
     },
     strSender() {
       return this.$t('Home.sender')
-    },
+    }
   },
   methods: {
     async update() {
@@ -211,13 +220,13 @@ export default {
         const res = await Promise.all([
           chainApi.getChainOverview(),
           chainApi.getLatestBlocks(),
-          chainApi.getLatestTxs(),
+          chainApi.getLatestTxs()
         ])
         this.chainOverview = res[0]
         const blocks = res[1].data
         const transactions = res[2].data
 
-        const mapFun = (item) => {
+        const mapFun = item => {
           item.timeAgo = newTimeAgo(new Date(item.timestamp * 1000))
           return item
         }
@@ -237,17 +246,17 @@ export default {
     },
     async autoUpdateTimeAgo() {
       while (!this.isBeingDestroyed) {
-        const fun = (item) => {
+        const fun = item => {
           item.timeAgo = newTimeAgo(new Date(item.timestamp * 1000))
         }
         this.blocks.forEach(fun)
         this.transactions.forEach(fun)
         await delay(300)
       }
-    },
+    }
   },
   beforeDestroy() {
     this.isBeingDestroyed = true
-  },
+  }
 }
 </script>
