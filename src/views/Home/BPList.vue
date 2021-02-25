@@ -48,7 +48,7 @@
     }
     .vertical-center {
       display: flex;
-      flex-direction: column;
+      flex-direction: center;
       justify-content: center;
     }
     .name {
@@ -67,8 +67,11 @@
       flex: 1;
     }
     .votes {
+      
       width: 80px;
       text-align: right;
+      // background-color: #77838F1A;
+
     }
   }
   .pagination-container {

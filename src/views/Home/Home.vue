@@ -66,6 +66,22 @@
         overflow: hidden;
         white-space: nowrap;
       }
+      .token{
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        margin:10px 5px 10px  5px;
+        padding-left:5px;
+        padding-right: 5px;
+        background: rgba(68, 197, 142, 0.1);
+        border-radius: 5px;
+      }
+      .value{
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        margin:0 5px 0 5px;
+      }
       .time {
         font-size: 12px;
         margin:10px 0px 10px 0px;
@@ -178,6 +194,12 @@
                   >
                 </div>
               </div>
+              <div class="value">
+                {{ tx.tokenValue}}&nbsp;
+              </div>
+              <div class="token">
+                {{ tx.token }}
+              </div>
               <div class="time">{{ tx.timeAgo }}</div>
             </li>
           </transition-group>
@@ -211,7 +233,7 @@ export default {
   },
   mounted() {
     this.$_APP.loading = true
-    this.getBpList()
+
     this.autoUpdate()
     this.autoUpdateTimeAgo()
 
@@ -255,6 +277,14 @@ export default {
     }
   },
   methods: {
+    shortAmount(amount){
+      let num = parseFloat(amount).toFixed(1)
+      if( Math.floor(num) === Math.ceil(num)){
+        return Math.ceil(num) + '';
+      }else{
+        return num + '';
+      }
+    },
     getAliasName( addr){
       if(this.bpList.length > 0){
         for(let bp of this.bpList){
@@ -263,18 +293,6 @@ export default {
           }
         }
       }
-    },
-    async getBpList (){
-      // let res = await chainApi.getCandidates()
-      // // console.log(res)
-      // this.bpList = res.candidates
-      // this.bpList = this.bpList.map((item)=>{
-      //   item.candidate = item.candidate.slice(1)
-      //   item.name = item.name.slice(1)
-      //   return item
-      // })
-      // console.log('bp:')
-      // console.log(this.bpList)
     },
     async update() {
       try {
@@ -305,10 +323,31 @@ export default {
         }
 
         this.blocks = blocks.map(mapFun)
-        console.log('blocks:')
-        console.log(this.blocks)
+        // console.log('blocks:')
+        // console.log(this.blocks)
+        const mapFunTx = item => {
+          item.timeAgo = newTimeAgo(new Date(item.timestamp * 1000))
 
-        this.transactions = transactions.map(mapFun)
+          item.token =  'RUFF'
+          
+          if(item.content.method === 'transferTo'){
+             item.tokenValue = this.shortAmount(item.content.value)
+          }
+          else if(item.content.method === 'transferTokenTo' || item.content.method === 'transferSmartTokenTo'){
+            item.token = item.content.input.tokenid
+            item.tokenValue = this.shortAmount(item.content.input.amount)
+          }else{
+            item.tokenValue = item.content.fee
+          }
+
+          return item
+        }
+
+        this.transactions = transactions.map(mapFunTx)
+
+
+        console.log('tx')
+        console.log(this.transactions)
       } catch (e) {
       } finally {
         this.$_APP.loading = false
