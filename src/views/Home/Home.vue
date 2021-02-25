@@ -27,7 +27,7 @@
     }
     margin-top: 0;
     ul {
-      height: 600px;
+      height: 520px;
       overflow: hidden;
     }
     ul > li {
@@ -38,7 +38,23 @@
       &:last-child {
         border-bottom: solid 1px #eee;
       }
-
+      .bk{
+        display: flex;
+        align-items: center;
+        padding-left:8px;
+        padding-right: 8px;
+        margin-top:8px;
+        margin-bottom: 8px;
+        font-size: 16px;
+        margin-right: 20px;
+        //border:0 solid #9B9B9B;
+        border-width: 2px;
+        border-radius: 5px;
+        background-color: #77838F1A;
+      }
+      .tx{
+        border-radius: 20px;
+      }
       .lf-box {
         flex: 1;
         overflow: hidden;
@@ -109,7 +125,9 @@
           <span class="title">{{ strIrbNew }}</span>
           <transition-group name="flip-list" tag="ul">
             <li v-for="block in blocks" :key="block.number" class="list-item">
-
+              <div class="bk">
+                Bk
+              </div>
               <div class="lf-box">
                 <div>
                   {{ strBlockNum }}
@@ -129,6 +147,9 @@
           <span class="title">{{ strTransactionNew }}</span>
           <transition-group name="flip-list" tag="ul">
             <li v-for="tx in transactions" :key="tx.hash" class="list-item">
+              <div class="bk tx">
+                Tx
+              </div>
               <div class="lf-box">
                 <div>
                   {{ strTransactionNum }}
