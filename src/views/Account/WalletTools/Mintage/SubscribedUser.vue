@@ -211,14 +211,14 @@ export default {
       }
       return out
     },
-    getAuthNormal() {
+    getAuthNormal(txHash) {
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
       let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')
 
       let num = Math.floor(new Date().getTime() / 1000) - 1
 
-      let hash = chainLib.hash256(Buffer.from(num + ''))
+      let hash = chainLib.hash256(Buffer.from(num +'' ))
 
       return {
         date: num, // seconds
@@ -291,7 +291,7 @@ export default {
       console.log(res)
       if (res.err !== 0) {
         this.result = {
-          message: 'Invalid usdt address'
+          message: 'Invalid Heco address'
         }
         return
       }
@@ -301,7 +301,7 @@ export default {
         tokenId: this.token,
         amount: this.formData.amount + '',
         fee: '0.1',
-        tokenType: TokenType.normal
+        tokenType: TokenType.sys
       })
 
       this.showConfirmTx = true
@@ -319,13 +319,13 @@ export default {
             this.formData.toUsdt,
             this.formData.amount,
             res.tx.hash,
-            this.getAuthNormal()
+            this.getAuthNormal(res.tx.hash)
           )
           console.log('res2:', res2)
           if (res2.err === 0) {
             messageUpdate = ' , Update OK'
           } else {
-            messageUpdate = ' , Update Fail'
+            messageUpdate = ' , Update Fail!'
           }
           this.cleanTable()
         }
