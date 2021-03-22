@@ -113,7 +113,7 @@ export default {
     exchange: '智能Token交易',
     vote: '投票',
     earnings: '收益',
-    mintage: 'RUSDT项目'
+    mintage: '划转Heco'
   },
   ConfirmTx: {
     title: '确认交易内容',
