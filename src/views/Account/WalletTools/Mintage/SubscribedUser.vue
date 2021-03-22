@@ -14,7 +14,7 @@
 <template>
   <div class="subscribed-user">
     <section>
-      <h2>Subscribed Users: {{ value }} {{ strToken }}</h2>
+      <h2> {{ value }} RUFF</h2>
       <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
       <el-form
@@ -132,7 +132,7 @@ export default {
     return {
       name: '',
       loading: false,
-      strAlert: '将' + this.token + '兑换成USDT',
+      strAlert: 'RUFF -> Heco',
       cashbacks: { total: 0, data: [] },
       currentRowCashback: 0,
       page: 1,
@@ -171,7 +171,7 @@ export default {
       return out
     },
     strToUsdt() {
-      return 'USDT Address'
+      return 'Heco Address'
     },
     strAmount() {
       return 'Amount'
@@ -186,7 +186,7 @@ export default {
     }
   },
   beforeMount() {
-    console.log('value:', this.value)
+    // console.log('value:', this.value)
     const required = rules.required()
     const gt0 = rules.greaterThan(0)
 
@@ -286,7 +286,7 @@ export default {
         return
       }
 
-      let res = await chainApi.checkUsdtAddr(this.formData.toUsdt)
+      let res = await chainApi.checkHecoAddr(this.formData.toUsdt)
 
       console.log(res)
       if (res.err !== 0) {

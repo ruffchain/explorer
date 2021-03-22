@@ -35,27 +35,27 @@
   <div class="mintage-view">
     <loading-container :loading="loading">
     </loading-container>
-    <section v-if="bNormalUser === true">
+    <!-- <section v-if="bNormalUser === true">
       <h1>参加RUSDT项目,... bla bla bla</h1>
-    </section>
+    </section> -->
     <SubscribedUser v-if="bSubscribedUser === true" :value="value" :token="mintageToken"  :mintageAddr="mintageAddr" :mintageToken="mintageToken">
     </SubscribedUser>
-    <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken" :mintageAddr="mintageAddr" :mintageToken="mintageToken"> </AdminUser>
+    <!-- <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken" :mintageAddr="mintageAddr" :mintageToken="mintageToken"> </AdminUser> -->
   </div>
 </template>
 
 <script>
 import * as chainApi from '../../../common/chain-api'
-import LoadingContainer from '../../../components/LoadingContainer.vue'
+// import LoadingContainer from '../../../components/LoadingContainer.vue'
 // import * as chainLib from '../../../common/chain-lib'
-import AdminUser from './Mintage/AdminUser'
+// import AdminUser from './Mintage/AdminUser'
 import SubscribedUser from './Mintage/SubscribedUser'
 
 export default {
   components: {
-    AdminUser,
+    // AdminUser,
     SubscribedUser,
-    LoadingContainer
+    // LoadingContainer
   },
   data() {
     return {
@@ -72,9 +72,9 @@ export default {
   },
   mounted() {},
   beforeMount() {
-    console.log('Mintage before Mount')
+    //console.log('Mintage before Mount')
     // get
-    console.log('cur addr:', this.$_APP.address)
+    //console.log('cur addr:', this.$_APP.address)
     this.address = this.$_APP.address
     // get token, address from server
     this.updateMintageConfig()
@@ -85,7 +85,7 @@ export default {
       this.loading = true
       chainApi.getPurchasedConfig()
         .then(res=>{
-          console.log(res)
+          //console.log(res)
           if(res.err ===0){
             this.mintageToken = res.data.mintage_token
             this.mintageAddr = res.data.mintage_account
@@ -94,29 +94,25 @@ export default {
           }
         })
         .finally(()=>{
-          console.log('get config done')
+          //console.log('get config done')
           this.loading = false
         })
     },
     async chooseUser() {
       try {
         let tokens = await chainApi.getTokensByAddress(this.address)
-        // console.log('tokens: ', tokens)
+        //console.log('tokens: ', tokens)
 
         let token = tokens.find(tok => {
-          return tok.token === this.mintageToken
+          return tok.token === "RUFF"
         })
         console.log(token)
-        if (token === undefined) {
-          this.bNormalUser = true
-        } else {
-          this.value = token.value
-          if (this.address === this.mintageAddr) {
-            this.bAdminUser = true
-          } else {
-            this.bSubscribedUser = true
-          }
-        }
+
+        this.value = token.value;
+        this.bNormalUser = false;
+        this.bSubscribedUser = true;
+        this.bAdminUser = false;
+
       } catch (e) {
         console.log(e)
       }

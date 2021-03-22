@@ -113,7 +113,7 @@ export const getCashbackByAddr = (index, pagesize, inAuth) =>
     },
     auth: inAuth
   })
-export const checkUsdtAddr = (addr) =>
+export const checkHecoAddr = (addr) =>
   callMintageRpc({
     method: 'check-usdt-address',
     args: {
