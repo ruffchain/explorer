@@ -61,6 +61,7 @@
           <TokenExchange v-if="activeNav === NavItemEnums.Exchange" />
           <Vote v-if="activeNav === NavItemEnums.Vote" />
           <Earnings v-if="activeNav === NavItemEnums.Earnings" />
+          <Mintage v-if="activeNav === NavItemEnums.Mintage" />
           
         </div>
       </div>
@@ -79,6 +80,7 @@ import CreateToken from './WalletTools/CreateToken'
 import TokenExchange from './WalletTools/TokenExchange'
 import Vote from './WalletTools/Vote'
 import Earnings from './WalletTools/Earnings'
+import Mintage from './WalletTools/Mintage'
 
 const NavItemEnums = {
   History: 'History',
@@ -86,7 +88,8 @@ const NavItemEnums = {
   CreateToken: 'CreateToken',
   Exchange: 'Exchange',
   Vote: 'Vote',
-  Earnings: 'Earnings'
+  Earnings: 'Earnings',
+  Mintage: 'RUSDT'
 }
 
 export default {
@@ -100,10 +103,12 @@ export default {
     TokenExchange,
     Vote,
     Earnings,
+    Mintage,
   },
   data() {
     return {
       activeNav: NavItemEnums.History,
+
     }
   },
   computed: {
@@ -137,6 +142,9 @@ export default {
     strEarnings() {
       return this.$t('Wallet.earnings')
     },
+    strMintage(){
+      return this.$t('Wallet.mintage')
+    },
     newNavItems() {
       return [
         {
@@ -162,6 +170,10 @@ export default {
         {
           type: NavItemEnums.Earnings,
           name: this.strEarnings,
+        },
+        {
+          type: NavItemEnums.Mintage,
+          name: this.strMintage,
         }
       ]
     },
