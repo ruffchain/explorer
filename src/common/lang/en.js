@@ -115,6 +115,14 @@ export default {
     earnings: 'Earnings',
     mintage: 'Withdraw Heco'
   },
+  Mintage: {
+    date: 'Date',
+    address: 'Heco Addr',
+    amount: 'Amount',
+    sent: 'Exchanged',
+    handled: 'Handled',
+    status:'Status'
+  },
   ConfirmTx: {
     title: 'Confirm Tx',
     cancel: 'Cancel',

@@ -46,7 +46,7 @@
 
 <script>
 import * as chainApi from '../../../common/chain-api'
-// import LoadingContainer from '../../../components/LoadingContainer.vue'
+import LoadingContainer from '../../../components/LoadingContainer.vue'
 // import * as chainLib from '../../../common/chain-lib'
 // import AdminUser from './Mintage/AdminUser'
 import SubscribedUser from './Mintage/SubscribedUser'
@@ -55,7 +55,7 @@ export default {
   components: {
     // AdminUser,
     SubscribedUser,
-    // LoadingContainer
+    LoadingContainer
   },
   data() {
     return {

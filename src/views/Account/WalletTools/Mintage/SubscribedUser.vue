@@ -57,17 +57,17 @@
           style="width: 100%"
         >
           <el-table-column prop="index" label="" width="20"></el-table-column>
-          <el-table-column prop="date" label="日期" width="150">
+          <el-table-column prop="date" :label="strTableDate" width="150">
           </el-table-column>
-          <el-table-column prop="foreignAddr" label="USDT地址">
+          <el-table-column prop="foreignAddr" :label="strTableAddr">
           </el-table-column>
-          <el-table-column prop="value" label="数量" width="120">
+          <el-table-column prop="value" :label="strTableAmount" width="120">
           </el-table-column>
-          <el-table-column prop="sent" label="兑换" width="120">
+          <el-table-column prop="sent" :label="strTableSent" width="120">
           </el-table-column>
-          <el-table-column prop="bHandled" label="处理" width="50">
+          <el-table-column prop="bHandled" :label="strTableHandled" width="90">
           </el-table-column>
-          <el-table-column prop="status" label="状态"> </el-table-column>
+          <el-table-column prop="status" :label="strTableStatus"> </el-table-column>
         </el-table>
         <div
           class="pagination-container"
@@ -183,6 +183,25 @@ export default {
     },
     strTxConfirm() {
       return 'Confirm'
+    },
+    strTableDate(){
+      return this.$t('Mintage.date');
+    },
+    strTableAddr(){
+      return this.$t('Mintage.address')
+    },
+    strTableAmount(){
+      return this.$t('Mintage.amount')
+    },
+    strTableSent(){
+      return this.$t('Mintage.sent')
+
+    },
+    strTableHandled(){
+      return this.$t('Mintage.handled')
+    },
+    strTableStatus(){
+      return this.$t('Mintage.status')
     }
   },
   beforeMount() {

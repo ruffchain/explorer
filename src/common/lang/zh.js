@@ -115,6 +115,14 @@ export default {
     earnings: '收益',
     mintage: '划转Heco'
   },
+  Mintage: {
+    date: '日期',
+    address: 'Heco地址',
+    amount: '数量',
+    sent: '兑换',
+    handled: '处理',
+    status:'状态'
+  },
   ConfirmTx: {
     title: '确认交易内容',
     cancel: '取消',
