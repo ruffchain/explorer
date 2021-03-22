@@ -52,7 +52,7 @@
         </ul>
         <a href="http://RUFFCHAIN.mikecrm.com/4kX1Bft">http://RUFFCHAIN.mikecrm.com/4kX1Bft</a>
 
-        <h3 v-if="!validAccount">欢迎参加! Join Now!</h3>
+        <h3 v-if="!validAccount">当前活动已结束，仅支持收益查看。Participation NOT allowed now.</h3>
       </el-collapse-item>
       <el-collapse-item name="address" v-if="validAccount">
         <div slot="title" class="section-title">
