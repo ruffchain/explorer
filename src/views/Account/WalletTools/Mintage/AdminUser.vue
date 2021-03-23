@@ -61,9 +61,6 @@
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item label="Type:">
-                    <span>{{ props.row.type }}</span>
-                  </el-form-item>
                   <el-form-item label="Ruff Tx:">
                     <span>{{ props.row.ruffTx }}</span>
                   </el-form-item>
@@ -112,9 +109,6 @@
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item label="Type:">
-                    <span>{{ props.row.type }}</span>
-                  </el-form-item>
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
@@ -126,6 +120,14 @@
                   </el-form-item>
                   <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
                     <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button
+                      size="normal"
+                      type="danger"
+                      @click="handleValid(props.$index)"
+                      >批准</el-button
+                    >
                   </el-form-item>
                 </el-form>
               </template>
@@ -168,9 +170,6 @@
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item label="Type:">
-                    <span>{{ props.row.type }}</span>
-                  </el-form-item>
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
@@ -182,6 +181,15 @@
                   </el-form-item>
                   <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
                     <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+
+                  <el-form-item>
+                    <el-button
+                      size="normal"
+                      type="danger"
+                      @click="handleAccepted(props.$index)"
+                      >更新Heco交易信息</el-button
+                    >
                   </el-form-item>
                 </el-form>
               </template>
@@ -583,6 +591,29 @@ export default {
           this.loading = false
         })
     },
+
+    async handleValid(index){
+      // console.log(index)
+      console.log(this.dataCashbacks[index].ruffTx)
+      this.loading = true;
+
+      // update db
+      chainApi
+        .acceptCashback(this.dataCashbacks[index].ruffTx, this.getAuth())
+        .then(res => {
+          console.log(res);
+        })
+        .finally(()=>{
+          this.loading = false;
+          console.log('done')
+          this.updateValidCashback()
+        })
+    },
+    async  handleAccepted(index){
+      console.log(this.dataCashbacks[index].ruffTx,
+                  this.dataCashbacks[index].value)
+      
+    },
     checkTxHandled(tx) {
       if (this.txs.data[tx.index].bHandled === true) {
         return true
@@ -832,7 +863,8 @@ export default {
         return 'success-row'
       }
       return ''
-    }
+    },
+
   }
 }
 </script>

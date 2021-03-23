@@ -198,6 +198,24 @@ export const getRejectedCashback = (index, pagesize, inAuth) =>
     },
     auth: inAuth
   })
+export const acceptCashback = (txhash, inAuth) =>
+  callMintageRpc({
+    method: 'accept-cashback',
+    args: {
+      tx: txhash
+    },
+    auth: inAuth
+  })
+export const completeCashback = (txhash, hecoHash, hecoVal, inAuth) =>
+  callMintageRpc({
+    method: 'complete-cashback',
+    args: {
+      tx: txhash,
+      hecoTx: hecoHash,
+      hecoValue: hecoVal
+    },
+    auth: inAuth
+  })
 //////////////////////////////////////////
 const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })
