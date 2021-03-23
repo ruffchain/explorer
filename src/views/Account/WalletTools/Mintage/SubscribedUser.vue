@@ -16,6 +16,7 @@
     width: 90px;
     color: #99a9bf;
     // color: rgb(253, 226, 226)
+    // color: rgb(185, 245, 204)
   }
   .demo-table-expand .el-form-item {
     margin-right: 0;
@@ -78,9 +79,6 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="Type:">
-                  <span>{{ props.row.type }}</span>
-                </el-form-item>
                 <el-form-item label="Ruff Tx:">
                   <span>{{ props.row.ruffTx }}</span>
                 </el-form-item>
@@ -99,10 +97,6 @@
           </el-table-column>
           <el-table-column prop="value" :label="strTableAmount" width="150">
           </el-table-column>
-          <!-- <el-table-column prop="sent" :label="strTableSent" width="120">
-          </el-table-column> -->
-          <!-- <el-table-column prop="bHandled" :label="strTableHandled" width="90">
-          </el-table-column> -->
           <el-table-column prop="status" :label="strTableStatus">
           </el-table-column>
         </el-table>
@@ -416,7 +410,7 @@ export default {
         }
       } else if (type === 3) {
         return {
-          'background-color': 'rgb(127, 192, 148)'
+          'background-color': 'rgb(216, 245, 225)'
         }
       }
     }

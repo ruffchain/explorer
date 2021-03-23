@@ -15,7 +15,6 @@
   .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
-    // color: rgb(253, 226, 226)
   }
   .demo-table-expand .el-form-item {
     margin-right: 0;
@@ -182,13 +181,12 @@
                   <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
                     <span>{{ props.row.foreignTx }}</span>
                   </el-form-item>
-
                   <el-form-item>
                     <el-button
                       size="normal"
                       type="danger"
                       @click="handleAccepted(props.$index)"
-                      >更新Heco交易信息</el-button
+                      >更新</el-button
                     >
                   </el-form-item>
                 </el-form>
@@ -219,6 +217,27 @@
           <!-- button -->
         </div>
       </LoadingContainer>
+
+      <el-dialog
+        title="设置HecoTxHash"
+        :visible="hecoTxDialogVisible"
+        @update:visible="hecoTxClose"
+        width="600px"
+      >
+        <el-form>
+          <el-form-item>
+            <el-input
+              type="text"
+              v-model="currentHecoTx"
+              style="width:100%"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="default" @click="hecoTxClose">取消</el-button>
+          <el-button type="primary" @click="hecoTxConfirm">确认</el-button>
+        </div>
+      </el-dialog>
 
       <!-- completed -->
       <LoadingContainer :loading="loading" v-if="action === actionCompleted">
@@ -287,9 +306,6 @@
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item label="Type:">
-                    <span>{{ props.row.type }}</span>
-                  </el-form-item>
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
@@ -394,7 +410,11 @@ export default {
       showConfirmTx: false,
       txData: {},
       result: null,
-      apploading: false
+      apploading: false,
+      currentRuffTx:'',
+      currentHecoTx: '',
+      currentHecoValue: '',
+      hecoTxDialogVisible: false
     }
   },
   computed: {
@@ -592,27 +612,57 @@ export default {
         })
     },
 
-    async handleValid(index){
+    async handleValid(index) {
       // console.log(index)
       console.log(this.dataCashbacks[index].ruffTx)
-      this.loading = true;
+      this.loading = true
 
       // update db
       chainApi
         .acceptCashback(this.dataCashbacks[index].ruffTx, this.getAuth())
         .then(res => {
-          console.log(res);
+          console.log(res)
         })
-        .finally(()=>{
-          this.loading = false;
+        .finally(() => {
+          this.loading = false
           console.log('done')
           this.updateValidCashback()
         })
     },
-    async  handleAccepted(index){
-      console.log(this.dataCashbacks[index].ruffTx,
-                  this.dataCashbacks[index].value)
-      
+    async handleAccepted(index) {
+      console.log(
+        this.dataCashbacks[index].ruffTx,
+        this.dataCashbacks[index].value
+      )
+      this.currentRuffTx = this.dataCashbacks[index].ruffTx
+      this.currentHecoValue = this.dataCashbacks[index].value
+      this.currentHecoTx = ''
+
+      this.hecoTxDialogVisible = true
+    },
+    hecoTxClose() {
+      this.hecoTxDialogVisible = false
+    },
+    hecoTxConfirm() {
+      this.loading = true;
+      console.log(this.currentHecoTx, this.currentHecoValue)
+      this.hecoTxDialogVisible = false
+
+      console.log('hecoTxConfirm')
+      chainApi
+        .completeCashback(this.currentRuffTx,this.currentHecoTx, 
+        this.currentHecoValue ,this.getAuth())
+        .then(res =>{
+          console.log('completeCashback')
+          console.log(res)
+          if(res.err === 0){
+            this.updateAcceptedCashback();
+          }
+        })
+        .finally(()=>{
+          this.loading = false;
+          this.hecoTxDialogVisible = false
+        })
     },
     checkTxHandled(tx) {
       if (this.txs.data[tx.index].bHandled === true) {
@@ -863,8 +913,7 @@ export default {
         return 'success-row'
       }
       return ''
-    },
-
+    }
   }
 }
 </script>
