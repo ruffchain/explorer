@@ -24,24 +24,26 @@
 <template>
   <div class="admin-user">
     <section>
-      <div class="top-radio-selecter">
-        <el-radio-group size="medium" v-model="action" @change="actionChange">
-          <el-radio-button :label="actionPurchase"></el-radio-button>
-          <el-radio-button :label="actionCashback"></el-radio-button>
-        </el-radio-group>
-      </div>
       <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
+      <div class="top-radio-selecter">
+        <el-radio-group size="medium" v-model="action" @change="actionChange">
+          <el-radio-button :label="actionInvalid"></el-radio-button>
+          <el-radio-button :label="actionValid"></el-radio-button>
+          <el-radio-button :label="actionAccepted"></el-radio-button>
+          <el-radio-button :label="actionCompleted"></el-radio-button>
+          <el-radio-button :label="actionRejected"></el-radio-button>
+        </el-radio-group>
+      </div>
+
       <!-- 展示表格 -->
-      <LoadingContainer :loading="loading" v-if="action === actionPurchase">
+      <LoadingContainer :loading="loading" v-if="action === actionInvalid">
         <div>
           <el-table
             type="index"
-            :data="dataTxs"
+            :data="dataCashbacks"
             highlight-current-row
-            @current-change="handleCurrentTx"
             :row-class-name="txRowClassName"
-            :row-style="selectedTxStyle"
             style="width: 100%"
           >
             <el-table-column prop="index" label="" width="20"></el-table-column>
@@ -59,62 +61,27 @@
             </el-table-column>
             <el-table-column prop="status" label="状态"> </el-table-column>
           </el-table>
-          <div class="pagination-container" v-if="txs && txs.total > 0">
+          <div class="pagination-container" v-if="cashbacks && cashbacks.total > 0">
             <el-pagination
-              @size-change="updateTxs"
-              @current-change="updateTxs"
+              @size-change="updateInvalidCashback"
+              @current-change="updateInvalidCashback"
               :current-page.sync="page"
               :page-size.sync="pageSize"
               :page-sizes="[5, 10]"
               layout="total,sizes,prev,pager,next,jumper"
-              :total="txs.total"
+              :total="cashbacks.total"
             />
-          </div>
-          <!-- button -->
-          <TransactionResult v-if="result" :data="result" />
-          <div style="margin-top: 20px">
-            <el-form
-              :inline="true"
-              :model="purchased"
-              v-if="currentRowTx !== null"
-            >
-              <el-form-item label="Ratio:">
-                <el-input-number
-                  v-model="purchased.ratio"
-                  :precision="2"
-                  :step="0.01"
-                  :max="5"
-                  :min="0.2"
-                ></el-input-number>
-              </el-form-item>
-              <el-form-item label="Send ">
-                <div style="color:red">{{ valPurchased }} {{ token }}</div>
-              </el-form-item>
-              <el-form-item label="To">
-                {{ $_APP.ADDRESS_PREFIX }}{{ addrPurchased }}
-              </el-form-item>
-              <el-form-item>
-                <el-button
-                  :disabled="buttonDisabled"
-                  type="primary"
-                  v-if="action === actionPurchase"
-                  @click="hanldeTx"
-                  >Confirm</el-button
-                >
-              </el-form-item>
-            </el-form>
           </div>
         </div>
       </LoadingContainer>
       <!-- 展示cashback request表格 -->
-      <LoadingContainer :loading="loading" v-if="action === actionCashback">
+      <LoadingContainer :loading="loading" v-if="action === actionValid">
         <div>
           <el-table
             :data="dataCashbacks"
             highlight-current-row
-            @current-change="handleCurrentCashback"
             :row-class-name="cashbackRowClassName"
-            :row-style="selectedCashbackStyle"
+
             style="width: 100%"
           >
             <el-table-column prop="index" label="" width="20"></el-table-column>
@@ -137,8 +104,8 @@
             v-if="cashbacks && cashbacks.total > 0"
           >
             <el-pagination
-              @size-change="updateCashbacks"
-              @current-change="updateCashbacks"
+              @size-change="updateValidCashback"
+              @current-change="updateValidCashback"
               :current-page.sync="page"
               :page-size.sync="pageSize"
               :page-sizes="[5, 10]"
@@ -147,54 +114,6 @@
             />
           </div>
           <!-- button -->
-          <TransactionResult v-if="result" :data="result" />
-          <div style="margin-top: 20px">
-            <el-form
-              :inline="false"
-              :model="cashbackModel"
-              v-if="currentRowCashback !== null"
-              label-width="90px"
-            >
-              <el-form-item label="USDT:">
-                <el-input
-                  v-model="cashbackModel.txHash"
-                  placeholder="USDT transfer TX hash"
-                  v-if="currentRowCashback !== null"
-                >
-                  <template slot="prepend">Hash</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="Ratio:">
-                <el-input-number
-                  v-model="cashbackModel.ratio"
-                  :precision="2"
-                  :step="0.01"
-                  :max="5"
-                  :min="0.2"
-                ></el-input-number>
-              </el-form-item>
-              <el-form-item label="Value:">
-                {{ valCashback }}
-              </el-form-item>
-              <el-form-item label="">
-                <el-button
-                  type="warning"
-                  :disabled="buttonDisabled"
-                  @click="handleCashback"
-                  >Update Cashback</el-button
-                >
-              </el-form-item>
-            </el-form>
-
-            <!-- <div
-              v-if="action === actionCashback && currentRowCashback !== null"
-            >
-          
-                <div style="color:red">{{ valCashback }} USDT</div>
-
-              
-            </div> -->
-          </div>
         </div>
       </LoadingContainer>
     </section>
@@ -217,8 +136,8 @@ import * as chainApi from '../../../../common/chain-api'
 import * as chainLib from '../../../../common/chain-lib'
 import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
-import { genTransferTx } from '../wallet-helper'
-import { TokenType } from '../../../../common/enums'
+// import { genTransferTx } from '../wallet-helper'
+// import { TokenType } from '../../../../common/enums'
 import TransactionResult from '../TransactionResult'
 
 export default {
@@ -242,10 +161,6 @@ export default {
       action: '',
       strAlert: '',
       loading: false,
-      txs: {
-        total: 1,
-        data: []
-      },
       page: 1,
       pageSize: 5,
       cashbacks: {
@@ -269,47 +184,59 @@ export default {
     }
   },
   computed: {
-    actionPurchase() {
-      return 'purchased'
+    actionInvalid() {
+      return 'invalid'
     },
-    actionCashback() {
-      return 'cashback'
+    actionValid() {
+      return 'valid'
     },
-    strActionPurchase() {
-      return (
-        '管理员页面: ' +
-        '列举换币交易, USDT换' +
-        this.token +
-        ', 选择表中的一行，处理换币请求'
-      )
+    actionAccepted() {
+      return 'accepted'
     },
-    strActionCashback() {
-      return (
-        '管理员页面: ' + this.token + '兑换回USDT, 选择表中的一行，进行处理'
-      )
+    actionCompleted() {
+      return 'completed'
     },
-    dataTxs() {
-      // get data from txs.data
-      let out = []
-      let i = 0
-      for (let record of this.txs.data) {
-        out.push({
-          index: i++,
-          date: this.getStrDate(record.date),
-          foreignAddr: record.foreignAddr,
-          ruffAddr: record.ruffAddr,
-          value: record.value,
-          sent:
-            record.ruffValue === undefined || record.ruffValue === 'undefined'
-              ? 0
-              : record.ruffValue,
-          bHandled: this.getStrHandled(record.bHandled),
-          status: this.getStrStatus(record)
-        })
-      }
+    actionRejected() {
+      return 'rejected'
+    },
+    strActionInvalid() {
+      return '管理员页面: ' + '用户提交的未验证的请求'
+    },
+    strActionValid() {
+      return '管理员页面: ' + '已验证有效的请求'
+    },
+    strActionAccepted() {
+      return '管理员页面: ' + '已批准的请求'
+    },
+    strActionCompleted() {
+      return '管理员页面: ' + '已完成的请求'
+    },
+    strActionRejected() {
+      return '管理员页面: ' + '被驳回的请求'
+    },
 
-      return out
-    },
+    // dataTxs() {
+    //   // get data from txs.data
+    //   let out = []
+    //   let i = 0
+    //   for (let record of this.txs.data) {
+    //     out.push({
+    //       index: i++,
+    //       date: this.getStrDate(record.date),
+    //       foreignAddr: record.foreignAddr,
+    //       ruffAddr: record.ruffAddr,
+    //       value: record.value,
+    //       sent:
+    //         record.ruffValue === undefined || record.ruffValue === 'undefined'
+    //           ? 0
+    //           : record.ruffValue,
+    //       bHandled: this.getStrHandled(record.bHandled),
+    //       status: this.getStrStatus(record)
+    //     })
+    //   }
+
+    //   return out
+    // },
     dataCashbacks() {
       let out = []
       let i = 0
@@ -366,14 +293,55 @@ export default {
   },
   beforeMount() {
     console.log('value: ', this.value)
-    this.strAlert = this.strActionPurchase
-    this.action = this.actionPurchase
+    this.strAlert = this.strActionInvalid
+    this.action = this.actionInvalid
 
-    this.updateTxs()
-    this.updateCashbacks()
+    // this.updateCashbacks()
+    this.updateInvalidCashback();
+
   },
   mounted() {},
   methods: {
+    updateInvalidCashback(){
+      this.loading = true;
+      console.log('invalid cashback' + this.page  + ' ' + this.pageSize)
+
+      chainApi
+        .getInvalidCashback(this.page -1, this.pageSize, this.getAuth())
+        .then(res=>{
+          console.log('getInvalidCashback')
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.cashbacks.total = res.data.page_total
+            this.cashbacks.data = res.data.data
+          }
+        })
+        .finally(()=>{
+          this.loading = false;
+        })
+
+    },
+    updateValidCashback(){
+      this.loading = true;
+      console.log('valid cashback' + this.page  + ' ' + this.pageSize)
+
+      chainApi
+        .getValidCashback(this.page -1, this.pageSize, this.getAuth())
+        .then(res=>{
+          console.log('getValidCashback')
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.cashbacks.total = res.data.page_total
+            this.cashbacks.data = res.data.data
+          }
+        })
+        .finally(()=>{
+          this.loading = false;
+        })
+
+    },
     checkTxHandled(tx) {
       if (this.txs.data[tx.index].bHandled === true) {
         return true
@@ -445,16 +413,21 @@ export default {
     actionChange() {
       console.log('change')
 
-      if (this.action === this.actionPurchase) {
-        this.strAlert = this.strActionPurchase
-        this.page = 1
-        this.updateTxs()
-        this.currentRowTx = null
-      } else {
-        this.strAlert = this.strActionCashback
-        this.page = 1
-        this.updateCashbacks()
-        this.currentRowCashback = null
+      if (this.action === this.actionInvalid) {
+        this.strAlert = this.strActionInvalid
+        this.updateInvalidCashback()
+        // this.page = 1
+        // this.updateTxs()
+        // this.currentRowTx = null
+      } else if (this.action === this.actionValid) {
+        this.strAlert = this.strActionValid
+        this.updateValidCashback()
+      } else if (this.action === this.actionAccepted) {
+        this.strAlert = this.strActionAccepted
+      } else if (this.action === this.actionCompleted) {
+        this.strAlert = this.strActionCompleted
+      } else if (this.action === this.actionRejected) {
+        this.strAlert = this.strActionRejected
       }
     },
     async updateCashbacks() {
@@ -476,45 +449,45 @@ export default {
           this.loading = false
         })
     },
-    async updateTxs() {
-      this.loading = true
-      console.log('this.page:', this.page, ' ', this.pageSize)
+    // async updateTxs() {
+    //   this.loading = true
+    //   console.log('this.page:', this.page, ' ', this.pageSize)
 
-      chainApi
-        .getPurchased(this.page - 1, this.pageSize, this.getAuth())
-        .then(res => {
-          console.log('getPurchased()')
-          console.log(res)
-          if (res.err === 0) {
-            this.pageSize = res.data.page_size
-            this.txs.total = res.data.page_total
-            this.txs.data = []
-            for (let ele of res.data.data) {
-              this.txs.data.push(ele)
-            }
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    handleCurrentTx(val) {
-      if (!val) {
-        return
-      }
-      this.result = null
-      this.currentRowTx = val
-      console.log(this.currentRowTx)
-      let index = this.currentRowTx.index
-      if (
-        this.txs.data[index].bHandled === true ||
-        this.txs.data[index].type !== 0
-      ) {
-        this.buttonDisabled = true
-      } else {
-        this.buttonDisabled = false
-      }
-    },
+    //   chainApi
+    //     .getPurchased(this.page - 1, this.pageSize, this.getAuth())
+    //     .then(res => {
+    //       console.log('getPurchased()')
+    //       console.log(res)
+    //       if (res.err === 0) {
+    //         this.pageSize = res.data.page_size
+    //         this.txs.total = res.data.page_total
+    //         this.txs.data = []
+    //         for (let ele of res.data.data) {
+    //           this.txs.data.push(ele)
+    //         }
+    //       }
+    //     })
+    //     .finally(() => {
+    //       this.loading = false
+    //     })
+    // },
+    // handleCurrentTx(val) {
+    //   if (!val) {
+    //     return
+    //   }
+    //   this.result = null
+    //   this.currentRowTx = val
+    //   console.log(this.currentRowTx)
+    //   let index = this.currentRowTx.index
+    //   if (
+    //     this.txs.data[index].bHandled === true ||
+    //     this.txs.data[index].type !== 0
+    //   ) {
+    //     this.buttonDisabled = true
+    //   } else {
+    //     this.buttonDisabled = false
+    //   }
+    // },
 
     txRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
@@ -524,21 +497,21 @@ export default {
       }
       return ''
     },
-    selectedTxStyle({ row, rowIndex }) {
-      if (this.txs.data[rowIndex].type !== 0) {
-        return {
-          'background-color': 'rgb(253, 226, 226)'
-        }
-      } else if (this.txs.data[rowIndex].bHandled === true) {
-        return {
-          'background-color': 'rgb(225, 243, 216)'
-        }
-      } else if (this.txs.data[rowIndex].bAccepted === true) {
-        return {
-          'background-color': 'rgb(250, 236, 216)'
-        }
-      }
-    },
+    // selectedTxStyle({ row, rowIndex }) {
+    //   if (this.txs.data[rowIndex].type !== 0) {
+    //     return {
+    //       'background-color': 'rgb(253, 226, 226)'
+    //     }
+    //   } else if (this.txs.data[rowIndex].bHandled === true) {
+    //     return {
+    //       'background-color': 'rgb(225, 243, 216)'
+    //     }
+    //   } else if (this.txs.data[rowIndex].bAccepted === true) {
+    //     return {
+    //       'background-color': 'rgb(250, 236, 216)'
+    //     }
+    //   }
+    // },
     selectedCashbackStyle({ row, rowIndex }) {
       if (this.cashbacks.data[rowIndex].type !== 0) {
         return {
@@ -557,32 +530,32 @@ export default {
     indexTxMethod(index) {
       return index
     },
-    cleanTxForm() {
-      if (this.action === this.actionPurchase) {
-        this.currentRowTx = null
-        console.log('cleanTxForm purchased')
-        this.updateTxs()
-      } else if (this.action === this.actionCashback) {
-        this.currentRowCashback = null
-        console.log('cleanTxForm cashback')
-        this.updateCashbacks()
-      } else {
-        console.log('cleanTxForm')
-        console.log('unknown action')
-      }
-    },
-    hanldeTx() {
-      console.log('hanleTx()')
-      this.result = null
-      this.txData = genTransferTx({
-        to: this.addrPurchased,
-        tokenId: this.token,
-        amount: this.valPurchased + '',
-        fee: '0.1',
-        tokenType: TokenType.normal
-      })
-      this.showConfirmTx = true
-    },
+    // cleanTxForm() {
+    //   if (this.action === this.actionPurchase) {
+    //     this.currentRowTx = null
+    //     console.log('cleanTxForm purchased')
+    //     this.updateTxs()
+    //   } else if (this.action === this.actionCashback) {
+    //     this.currentRowCashback = null
+    //     console.log('cleanTxForm cashback')
+    //     this.updateCashbacks()
+    //   } else {
+    //     console.log('cleanTxForm')
+    //     console.log('unknown action')
+    //   }
+    // },
+    // hanldeTx() {
+    //   console.log('hanleTx()')
+    //   this.result = null
+    //   this.txData = genTransferTx({
+    //     to: this.addrPurchased,
+    //     tokenId: this.token,
+    //     amount: this.valPurchased + '',
+    //     fee: '0.1',
+    //     tokenType: TokenType.normal
+    //   })
+    //   this.showConfirmTx = true
+    // },
     async confirmSendTx(tx) {
       try {
         this.apploading = true
@@ -652,7 +625,6 @@ export default {
       let ruffTx = this.cashbacks.data[index].ruffTx
       console.log(ruffTx)
 
-
       if (this.cashbackModel.txHash.length < 1) {
         this.result = {
           message: 'Error: Must input TX Hash!'
@@ -670,7 +642,7 @@ export default {
         )
 
         console.log(res)
-        if(res.err === 0){
+        if (res.err === 0) {
           this.result = {
             message: 'Update cashback record OK'
           }

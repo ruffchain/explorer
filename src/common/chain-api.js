@@ -104,7 +104,7 @@ export const updatePurchasedHandled = (inTx, ruffValue, ruffTx, inAuth) =>
     },
     auth: inAuth
   })
-export const getCashbackByAddr =(index, pagesize, inAuth) =>
+export const getCashbackByAddr = (index, pagesize, inAuth) =>
   callMintageRpc({
     method: 'get-cashback-byaddr',
     args: {
@@ -123,7 +123,7 @@ export const checkHecoAddr = (addr) =>
 export const getCashback = (index, pagesize, inAuth) =>
   callMintageRpc({
     method: 'get-cashback',
-    args:{
+    args: {
       page: index,
       page_size: pagesize
     },
@@ -142,17 +142,62 @@ export const setCashback = (inForeignAddr, inValue, inTx, inAuth) =>
     auth: inAuth
   })
 
-export const updateCashbackHandled = (tx, foreignvalue, foreigntx , inAuth)=>
+export const updateCashbackHandled = (tx, foreignvalue, foreigntx, inAuth) =>
   callMintageRpc({
     method: 'update-cashback-handled',
-    args:{
+    args: {
       tx: tx,
       foreign_value: foreignvalue,
       foreign_tx: foreigntx,
     },
-    auth:inAuth
+    auth: inAuth
   })
 
+export const getInvalidCashback = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-invalid-cashback',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getValidCashback = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-valid-cashback',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getAcceptedCashback = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-accepted-cashback',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getCompletedCashback = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-completed-cashback',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getRejectedCashback = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-rejected-cashback',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
 //////////////////////////////////////////
 const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })

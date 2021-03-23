@@ -40,7 +40,7 @@
     </section> -->
     <SubscribedUser v-if="bSubscribedUser === true" :value="value" :token="mintageToken"  :mintageAddr="mintageAddr" :mintageToken="mintageToken">
     </SubscribedUser>
-    <!-- <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken" :mintageAddr="mintageAddr" :mintageToken="mintageToken"> </AdminUser> -->
+    <AdminUser v-if="bAdminUser === true" :value="value" :token="mintageToken" :mintageAddr="mintageAddr" :mintageToken="mintageToken"> </AdminUser> 
   </div>
 </template>
 
@@ -48,12 +48,12 @@
 import * as chainApi from '../../../common/chain-api'
 import LoadingContainer from '../../../components/LoadingContainer.vue'
 // import * as chainLib from '../../../common/chain-lib'
-// import AdminUser from './Mintage/AdminUser'
+import AdminUser from './Mintage/AdminUser'
 import SubscribedUser from './Mintage/SubscribedUser'
 
 export default {
   components: {
-    // AdminUser,
+    AdminUser,
     SubscribedUser,
     LoadingContainer
   },
