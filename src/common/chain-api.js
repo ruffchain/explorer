@@ -104,7 +104,7 @@ export const updatePurchasedHandled = (inTx, ruffValue, ruffTx, inAuth) =>
     },
     auth: inAuth
   })
-export const getCashbackByAddr = (index, pagesize, inAuth) =>
+export const getCashbackByAddr =(index, pagesize, inAuth) =>
   callMintageRpc({
     method: 'get-cashback-byaddr',
     args: {

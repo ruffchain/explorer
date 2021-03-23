@@ -8,13 +8,26 @@
     justify-content: flex-end;
     margin-top: 10px;
   }
+
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
 }
 </style>
 
 <template>
   <div class="subscribed-user">
     <section>
-      <h2> {{ value }} RUFF</h2>
+      <h2>{{ value }} RUFF</h2>
       <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
       <el-form
@@ -24,8 +37,14 @@
         :rules="formRules"
         label-width="150px"
       >
-        <el-form-item type="text" maxlength="32" prop="toUsdt" :label="strToUsdt">
-          <el-input type="text" v-model="formData.toUsdt" minlength="30"> </el-input>
+        <el-form-item
+          type="text"
+          maxlength="32"
+          prop="toUsdt"
+          :label="strToUsdt"
+        >
+          <el-input type="text" v-model="formData.toUsdt" minlength="30">
+          </el-input>
         </el-form-item>
         <el-form-item prop="amount" :rules="amountRules" :label="strAmount">
           <el-input v-model="formData.amount" type="number"> </el-input>
@@ -56,18 +75,31 @@
           :row-style="selectedTxStyle"
           style="width: 100%"
         >
-          <el-table-column prop="index" label="" width="20"></el-table-column>
+          <!-- <el-table-column prop="index" label="" width="20"></el-table-column> -->
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                  <span>{{ props.row.foreignTx }}</span>
+                </el-form-item>
+                <el-form-item label="Exchange Amount:">
+                  <span>{{ props.row.foreignValue }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column prop="date" :label="strTableDate" width="150">
           </el-table-column>
-          <el-table-column prop="foreignAddr" :label="strTableAddr">
+          <el-table-column prop="foreignAddr" :label="strTableAddr" width="400">
           </el-table-column>
-          <el-table-column prop="value" :label="strTableAmount" width="120">
+          <el-table-column prop="value" :label="strTableAmount" width="150">
           </el-table-column>
-          <el-table-column prop="sent" :label="strTableSent" width="120">
+          <!-- <el-table-column prop="sent" :label="strTableSent" width="120">
+          </el-table-column> -->
+          <!-- <el-table-column prop="bHandled" :label="strTableHandled" width="90">
+          </el-table-column> -->
+          <el-table-column prop="status" :label="strTableStatus">
           </el-table-column>
-          <el-table-column prop="bHandled" :label="strTableHandled" width="90">
-          </el-table-column>
-          <el-table-column prop="status" :label="strTableStatus"> </el-table-column>
         </el-table>
         <div
           class="pagination-container"
@@ -78,7 +110,7 @@
             @current-change="updateCashbacks"
             :current-page.sync="page"
             :page-size.sync="pageSize"
-            :page-sizes="[3, 10]"
+            :page-sizes="[5, 10]"
             layout="total,sizes,prev,pager,next,jumper"
             :total="cashbacks.total"
           />
@@ -126,7 +158,7 @@ export default {
     LoadingContainer,
     TransactionResult,
     ConfirmTx,
-    AppDialog,
+    AppDialog
   },
   data() {
     return {
@@ -146,7 +178,7 @@ export default {
       txLoading: false,
       showConfirmTx: false,
       txData: {},
-      apploading: false,
+      apploading: false
     }
   },
   computed: {
@@ -165,7 +197,10 @@ export default {
           value: record.value,
           sent: record.foreignValue,
           bHandled: getStrHandled(record.bHandled),
-          status: this.getStrStatus(record)
+          status: this.getStrStatus(record),
+          ruffTx: record.ruffTx,
+          foreignTx: record.foreignTx,
+          foreignValue: record.foreignValue
         })
       }
       return out
@@ -184,23 +219,22 @@ export default {
     strTxConfirm() {
       return 'Confirm'
     },
-    strTableDate(){
-      return this.$t('Mintage.date');
+    strTableDate() {
+      return this.$t('Mintage.date')
     },
-    strTableAddr(){
+    strTableAddr() {
       return this.$t('Mintage.address')
     },
-    strTableAmount(){
+    strTableAmount() {
       return this.$t('Mintage.amount')
     },
-    strTableSent(){
+    strTableSent() {
       return this.$t('Mintage.sent')
-
     },
-    strTableHandled(){
+    strTableHandled() {
       return this.$t('Mintage.handled')
     },
-    strTableStatus(){
+    strTableStatus() {
       return this.$t('Mintage.status')
     }
   },
@@ -217,18 +251,15 @@ export default {
   },
   methods: {
     getStrStatus(record) {
-      let out = ''
-      if (record.type === 0) {
-        out += 'Valid'
-        if (record.bHandled === true) {
-          out += ',processed'
-        } else {
-          out += ',unprocessed'
-        }
-      } else {
-        out += 'Invalid'
+      let out = {
+        0: "Checking",
+        1: "Confirmed",
+        2: "Accepted",
+        3: "Completed",
+        10: "Rejected"
       }
-      return out
+      
+      return out[record.type]
     },
     getAuthNormal(txHash) {
       let privateKey = this.$_APP.privateKey
@@ -237,7 +268,7 @@ export default {
 
       let num = Math.floor(new Date().getTime() / 1000) - 1
 
-      let hash = chainLib.hash256(Buffer.from(num +'' ))
+      let hash = chainLib.hash256(Buffer.from(num + ''))
 
       return {
         date: num, // seconds
