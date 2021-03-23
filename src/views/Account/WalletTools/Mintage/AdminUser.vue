@@ -58,7 +58,6 @@
             :row-class-name="txRowClassName"
             style="width: 100%"
           >
-            <!-- <el-table-column prop="index" label="" width="20"></el-table-column> -->
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
@@ -116,7 +115,7 @@
                   <el-form-item label="Type:">
                     <span>{{ props.row.type }}</span>
                   </el-form-item>
-                   <el-form-item label="Ruff Addr:">
+                  <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
                   <el-form-item label="Ruff Tx:">
@@ -146,6 +145,173 @@
             <el-pagination
               @size-change="updateValidCashback"
               @current-change="updateValidCashback"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="cashbacks.total"
+            />
+          </div>
+          <!-- button -->
+        </div>
+      </LoadingContainer>
+
+      <!-- accepted -->
+      <LoadingContainer :loading="loading" v-if="action === actionAccepted">
+        <div>
+          <el-table
+            :data="dataCashbacks"
+            highlight-current-row
+            :row-class-name="cashbackRowClassName"
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="Type:">
+                    <span>{{ props.row.type }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Tx:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.foreignValue }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                    <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="foreignAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="cashbacks && cashbacks.total > 0"
+          >
+            <el-pagination
+              @size-change="updateAcceptedCashback"
+              @current-change="updateAcceptedCashback"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="cashbacks.total"
+            />
+          </div>
+          <!-- button -->
+        </div>
+      </LoadingContainer>
+
+      <!-- completed -->
+      <LoadingContainer :loading="loading" v-if="action === actionCompleted">
+        <div>
+          <el-table
+            :data="dataCashbacks"
+            highlight-current-row
+            :row-class-name="cashbackRowClassName"
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="Type:">
+                    <span>{{ props.row.type }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Tx:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.foreignValue }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                    <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="foreignAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="cashbacks && cashbacks.total > 0"
+          >
+            <el-pagination
+              @size-change="updateCompletedCashback"
+              @current-change="updateCompletedCashback"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="cashbacks.total"
+            />
+          </div>
+          <!-- button -->
+        </div>
+      </LoadingContainer>
+      <!-- rejected -->
+      <LoadingContainer :loading="loading" v-if="action === actionRejected">
+        <div>
+          <el-table
+            :data="dataCashbacks"
+            highlight-current-row
+            :row-class-name="cashbackRowClassName"
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="Type:">
+                    <span>{{ props.row.type }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Tx:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.foreignValue }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                    <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="foreignAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="cashbacks && cashbacks.total > 0"
+          >
+            <el-pagination
+              @size-change="updateRejectedCashback"
+              @current-change="updateRejectedCashback"
               :current-page.sync="page"
               :page-size.sync="pageSize"
               :page-sizes="[5, 10]"
@@ -261,7 +427,7 @@ export default {
         out.push({
           index: i++,
           date: this.getStrDate(record.date),
-          ruffAddr: 'ruff'+record.ruffAddr,
+          ruffAddr: 'ruff' + record.ruffAddr,
           foreignAddr: record.foreignAddr,
           value: record.value,
           sent: record.foreignValue,
@@ -360,6 +526,63 @@ export default {
           this.loading = false
         })
     },
+    updateAcceptedCashback() {
+      this.loading = true
+      console.log('accepted cashback' + this.page + ' ' + this.pageSize)
+
+      chainApi
+        .getAcceptedCashback(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
+          console.log('getAcceptedCashback')
+          console.log(res)
+          if (res.err === 0) {
+            this.pageSize = res.data.page_size
+            this.cashbacks.total = res.data.page_total
+            this.cashbacks.data = res.data.data
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    updateCompletedCashback() {
+      this.loading = true
+      console.log('completed cashback' + this.page + ' ' + this.pageSize)
+
+      chainApi
+        .getCompletedCashback(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
+          console.log('getCompletedCashback')
+          console.log(res)
+          if (res.err === 0) {
+            this.pageSize = res.data.page_size
+            this.cashbacks.total = res.data.page_total
+            this.cashbacks.data = res.data.data
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    updateRejectedCashback() {
+      this.loading = true
+      console.log('rejected cashback' + this.page + ' ' + this.pageSize)
+
+      chainApi
+        .getRejectedCashback(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
+          console.log('getRejectedCashback')
+          console.log(res)
+          if (res.err === 0) {
+            this.pageSize = res.data.page_size
+            this.cashbacks.total = res.data.page_total
+            this.cashbacks.data = res.data.data
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
     checkTxHandled(tx) {
       if (this.txs.data[tx.index].bHandled === true) {
         return true
@@ -444,10 +667,16 @@ export default {
         this.page = 1
       } else if (this.action === this.actionAccepted) {
         this.strAlert = this.strActionAccepted
+        this.updateAcceptedCashback()
+        this.page = 1
       } else if (this.action === this.actionCompleted) {
         this.strAlert = this.strActionCompleted
+        this.updateCompletedCashback()
+        this.page = 1
       } else if (this.action === this.actionRejected) {
         this.strAlert = this.strActionRejected
+        this.updateRejectedCashback()
+        this.page = 1
       }
     },
     async updateCashbacks() {
@@ -469,45 +698,6 @@ export default {
           this.loading = false
         })
     },
-    // async updateTxs() {
-    //   this.loading = true
-    //   console.log('this.page:', this.page, ' ', this.pageSize)
-
-    //   chainApi
-    //     .getPurchased(this.page - 1, this.pageSize, this.getAuth())
-    //     .then(res => {
-    //       console.log('getPurchased()')
-    //       console.log(res)
-    //       if (res.err === 0) {
-    //         this.pageSize = res.data.page_size
-    //         this.txs.total = res.data.page_total
-    //         this.txs.data = []
-    //         for (let ele of res.data.data) {
-    //           this.txs.data.push(ele)
-    //         }
-    //       }
-    //     })
-    //     .finally(() => {
-    //       this.loading = false
-    //     })
-    // },
-    // handleCurrentTx(val) {
-    //   if (!val) {
-    //     return
-    //   }
-    //   this.result = null
-    //   this.currentRowTx = val
-    //   console.log(this.currentRowTx)
-    //   let index = this.currentRowTx.index
-    //   if (
-    //     this.txs.data[index].bHandled === true ||
-    //     this.txs.data[index].type !== 0
-    //   ) {
-    //     this.buttonDisabled = true
-    //   } else {
-    //     this.buttonDisabled = false
-    //   }
-    // },
 
     txRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
@@ -517,21 +707,6 @@ export default {
       }
       return ''
     },
-    // selectedTxStyle({ row, rowIndex }) {
-    //   if (this.txs.data[rowIndex].type !== 0) {
-    //     return {
-    //       'background-color': 'rgb(253, 226, 226)'
-    //     }
-    //   } else if (this.txs.data[rowIndex].bHandled === true) {
-    //     return {
-    //       'background-color': 'rgb(225, 243, 216)'
-    //     }
-    //   } else if (this.txs.data[rowIndex].bAccepted === true) {
-    //     return {
-    //       'background-color': 'rgb(250, 236, 216)'
-    //     }
-    //   }
-    // },
     selectedCashbackStyle({ row, rowIndex }) {
       if (this.cashbacks.data[rowIndex].type !== 0) {
         return {
@@ -550,32 +725,6 @@ export default {
     indexTxMethod(index) {
       return index
     },
-    // cleanTxForm() {
-    //   if (this.action === this.actionPurchase) {
-    //     this.currentRowTx = null
-    //     console.log('cleanTxForm purchased')
-    //     this.updateTxs()
-    //   } else if (this.action === this.actionCashback) {
-    //     this.currentRowCashback = null
-    //     console.log('cleanTxForm cashback')
-    //     this.updateCashbacks()
-    //   } else {
-    //     console.log('cleanTxForm')
-    //     console.log('unknown action')
-    //   }
-    // },
-    // hanldeTx() {
-    //   console.log('hanleTx()')
-    //   this.result = null
-    //   this.txData = genTransferTx({
-    //     to: this.addrPurchased,
-    //     tokenId: this.token,
-    //     amount: this.valPurchased + '',
-    //     fee: '0.1',
-    //     tokenType: TokenType.normal
-    //   })
-    //   this.showConfirmTx = true
-    // },
     async confirmSendTx(tx) {
       try {
         this.apploading = true
