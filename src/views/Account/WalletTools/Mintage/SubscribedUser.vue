@@ -284,12 +284,12 @@ export default {
     },
     async updateCashbacks() {
       this.loading = true
-      console.log('page :', this.page, 'pagesize:', this.pageSize)
+      // console.log('page :', this.page, 'pagesize:', this.pageSize)
       chainApi
         .getCashbackByAddr(this.page - 1, this.pageSize, this.getAuthNormal())
         .then(res => {
-          console.log('getCashbackByAddr()')
-          console.log(res)
+          // console.log('getCashbackByAddr()')
+          // console.log(res)
           if (res.err === 0) {
             this.cashbacks.total = res.data.page_total
             this.cashbacks.data = res.data.data
@@ -301,7 +301,7 @@ export default {
     },
     handleCurrentCashback(val) {
       this.currentRowCashback = val
-      console.log(this.currentRowCashback)
+      // console.log(this.currentRowCashback)
     },
     cashbackRowClassName({ row, rowIndex }) {
       if (rowIndex === 1) {
@@ -316,14 +316,14 @@ export default {
         let privateKey = this.$_APP.privateKey
         let address = chainLib.addressFromSecretKey(privateKey)
         let tokens = await chainApi.getTokensByAddress(address)
-        console.log('tokens:', tokens)
+        //  console.log('tokens:', tokens)
         let token = tokens.find(tok => {
           return tok.token === this.token
         })
-        console.log(token)
+        // console.log(token)
         this.value = token.value
       } catch (e) {
-        console.log(e)
+        // console.log(e)
       }
     },
     cleanTable() {
@@ -343,7 +343,7 @@ export default {
 
       let res = await chainApi.checkHecoAddr(this.formData.toUsdt)
 
-      console.log(res)
+      // console.log(res)
       if (res.err !== 0) {
         this.result = {
           message: 'Invalid Heco address'
@@ -365,8 +365,8 @@ export default {
       try {
         this.apploading = true
         let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
-        console.log('tx res:')
-        console.log(res)
+        // console.log('tx res:')
+        // console.log(res)
 
         let messageUpdate = ''
         if (res.confirmed) {
@@ -376,7 +376,7 @@ export default {
             res.tx.hash,
             this.getAuthNormal(res.tx.hash)
           )
-          console.log('res2:', res2)
+          // console.log('res2:', res2)
           if (res2.err === 0) {
             messageUpdate = ' , Update OK'
           } else {
@@ -404,15 +404,17 @@ export default {
         return {
           'background-color': 'rgb(253, 226, 226)'
         }
-      } else if (type === 2 ) {
-        return {
-          'background-color': 'rgb(225, 243, 216)'
-        }
-      } else if (type === 3) {
-        return {
-          'background-color': 'rgb(216, 245, 225)'
-        }
-      }
+      } 
+      
+      // else if (type === 2 ) {
+      //   return {
+      //     'background-color': 'rgb(225, 243, 216)'
+      //   }
+      // } else if (type === 3) {
+      //   return {
+      //     'background-color': 'rgb(216, 245, 225)'
+      //   }
+      // }
     }
   }
 }
