@@ -646,9 +646,17 @@ export default {
     hecoTxConfirm() {
       this.loading = true;
       console.log(this.currentHecoTx, this.currentHecoValue)
-      this.hecoTxDialogVisible = false
+      
 
       console.log('hecoTxConfirm')
+
+      if(this.currentHecoTx.length < 20){
+        this.loading = false;
+        console.error('wrong heco TX')
+        this.hecoTxDialogVisible = false
+        return
+      }
+
       chainApi
         .completeCashback(this.currentRuffTx,this.currentHecoTx, 
         this.currentHecoValue ,this.getAuth())
