@@ -15,6 +15,7 @@
   .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
+    // color: rgb(253, 226, 226)
   }
   .demo-table-expand .el-form-item {
     margin-right: 0;
@@ -79,6 +80,9 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="Type:">
+                  <span>{{ props.row.type }}</span>
+                </el-form-item>
                 <el-form-item label="Ruff Tx:">
                   <span>{{ props.row.ruffTx }}</span>
                 </el-form-item>
@@ -203,7 +207,8 @@ export default {
           status: this.getStrStatus(record),
           ruffTx: record.ruffTx,
           foreignTx: record.foreignTx,
-          foreignValue: record.foreignValue
+          foreignValue: record.foreignValue,
+          type: record.type,
         })
       }
       return out
@@ -254,15 +259,20 @@ export default {
   },
   methods: {
     getStrStatus(record) {
-      let out = {
-        0: 'Checking',
-        1: 'Confirmed',
-        2: 'Accepted',
-        3: 'Completed',
-        10: 'Rejected'
+      if(record.type === 0){
+        return 'Checking'
+      }else if(record.type === 1){
+        return 'Valid'
+      }else if(record.type === 2){
+        return 'Accepted'
+      }else if(record.type === 3){
+          return 'Completed'
+      }else if(record.type === 10){
+          return 'Rejected'
+      }else{
+        return ''
       }
 
-      return out[record.type]
     },
     getAuthNormal(txHash) {
       let privateKey = this.$_APP.privateKey
@@ -397,17 +407,18 @@ export default {
       }
     },
     selectedTxStyle({ row, rowIndex }) {
-      if (this.cashbacks.data[rowIndex].type !== 0) {
+      let type = this.cashbacks.data[rowIndex].type
+      if ( type == 10) {
         return {
           'background-color': 'rgb(253, 226, 226)'
         }
-      } else if (this.cashbacks.data[rowIndex].bHandled === true) {
+      } else if (type === 2 ) {
         return {
           'background-color': 'rgb(225, 243, 216)'
         }
-      } else if (this.cashbacks.data[rowIndex].bAccepted === true) {
+      } else if (type === 3) {
         return {
-          'background-color': 'rgb(250, 236, 216)'
+          'background-color': 'rgb(127, 192, 148)'
         }
       }
     }

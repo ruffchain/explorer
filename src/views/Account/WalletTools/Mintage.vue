@@ -63,6 +63,7 @@ export default {
       value: 0,
       mintageToken: '',
       mintageAddr: '',
+      otherAddress: '',
       tokenList: [],
       bSubscribedUser: false,
       bNormalUser: false,
@@ -85,10 +86,11 @@ export default {
       this.loading = true
       chainApi.getPurchasedConfig()
         .then(res=>{
-          //console.log(res)
+          console.log(res)
           if(res.err ===0){
             this.mintageToken = res.data.mintage_token
             this.mintageAddr = res.data.mintage_account
+            this.otherAddress = res.data.mintage_other_addr
 
             this.chooseUser()
           }
@@ -109,9 +111,18 @@ export default {
         console.log(token)
 
         this.value = token.value;
+
+
         this.bNormalUser = false;
-        this.bSubscribedUser = true;
-        this.bAdminUser = false;
+
+        if( this.address === this.otherAddress){
+          this.bSubscribedUser = false;
+          this.bAdminUser = true;
+        }else{
+          this.bSubscribedUser = true;
+          this.bAdminUser = false;
+        }
+
 
       } catch (e) {
         console.log(e)
