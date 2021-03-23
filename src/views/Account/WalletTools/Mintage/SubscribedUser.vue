@@ -67,7 +67,6 @@
     <!-- 展示表格 -->
     <LoadingContainer :loading="loading">
       <div>
-        <!-- <h2>已提交的换币请求:</h2> -->
         <el-table
           :data="dataCashbacks"
           highlight-current-row
@@ -76,7 +75,6 @@
           :row-style="selectedTxStyle"
           style="width: 100%"
         >
-          <!-- <el-table-column prop="index" label="" width="20"></el-table-column> -->
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" inline class="demo-table-expand">

@@ -9,6 +9,19 @@
     justify-content: flex-end;
     margin-top: 10px;
   }
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+    // color: rgb(253, 226, 226)
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+  }
 }
 
 .warning-row {
@@ -40,28 +53,42 @@
       <LoadingContainer :loading="loading" v-if="action === actionInvalid">
         <div>
           <el-table
-            type="index"
             :data="dataCashbacks"
             highlight-current-row
             :row-class-name="txRowClassName"
             style="width: 100%"
           >
-            <el-table-column prop="index" label="" width="20"></el-table-column>
+            <!-- <el-table-column prop="index" label="" width="20"></el-table-column> -->
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="Type:">
+                    <span>{{ props.row.type }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Tx:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.foreignValue }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                    <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
             <el-table-column prop="date" label="日期" width="150">
             </el-table-column>
-            <el-table-column prop="foreignAddr" label="USDT地址">
+            <el-table-column prop="foreignAddr" label="Heco地址" width="400">
             </el-table-column>
-            <el-table-column prop="ruffAddr" label="RUFF地址">
-            </el-table-column>
-            <el-table-column prop="value" label="数量" width="120">
-            </el-table-column>
-            <el-table-column prop="sent" label="兑换" width="120">
-            </el-table-column>
-            <el-table-column prop="bHandled" label="处理" width="50">
+            <el-table-column prop="value" label="数量" width="150">
             </el-table-column>
             <el-table-column prop="status" label="状态"> </el-table-column>
           </el-table>
-          <div class="pagination-container" v-if="cashbacks && cashbacks.total > 0">
+          <div
+            class="pagination-container"
+            v-if="cashbacks && cashbacks.total > 0"
+          >
             <el-pagination
               @size-change="updateInvalidCashback"
               @current-change="updateInvalidCashback"
@@ -81,21 +108,34 @@
             :data="dataCashbacks"
             highlight-current-row
             :row-class-name="cashbackRowClassName"
-
             style="width: 100%"
           >
-            <el-table-column prop="index" label="" width="20"></el-table-column>
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="Type:">
+                    <span>{{ props.row.type }}</span>
+                  </el-form-item>
+                   <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Ruff Tx:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.foreignValue }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                    <span>{{ props.row.foreignTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
             <el-table-column prop="date" label="日期" width="150">
             </el-table-column>
-            <el-table-column prop="ruffAddr" label="RUFF地址">
+            <el-table-column prop="foreignAddr" label="Heco地址" width="400">
             </el-table-column>
-            <el-table-column prop="foreignAddr" label="USDT地址">
-            </el-table-column>
-            <el-table-column prop="value" label="数量" width="120">
-            </el-table-column>
-            <el-table-column prop="sent" label="Usdt" width="120">
-            </el-table-column>
-            <el-table-column prop="bHandled" label="处理" width="80">
+            <el-table-column prop="value" label="数量" width="150">
             </el-table-column>
             <el-table-column prop="status" label="状态"> </el-table-column>
           </el-table>
@@ -214,29 +254,6 @@ export default {
     strActionRejected() {
       return '管理员页面: ' + '被驳回的请求'
     },
-
-    // dataTxs() {
-    //   // get data from txs.data
-    //   let out = []
-    //   let i = 0
-    //   for (let record of this.txs.data) {
-    //     out.push({
-    //       index: i++,
-    //       date: this.getStrDate(record.date),
-    //       foreignAddr: record.foreignAddr,
-    //       ruffAddr: record.ruffAddr,
-    //       value: record.value,
-    //       sent:
-    //         record.ruffValue === undefined || record.ruffValue === 'undefined'
-    //           ? 0
-    //           : record.ruffValue,
-    //       bHandled: this.getStrHandled(record.bHandled),
-    //       status: this.getStrStatus(record)
-    //     })
-    //   }
-
-    //   return out
-    // },
     dataCashbacks() {
       let out = []
       let i = 0
@@ -244,12 +261,16 @@ export default {
         out.push({
           index: i++,
           date: this.getStrDate(record.date),
-          ruffAddr: record.ruffAddr,
+          ruffAddr: 'ruff'+record.ruffAddr,
           foreignAddr: record.foreignAddr,
           value: record.value,
           sent: record.foreignValue,
           bHandled: this.getStrHandled(record.bHandled),
-          status: this.getStrStatus(record)
+          status: this.getStrStatus(record),
+          ruffTx: record.ruffTx,
+          foreignTx: record.foreignTx,
+          foreignValue: record.foreignValue,
+          type: record.type
         })
       }
       return out
@@ -297,50 +318,47 @@ export default {
     this.action = this.actionInvalid
 
     // this.updateCashbacks()
-    this.updateInvalidCashback();
-
+    this.updateInvalidCashback()
   },
   mounted() {},
   methods: {
-    updateInvalidCashback(){
-      this.loading = true;
-      console.log('invalid cashback' + this.page  + ' ' + this.pageSize)
+    updateInvalidCashback() {
+      this.loading = true
+      console.log('invalid cashback' + this.page + ' ' + this.pageSize)
 
       chainApi
-        .getInvalidCashback(this.page -1, this.pageSize, this.getAuth())
-        .then(res=>{
+        .getInvalidCashback(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
           console.log('getInvalidCashback')
           console.log(res)
-          if(res.err === 0){
+          if (res.err === 0) {
             this.pageSize = res.data.page_size
             this.cashbacks.total = res.data.page_total
             this.cashbacks.data = res.data.data
           }
         })
-        .finally(()=>{
-          this.loading = false;
+        .finally(() => {
+          this.loading = false
         })
-
     },
-    updateValidCashback(){
-      this.loading = true;
-      console.log('valid cashback' + this.page  + ' ' + this.pageSize)
+    updateValidCashback() {
+      this.loading = true
+      console.log('valid cashback' + this.page + ' ' + this.pageSize)
 
       chainApi
-        .getValidCashback(this.page -1, this.pageSize, this.getAuth())
-        .then(res=>{
+        .getValidCashback(this.page - 1, this.pageSize, this.getAuth())
+        .then(res => {
           console.log('getValidCashback')
           console.log(res)
-          if(res.err === 0){
+          if (res.err === 0) {
             this.pageSize = res.data.page_size
             this.cashbacks.total = res.data.page_total
             this.cashbacks.data = res.data.data
           }
         })
-        .finally(()=>{
-          this.loading = false;
+        .finally(() => {
+          this.loading = false
         })
-
     },
     checkTxHandled(tx) {
       if (this.txs.data[tx.index].bHandled === true) {
@@ -360,18 +378,19 @@ export default {
       }
     },
     getStrStatus(record) {
-      let out = ''
       if (record.type === 0) {
-        out += 'Valid'
-        if (record.bHandled === true) {
-          out += ',processed'
-        } else {
-          out += ',unprocessed'
-        }
+        return 'Checking'
+      } else if (record.type === 1) {
+        return 'Valid'
+      } else if (record.type === 2) {
+        return 'Accepted'
+      } else if (record.type === 3) {
+        return 'Completed'
+      } else if (record.type === 10) {
+        return 'Rejected'
       } else {
-        out += 'Invalid'
+        return ''
       }
-      return out
     },
     getStrDate(str) {
       try {
@@ -416,12 +435,13 @@ export default {
       if (this.action === this.actionInvalid) {
         this.strAlert = this.strActionInvalid
         this.updateInvalidCashback()
-        // this.page = 1
+        this.page = 1
         // this.updateTxs()
         // this.currentRowTx = null
       } else if (this.action === this.actionValid) {
         this.strAlert = this.strActionValid
         this.updateValidCashback()
+        this.page = 1
       } else if (this.action === this.actionAccepted) {
         this.strAlert = this.strActionAccepted
       } else if (this.action === this.actionCompleted) {
