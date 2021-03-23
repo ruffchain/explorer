@@ -85,7 +85,7 @@
                 <el-form-item label="Exchange Amount:">
                   <span>{{ props.row.foreignValue }}</span>
                 </el-form-item>
-                <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                <el-form-item v-if="props.row.foreignTx" label="Heco Tx:">
                   <span>{{ props.row.foreignTx }}</span>
                 </el-form-item>
               </el-form>
