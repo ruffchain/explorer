@@ -19,7 +19,7 @@
   .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
-    width: 50%;
+    width: 100%;
   }
 }
 </style>
@@ -79,11 +79,14 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
-                  <span>{{ props.row.foreignTx }}</span>
+                <el-form-item label="Ruff Tx:">
+                  <span>{{ props.row.ruffTx }}</span>
                 </el-form-item>
                 <el-form-item label="Exchange Amount:">
                   <span>{{ props.row.foreignValue }}</span>
+                </el-form-item>
+                <el-form-item v-if="props.row.foreignTx" label="Heco TxHash:">
+                  <span>{{ props.row.foreignTx }}</span>
                 </el-form-item>
               </el-form>
             </template>
@@ -252,13 +255,13 @@ export default {
   methods: {
     getStrStatus(record) {
       let out = {
-        0: "Checking",
-        1: "Confirmed",
-        2: "Accepted",
-        3: "Completed",
-        10: "Rejected"
+        0: 'Checking',
+        1: 'Confirmed',
+        2: 'Accepted',
+        3: 'Completed',
+        10: 'Rejected'
       }
-      
+
       return out[record.type]
     },
     getAuthNormal(txHash) {
