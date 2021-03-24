@@ -199,7 +199,7 @@ export default {
           ruffTx: record.ruffTx,
           foreignTx: record.foreignTx,
           foreignValue: record.foreignValue,
-          type: record.type,
+          type: record.type
         })
       }
       return out
@@ -250,20 +250,19 @@ export default {
   },
   methods: {
     getStrStatus(record) {
-      if(record.type === 0){
+      if (record.type === 0) {
         return 'Checking'
-      }else if(record.type === 1){
+      } else if (record.type === 1) {
         return 'Valid'
-      }else if(record.type === 2){
+      } else if (record.type === 2) {
         return 'Accepted'
-      }else if(record.type === 3){
-          return 'Completed'
-      }else if(record.type === 10){
-          return 'Rejected'
-      }else{
+      } else if (record.type === 3) {
+        return 'Completed'
+      } else if (record.type === 10) {
+        return 'Rejected'
+      } else {
         return ''
       }
-
     },
     getAuthNormal(txHash) {
       let privateKey = this.$_APP.privateKey
@@ -399,11 +398,11 @@ export default {
     },
     selectedTxStyle({ row, rowIndex }) {
       let type = this.cashbacks.data[rowIndex].type
-      if ( type == 10) {
+      if (type == 10) {
         return {
           'background-color': 'rgb(253, 226, 226)'
         }
-      } 
+      }
     }
   }
 }

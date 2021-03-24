@@ -247,9 +247,9 @@
             <el-table-column type="expand">
               <template slot-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item label="Type:">
+                  <!-- <el-form-item label="Type:">
                     <span>{{ props.row.type }}</span>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
