@@ -77,7 +77,7 @@
         >
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form label-position="left" inline class="demo-table-expand" label-width="150px">
                 <el-form-item label="Ruff Tx:">
                   <span>{{ props.row.ruffTx }}</span>
                 </el-form-item>
