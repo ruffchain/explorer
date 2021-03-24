@@ -54,7 +54,6 @@
           <el-table
             :data="dataCashbacks"
             highlight-current-row
-            :row-class-name="txRowClassName"
             style="width: 100%"
           >
             <el-table-column type="expand">
@@ -102,7 +101,6 @@
           <el-table
             :data="dataCashbacks"
             highlight-current-row
-            :row-class-name="cashbackRowClassName"
             style="width: 100%"
           >
             <el-table-column type="expand">
@@ -163,7 +161,6 @@
           <el-table
             :data="dataCashbacks"
             highlight-current-row
-            :row-class-name="cashbackRowClassName"
             style="width: 100%"
           >
             <el-table-column type="expand">
@@ -245,7 +242,6 @@
           <el-table
             :data="dataCashbacks"
             highlight-current-row
-            :row-class-name="cashbackRowClassName"
             style="width: 100%"
           >
             <el-table-column type="expand">
@@ -300,7 +296,6 @@
           <el-table
             :data="dataCashbacks"
             highlight-current-row
-            :row-class-name="cashbackRowClassName"
             style="width: 100%"
           >
             <el-table-column type="expand">
@@ -347,7 +342,7 @@
         </div>
       </LoadingContainer>
     </section>
-    <ConfirmTx
+    <!-- <ConfirmTx
       :visible.sync="showConfirmTx"
       :tx="txData"
       @confirm="confirmSendTx"
@@ -356,7 +351,7 @@
       :title="token"
       @cleanForm="cleanTxForm(), (apploading = false)"
       v-if="apploading"
-    />
+    /> -->
   </div>
 </template>
 
@@ -366,8 +361,6 @@ import * as chainApi from '../../../../common/chain-api'
 import * as chainLib from '../../../../common/chain-lib'
 import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
-// import { genTransferTx } from '../wallet-helper'
-// import { TokenType } from '../../../../common/enums'
 import TransactionResult from '../TransactionResult'
 
 export default {
@@ -411,7 +404,7 @@ export default {
       txData: {},
       result: null,
       apploading: false,
-      currentRuffTx:'',
+      currentRuffTx: '',
       currentHecoTx: '',
       currentHecoValue: '',
       hecoTxDialogVisible: false
@@ -469,31 +462,31 @@ export default {
       }
       return out
     },
-    valPurchased() {
-      if (this.currentRowTx) {
-        let val =
-          typeof this.currentRowTx.value === 'string'
-            ? parseFloat(this.currentRowTx.value)
-            : this.currentRowTx.value
-        return Math.round(this.purchased.ratio * val)
-      } else {
-        return 0
-      }
-    },
-    addrPurchased() {
-      if (
-        this.currentRowTx &&
-        !this.checkTxHandled(this.currentRowTx) &&
-        this.checkTxValid(this.currentRowTx)
-      ) {
-        return this.currentRowTx.ruffAddr
-      } else if (this.currentRowTx && this.checkTxHandled(this.currentRowTx)) {
-        let index = this.currentRowTx.index
-        return '  Done ' + this.txs.data[index].ruffValue + ' sent'
-      } else {
-        return ''
-      }
-    },
+    // valPurchased() {
+    //   if (this.currentRowTx) {
+    //     let val =
+    //       typeof this.currentRowTx.value === 'string'
+    //         ? parseFloat(this.currentRowTx.value)
+    //         : this.currentRowTx.value
+    //     return Math.round(this.purchased.ratio * val)
+    //   } else {
+    //     return 0
+    //   }
+    // },
+    // addrPurchased() {
+    //   if (
+    //     this.currentRowTx &&
+    //     !this.checkTxHandled(this.currentRowTx) &&
+    //     this.checkTxValid(this.currentRowTx)
+    //   ) {
+    //     return this.currentRowTx.ruffAddr
+    //   } else if (this.currentRowTx && this.checkTxHandled(this.currentRowTx)) {
+    //     let index = this.currentRowTx.index
+    //     return '  Done ' + this.txs.data[index].ruffValue + ' sent'
+    //   } else {
+    //     return ''
+    //   }
+    // },
     valCashback() {
       if (this.currentRowCashback) {
         let val =
@@ -644,31 +637,34 @@ export default {
       this.hecoTxDialogVisible = false
     },
     hecoTxConfirm() {
-      this.loading = true;
+      this.loading = true
       console.log(this.currentHecoTx, this.currentHecoValue)
-      
 
       console.log('hecoTxConfirm')
 
-      if(this.currentHecoTx.length < 20){
-        this.loading = false;
+      if (this.currentHecoTx.length < 20) {
+        this.loading = false
         console.error('wrong heco TX')
         this.hecoTxDialogVisible = false
         return
       }
 
       chainApi
-        .completeCashback(this.currentRuffTx,this.currentHecoTx, 
-        this.currentHecoValue ,this.getAuth())
-        .then(res =>{
+        .completeCashback(
+          this.currentRuffTx,
+          this.currentHecoTx,
+          this.currentHecoValue,
+          this.getAuth()
+        )
+        .then(res => {
           console.log('completeCashback')
           console.log(res)
-          if(res.err === 0){
-            this.updateAcceptedCashback();
+          if (res.err === 0) {
+            this.updateAcceptedCashback()
           }
         })
-        .finally(()=>{
-          this.loading = false;
+        .finally(() => {
+          this.loading = false
           this.hecoTxDialogVisible = false
         })
     },
@@ -748,8 +744,6 @@ export default {
         this.strAlert = this.strActionInvalid
         this.updateInvalidCashback()
         this.page = 1
-        // this.updateTxs()
-        // this.currentRowTx = null
       } else if (this.action === this.actionValid) {
         this.strAlert = this.strActionValid
         this.updateValidCashback()
@@ -768,160 +762,160 @@ export default {
         this.page = 1
       }
     },
-    async updateCashbacks() {
-      this.loading = true
-      console.log('cashback this.page: ', this.page, ' ', this.pageSize)
+    // async updateCashbacks() {
+    //   this.loading = true
+    //   console.log('cashback this.page: ', this.page, ' ', this.pageSize)
 
-      chainApi
-        .getCashback(this.page - 1, this.pageSize, this.getAuth())
-        .then(res => {
-          console.log('getCashback')
-          console.log(res)
-          if (res.err === 0) {
-            this.pageSize = res.data.page_size
-            this.cashbacks.total = res.data.page_total
-            this.cashbacks.data = res.data.data
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
+    //   chainApi
+    //     .getCashback(this.page - 1, this.pageSize, this.getAuth())
+    //     .then(res => {
+    //       console.log('getCashback')
+    //       console.log(res)
+    //       if (res.err === 0) {
+    //         this.pageSize = res.data.page_size
+    //         this.cashbacks.total = res.data.page_total
+    //         this.cashbacks.data = res.data.data
+    //       }
+    //     })
+    //     .finally(() => {
+    //       this.loading = false
+    //     })
+    // },
 
-    txRowClassName({ row, rowIndex }) {
-      if (rowIndex === 1) {
-        return 'warning-row'
-      } else if (rowIndex === 3) {
-        return 'success-row'
-      }
-      return ''
-    },
-    selectedCashbackStyle({ row, rowIndex }) {
-      if (this.cashbacks.data[rowIndex].type !== 0) {
-        return {
-          'background-color': 'rgb(253, 226, 226)'
-        }
-      } else if (this.cashbacks.data[rowIndex].bHandled === true) {
-        return {
-          'background-color': 'rgb(225, 243, 216)'
-        }
-      } else if (this.cashbacks.data[rowIndex].bAccepted === true) {
-        return {
-          'background-color': 'rgb(250, 236, 216)'
-        }
-      }
-    },
-    indexTxMethod(index) {
-      return index
-    },
-    async confirmSendTx(tx) {
-      try {
-        this.apploading = true
-        let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
-        console.log('tx res:')
-        console.log(res)
+    // txRowClassName({ row, rowIndex }) {
+    //   if (rowIndex === 1) {
+    //     return 'warning-row'
+    //   } else if (rowIndex === 3) {
+    //     return 'success-row'
+    //   }
+    //   return ''
+    // },
+    // selectedCashbackStyle({ row, rowIndex }) {
+    //   if (this.cashbacks.data[rowIndex].type !== 0) {
+    //     return {
+    //       'background-color': 'rgb(253, 226, 226)'
+    //     }
+    //   } else if (this.cashbacks.data[rowIndex].bHandled === true) {
+    //     return {
+    //       'background-color': 'rgb(225, 243, 216)'
+    //     }
+    //   } else if (this.cashbacks.data[rowIndex].bAccepted === true) {
+    //     return {
+    //       'background-color': 'rgb(250, 236, 216)'
+    //     }
+    //   }
+    // },
+    // indexTxMethod(index) {
+    //   return index
+    // },
+    // async confirmSendTx(tx) {
+    //   try {
+    //     this.apploading = true
+    //     let res = await chainApi.sendTransaction(tx, this.$_APP.privateKey)
+    //     console.log('tx res:')
+    //     console.log(res)
 
-        let messageUpdate = ''
-        if (res.confirmed) {
-          let index = this.currentRowTx.index
-          let res2 = await chainApi.updatePurchasedHandled(
-            this.txs.data[index].foreignTx,
-            res.tx.input.amount,
-            res.tx.hash,
-            this.getAuth()
-          )
-          console.log('res2:', res2)
+    //     let messageUpdate = ''
+    //     if (res.confirmed) {
+    //       let index = this.currentRowTx.index
+    //       let res2 = await chainApi.updatePurchasedHandled(
+    //         this.txs.data[index].foreignTx,
+    //         res.tx.input.amount,
+    //         res.tx.hash,
+    //         this.getAuth()
+    //       )
+    //       console.log('res2:', res2)
 
-          if (res2.err === 0) {
-            messageUpdate = ' ,Update OK'
-          } else {
-            messageUpdate = ' ,Update Fail'
-          }
-        }
+    //       if (res2.err === 0) {
+    //         messageUpdate = ' ,Update OK'
+    //       } else {
+    //         messageUpdate = ' ,Update Fail'
+    //       }
+    //     }
 
-        this.result = {
-          message:
-            (res.confirmed ? 'Transaction OK' : 'Transaction Failed') +
-            messageUpdate,
-          json: res.tx
-        }
-        if (res.confirmed) {
-          this.cleanTxForm()
-        }
-      } catch (e) {
-        this.result = {
-          message: 'Error ' + e
-        }
-      } finally {
-        this.apploading = false
-      }
-    },
-    handleCurrentCashback(val) {
-      if (!val) return
+    //     this.result = {
+    //       message:
+    //         (res.confirmed ? 'Transaction OK' : 'Transaction Failed') +
+    //         messageUpdate,
+    //       json: res.tx
+    //     }
+    //     if (res.confirmed) {
+    //       this.cleanTxForm()
+    //     }
+    //   } catch (e) {
+    //     this.result = {
+    //       message: 'Error ' + e
+    //     }
+    //   } finally {
+    //     this.apploading = false
+    //   }
+    // },
+    // handleCurrentCashback(val) {
+    //   if (!val) return
 
-      this.result = null
-      this.currentRowCashback = val
-      console.log(this.currentRowCashback)
-      let index = this.currentRowCashback.index
-      if (
-        this.cashbacks.data[index].bHandled === true ||
-        this.cashbacks.data[index].type !== 0
-      ) {
-        this.buttonDisabled = true
-      } else {
-        this.buttonDisabled = false
-      }
-    },
-    async handleCashback() {
-      console.log('handleCashback()')
-      this.result = null
-      this.apploading = true
-      let index = this.currentRowCashback.index
+    //   this.result = null
+    //   this.currentRowCashback = val
+    //   console.log(this.currentRowCashback)
+    //   let index = this.currentRowCashback.index
+    //   if (
+    //     this.cashbacks.data[index].bHandled === true ||
+    //     this.cashbacks.data[index].type !== 0
+    //   ) {
+    //     this.buttonDisabled = true
+    //   } else {
+    //     this.buttonDisabled = false
+    //   }
+    // },
+    // async handleCashback() {
+    //   console.log('handleCashback()')
+    //   this.result = null
+    //   this.apploading = true
+    //   let index = this.currentRowCashback.index
 
-      console.log('index', index)
-      console.log(this.cashbacks.data[index])
-      let ruffTx = this.cashbacks.data[index].ruffTx
-      console.log(ruffTx)
+    //   console.log('index', index)
+    //   console.log(this.cashbacks.data[index])
+    //   let ruffTx = this.cashbacks.data[index].ruffTx
+    //   console.log(ruffTx)
 
-      if (this.cashbackModel.txHash.length < 1) {
-        this.result = {
-          message: 'Error: Must input TX Hash!'
-        }
-        this.apploading = false
-        return
-      }
+    //   if (this.cashbackModel.txHash.length < 1) {
+    //     this.result = {
+    //       message: 'Error: Must input TX Hash!'
+    //     }
+    //     this.apploading = false
+    //     return
+    //   }
 
-      try {
-        let res = await chainApi.updateCashbackHandled(
-          ruffTx,
-          this.valCashback,
-          this.cashbackModel.txHash,
-          this.getAuth()
-        )
+    //   try {
+    //     let res = await chainApi.updateCashbackHandled(
+    //       ruffTx,
+    //       this.valCashback,
+    //       this.cashbackModel.txHash,
+    //       this.getAuth()
+    //     )
 
-        console.log(res)
-        if (res.err === 0) {
-          this.result = {
-            message: 'Update cashback record OK'
-          }
-          this.cleanTxForm()
-        }
-      } catch (e) {
-        this.result = {
-          message: 'Error:' + e
-        }
-      } finally {
-        this.apploading = false
-      }
-    },
-    cashbackRowClassName({ row, rowIndex }) {
-      if (rowIndex === 1) {
-        return 'warning-row'
-      } else if (rowIndex === 3) {
-        return 'success-row'
-      }
-      return ''
-    }
+    //     console.log(res)
+    //     if (res.err === 0) {
+    //       this.result = {
+    //         message: 'Update cashback record OK'
+    //       }
+    //       this.cleanTxForm()
+    //     }
+    //   } catch (e) {
+    //     this.result = {
+    //       message: 'Error:' + e
+    //     }
+    //   } finally {
+    //     this.apploading = false
+    //   }
+    // },
+    // cashbackRowClassName({ row, rowIndex }) {
+    //   if (rowIndex === 1) {
+    //     return 'warning-row'
+    //   } else if (rowIndex === 3) {
+    //     return 'success-row'
+    //   }
+    //   return ''
+    // }
   }
 }
 </script>
