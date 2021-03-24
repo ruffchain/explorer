@@ -72,7 +72,6 @@
           :data="dataCashbacks"
           highlight-current-row
           @current-change="handleCurrentCashback"
-          :row-class-name="cashbackRowClassName"
           :row-style="selectedTxStyle"
           style="width: 100%"
         >
@@ -303,14 +302,14 @@ export default {
       this.currentRowCashback = val
       // console.log(this.currentRowCashback)
     },
-    cashbackRowClassName({ row, rowIndex }) {
-      if (rowIndex === 1) {
-        return 'warning-row'
-      } else if (rowIndex === 3) {
-        return 'success-row'
-      }
-      return ''
-    },
+    // cashbackRowClassName({ row, rowIndex }) {
+    //   if (rowIndex === 1) {
+    //     return 'warning-row'
+    //   } else if (rowIndex === 3) {
+    //     return 'success-row'
+    //   }
+    //   return ''
+    // },
     async updateValue() {
       try {
         let privateKey = this.$_APP.privateKey
@@ -405,16 +404,6 @@ export default {
           'background-color': 'rgb(253, 226, 226)'
         }
       } 
-      
-      // else if (type === 2 ) {
-      //   return {
-      //     'background-color': 'rgb(225, 243, 216)'
-      //   }
-      // } else if (type === 3) {
-      //   return {
-      //     'background-color': 'rgb(216, 245, 225)'
-      //   }
-      // }
     }
   }
 }

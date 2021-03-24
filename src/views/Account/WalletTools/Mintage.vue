@@ -86,7 +86,7 @@ export default {
       this.loading = true
       chainApi.getPurchasedConfig()
         .then(res=>{
-          console.log(res)
+          // console.log(res)
           if(res.err ===0){
             this.mintageToken = res.data.mintage_token
             this.mintageAddr = res.data.mintage_account
@@ -108,7 +108,7 @@ export default {
         let token = tokens.find(tok => {
           return tok.token === "RUFF"
         })
-        console.log(token)
+        // console.log(token)
 
         this.value = token.value;
 
