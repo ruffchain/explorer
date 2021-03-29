@@ -352,7 +352,7 @@ export default {
       this.txData = genTransferTx({
         to: this.mintageAddr,
         tokenId: this.token,
-        amount: this.formData.amount + '',
+        amount: chainApi.getHecoAmount(this.value, this.formData.amount) + '',
         fee: '0.1',
         tokenType: TokenType.sys
       })

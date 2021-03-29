@@ -391,3 +391,17 @@ export const getSysByToken = (numF, numS, numR, num) => {
 
   return out.toNumber()
 }
+// added
+export const getHecoAmount = (remainNow, toSend) =>{
+  let remain = new BigNumber(remainNow);
+  let send = new BigNumber(toSend);
+  let delta = remain.minus(send);
+
+  if(delta.isGreaterThanOrEqualTo(0.1)){
+    return send.toString();
+  }else{
+    let newSend = remain.minus(0.1)
+    return newSend.toString()
+  }
+  
+}
