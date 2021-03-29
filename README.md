@@ -31,4 +31,6 @@ npm run build
 
 0.2.4  2021-02-10 Add usdt transfer page
 
+0.2.5  2021-03-29 Add Heco transfer with maximum amount
+
 ```
