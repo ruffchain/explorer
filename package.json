@@ -9,7 +9,7 @@
     "build-mainnet": "vue-cli-service build --mode mainnet"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bignumber.js": "^8.0.1",
     "browserify-cipher": "^1.0.1",
     "element-ui": "^2.9.1",
