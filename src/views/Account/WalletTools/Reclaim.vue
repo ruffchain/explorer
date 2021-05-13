@@ -34,7 +34,7 @@
 <template>
   <div class="mintage-view">
     <loading-container :loading="loading"> </loading-container>
-    <SubscribedUser v-if="bSubscribedUser === true"></SubscribedUser>
+    <SubscribedUser v-if="bSubscribedUser === true" :ruffAddr="address"></SubscribedUser>
     <AdminUser v-if="bAdminUser === true"></AdminUser>
   </div>
 </template>
