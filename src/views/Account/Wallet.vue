@@ -81,6 +81,7 @@ import TokenExchange from './WalletTools/TokenExchange'
 import Vote from './WalletTools/Vote'
 import Earnings from './WalletTools/Earnings'
 import Mintage from './WalletTools/Mintage'
+import Reclaim from './WalletTools/Reclaim'
 
 const NavItemEnums = {
   History: 'History',
@@ -89,7 +90,8 @@ const NavItemEnums = {
   Exchange: 'Exchange',
   Vote: 'Vote',
   Earnings: 'Earnings',
-  Mintage: 'RUSDT'
+  Mintage: 'RUSDT',
+  Reclaim: 'Reclaim'
 }
 
 export default {
@@ -104,6 +106,7 @@ export default {
     Vote,
     Earnings,
     Mintage,
+    Reclaim,
   },
   data() {
     return {
@@ -145,6 +148,9 @@ export default {
     strMintage(){
       return this.$t('Wallet.mintage')
     },
+    strReclaim(){
+      return this.$t('Wallet.reclaim')
+    },
     newNavItems() {
       return [
         {
@@ -174,6 +180,10 @@ export default {
         {
           type: NavItemEnums.Mintage,
           name: this.strMintage,
+        },
+        {
+          type: NavItemEnums.Reclaim,
+          name: this.strReclaim
         }
       ]
     },

@@ -113,7 +113,8 @@ export default {
     exchange: 'Exchange Smart Token',
     vote: 'Vote',
     earnings: 'Earnings',
-    mintage: 'Withdraw Heco'
+    mintage: 'Withdraw Heco',
+    reclaim: 'Reclaim Heco'
   },
   Mintage: {
     date: 'Date',

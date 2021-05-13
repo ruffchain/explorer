@@ -122,8 +122,6 @@ export default {
           this.bSubscribedUser = true;
           this.bAdminUser = false;
         }
-
-
       } catch (e) {
         console.log(e)
       }

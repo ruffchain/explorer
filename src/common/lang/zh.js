@@ -113,7 +113,8 @@ export default {
     exchange: '智能Token交易',
     vote: '投票',
     earnings: '收益',
-    mintage: '划转Heco'
+    mintage: '划转Heco',
+    reclaim: '提取Heco'
   },
   Mintage: {
     date: '日期',
