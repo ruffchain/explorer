@@ -34,29 +34,59 @@
 <template>
   <div class="mintage-view">
     <loading-container :loading="loading"> </loading-container>
+    <SubscribedUser v-if="bSubscribedUser === true"></SubscribedUser>
+    <AdminUser v-if="bAdminUser === true"></AdminUser>
   </div>
 </template>
 
 <script>
 import * as chainApi from '../../../common/chain-api'
 import LoadingContainer from '../../../components/LoadingContainer.vue'
+import AdminUser from './Reclaim/AdminUser'
+import SubscribedUser from './Reclaim/SubscribedUser'
 
 export default {
-    components:{
-        LoadingContainer,
-    },
-    data(){
-        return {
-
-        }
-    },
-    mounted(){},
-    beforeMount(){
-
-    },
-    computed:{},
-    methods:{
-        
+  components: {
+    LoadingContainer,
+    AdminUser,
+    SubscribedUser
+  },
+  data() {
+    return {
+      address: '',
+      bSubscribedUser: false,
+      bNormalUser: false,
+      bAdminUser: false,
+      loading: false,
+      mintageAddr:'',
+      otherAddr:''
     }
+  },
+  mounted() {},
+  beforeMount() {
+    console.log('Reclaim page beforeMount')
+    this.address = this.$_APP.address
+
+    console.log('this.address: ', this.address)
+    this.chooseUser();
+  },
+  computed: {},
+  methods: {
+      async chooseUser(){
+          this.loading = true
+            chainApi.getPurchasedConfig()
+                .then(res=>{
+                    console.log(res)
+                    this.mintageAddr = res.data.mintage_account;
+                    this.otherAddr = res.data.mintage_other_addr;
+
+                    this.bAdminUser = this.address === this.otherAddr;
+                    this.bSubscribedUser = !this.bAdminUser
+                })
+                .finally(()=>{
+                    this.loading = false
+                })
+      }
+  }
 }
 </script>

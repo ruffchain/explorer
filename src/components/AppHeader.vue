@@ -108,12 +108,12 @@
         <div v-if="showDropdown" class="account-dropdown-menu">
           <ul>
             <template v-if="!isLogin">
-              <li @click="login">{{strLogin}}</li>
-              <li @click="showCreateAccount = true">{{strCreateAccount}}</li>
+              <li @click="login">{{ strLogin }}</li>
+              <li @click="showCreateAccount = true">{{ strCreateAccount }}</li>
             </template>
             <template v-else>
-              <li @click="viewAccount">{{strViewAccount}}</li>
-              <li @click="logOut">{{strLogOut}}</li>
+              <li @click="viewAccount">{{ strViewAccount }}</li>
+              <li @click="logOut">{{ strLogOut }}</li>
             </template>
           </ul>
         </div>
@@ -140,7 +140,10 @@
         </div>
       </div>
     </div>
-    <CreateAccount v-if="showCreateAccount" @close="showCreateAccount = false" />
+    <CreateAccount
+      v-if="showCreateAccount"
+      @close="showCreateAccount = false"
+    />
     <LoginAccount v-if="showLogin" @close="showLogin = false" />
   </div>
 </template>
@@ -160,14 +163,14 @@ export default {
       showDropdown: false,
       showCreateAccount: false,
       showLogin: false,
-      showI18nDropdown: false,
+      showI18nDropdown: false
     }
   },
   components: {
     AccountIcon,
     TranslateIcon,
     CreateAccount,
-    LoginAccount,
+    LoginAccount
   },
   computed: {
     isLogin() {
@@ -203,7 +206,7 @@ export default {
     },
     strLogOut() {
       return this.$t('AppHeader.logOut')
-    },
+    }
   },
   methods: {
     search() {
@@ -211,7 +214,7 @@ export default {
         this.$router.push({
           name: 'Search',
           params: { search: this.searchText.trim() },
-          query: { t: new Date().getTime() },
+          query: { t: new Date().getTime() }
         })
     },
     openDropdown() {
@@ -248,13 +251,21 @@ export default {
       this.showLogin = true
     },
     viewAccount() {
-      this.$router.push({
-        name: 'Wallet',
-      })
+      // if current path is not Wallet
+      // console.log(this.$router.currentRoute.name)
+      // console.log(this.$router.currentRoute.path)
+      if (this.$router.currentRoute.name !== 'Wallet') {
+        this.$router.push({
+          name: 'Wallet'
+        })
+      }
     },
     logOut() {
       this.$_APP.privateKey = ''
-    },
-  },
+      this.$router.push({
+        name: 'Home'
+      })
+    }
+  }
 }
 </script>

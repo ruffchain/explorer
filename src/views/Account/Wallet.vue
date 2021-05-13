@@ -62,6 +62,7 @@
           <Vote v-if="activeNav === NavItemEnums.Vote" />
           <Earnings v-if="activeNav === NavItemEnums.Earnings" />
           <Mintage v-if="activeNav === NavItemEnums.Mintage" />
+          <Reclaim v-if="activeNav === NavItemEnums.Reclaim" />
           
         </div>
       </div>

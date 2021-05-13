@@ -346,8 +346,8 @@ export default {
         this.transactions = transactions.map(mapFunTx)
 
 
-        console.log('tx')
-        console.log(this.transactions)
+        // console.log('tx')
+        // console.log(this.transactions)
       } catch (e) {
       } finally {
         this.$_APP.loading = false
