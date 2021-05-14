@@ -64,6 +64,34 @@
     </section>
     <TransactionResult v-if="result" :data="result" />
 
+    <LoadingContainer :loading="loading">
+      <div>
+        <el-table
+          :data="dataReclaims"
+          highlight-current-row
+          @current-change="handleCurrentReclaim"
+          :row-style="selectedTxStyle"
+          style="width: 100%"
+        >
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand" label-width="150px">
+
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-table-column prop="date" :label="strTableDate" width="150">
+          </el-table-column>
+          <el-table-column prop="ruffAddr" :label="strTableAddr" width="400">
+          </el-table-column>
+          <el-table-column prop="value" :label="strTableAmount" width="150">
+          </el-table-column>
+          <el-table-column prop="status" :label="strTableStatus">
+          </el-table-column>
+        </el-table>
+      </div>
+    </LoadingContainer>
+
     <ConfirmTx
       :visible.sync="showConfirmTx"
       :tx="txData"
@@ -116,7 +144,9 @@ export default {
       textMetaMask: '',
       txData: {},
       showConfirmTx: false,
-      apploading: false
+      apploading: false,
+      dataReclaims:[],
+      reclaims:[]
     }
   },
   computed: {
@@ -128,6 +158,18 @@ export default {
     },
     strAmount() {
       return 'Amount'
+    },
+        strTableDate() {
+      return this.$t('Mintage.date')
+    },
+    strTableAddr() {
+      return this.$t('Mintage.address')
+    },
+    strTableAmount() {
+      return this.$t('Mintage.amount')
+    },
+    strTableStatus() {
+      return this.$t('Mintage.status')
     }
   },
   beforeMount() {
@@ -229,6 +271,17 @@ export default {
       } finally {
         this.apploading = false
         this.formData.amount = ''
+      }
+    },
+    handleCurrentReclaim(){
+      console.log("current row changed")
+    },
+    selectedTxStyle({ row, rowIndex }) {
+      let type = this.reclaims.data[rowIndex].type
+      if (type == 10) {
+        return {
+          'background-color': 'rgb(253, 226, 226)'
+        }
       }
     }
   }
