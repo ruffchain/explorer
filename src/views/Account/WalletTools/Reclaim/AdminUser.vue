@@ -98,6 +98,191 @@
         </div>
       </LoadingContainer>
 
+      <!-- accepted -->
+      <LoadingContainer :loading="loading" v-if="action === actionAccepted">
+        <div>
+          <el-table
+            :data="dataReclaims"
+            highlight-current-row
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Heco Tx:">
+                    <span>{{ props.row.hecoTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.value }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.ruffTx" label="Heco TxHash:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button
+                      size="normal"
+                      type="danger"
+                      @click="handleAccepted(props.$index)"
+                      style="width:120px"
+                      >更新
+                    </el-button>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="hecoAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="reclaims && reclaims.total > 0"
+          >
+            <el-pagination
+              @size-change="updateAcceptedReclaim"
+              @current-change="updateAcceptedReclaim"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="reclaims.total"
+            />
+          </div>
+          <!-- button -->
+        </div>
+      </LoadingContainer>
+
+      <el-dialog
+        title="设置 Ruff TxHash"
+        :visible="ruffTxDialogVisible"
+        @update:visible="ruffTxClose"
+        width="600px"
+      >
+        <el-form>
+          <el-form-item>
+            <el-input
+              type="text"
+              v-model="currentRuffTx"
+              style="width:100%"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="default" @click="ruffTxClose">取消</el-button>
+          <el-button type="primary" @click="ruffTxConfirm">确认</el-button>
+        </div>
+      </el-dialog>
+
+      <!-- completed -->
+      <LoadingContainer :loading="loading" v-if="action === actionCompleted">
+        <div>
+          <el-table
+            :data="dataReclaims"
+            highlight-current-row
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                  <!-- <el-form-item label="Type:">
+                    <span>{{ props.row.type }}</span>
+                  </el-form-item> -->
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Heco Tx:">
+                    <span>{{ props.row.hecoTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.value }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.ruffTx" label="Ruff TxHash:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="hecoAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="reclaims && reclaims.total > 0"
+          >
+            <el-pagination
+              @size-change="updateCompletedReclaim"
+              @current-change="updateCompletedReclaim"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="reclaims.total"
+            />
+          </div>
+        </div>
+      </LoadingContainer>
+<!-- rejected -->
+      <LoadingContainer :loading="loading" v-if="action === actionRejected">
+        <div>
+          <el-table
+            :data="dataReclaims"
+            highlight-current-row
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Heco Tx:">
+                    <span>{{ props.row.hecoTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.value }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.ruffTx" label="Ruff TxHash:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="hecoAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="reclaims && reclaims.total > 0"
+          >
+            <el-pagination
+              @size-change="updateRejectedReclaim"
+              @current-change="updateRejectedReclaim"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="reclaims.total"
+            />
+          </div>
+        </div>
+      </LoadingContainer>
       </section>
 
   </div>
@@ -129,7 +314,11 @@ export default {
       reclaims:{
         total:0,
         data:[]
-      }
+      },
+      ruffTxDialogVisible: false,
+      currentRuffTx:'',
+      currentRuffValue:'',
+      currentHecoTx:''
     }
   },
   computed:{
@@ -253,6 +442,49 @@ export default {
         })
         .finally(()=>{
           this.loading = false
+        })
+    },
+    handleAccepted(index){
+      console.log(
+        this.dataReclaims[index].ruffTx,
+        this.dataReclaims[index].hecoTx
+      )
+      this.currentHecoTx = this.dataReclaims[index].hecoTx
+      this.currentRuffValue = this.dataReclaims[index].value 
+      this.currentRuffTx = ''
+      this.ruffTxDialogVisible = true
+    },
+    ruffTxClose(){
+      this.ruffTxDialogVisible = false
+    },
+    ruffTxConfirm(){
+      this.loading = true
+      console.log(this.currentRuffTx, this.currentRuffValue)
+
+      console.log('ruffTxConfirm()')
+
+      if( this.currentRuffTx.length < 20){
+        this.loading = false;
+        console.error('Wrong ruff Tx')
+        this.ruffTxDialogVisible = false
+        return
+      }
+
+      chainApi
+        .completeReclaim(
+          this.currentHecoTx,
+          this.currentRuffTx,
+          getAuthNormal(this.$_APP.privateKey)
+        )
+        .then( res =>{
+          console.log(res)
+          if(res.err ===0){
+            this.updateAcceptedReclaim()
+          }
+        })
+        .finally(() =>{
+          this.loading = false
+          this.ruffTxDialogVisible = false
         })
     }
   }
