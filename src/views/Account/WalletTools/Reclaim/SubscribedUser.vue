@@ -139,7 +139,8 @@ import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
 import { getStrDate } from '../../../../common/utils'
 import * as chainApi from '../../../../common/chain-api'
-import * as chainLib from '../../../../common/chain-lib'
+
+import {getStatus , getAuthNormal, getDataReclaims} from './utils'
 
 const BigNumber = require('bignumber.js')
 
@@ -180,20 +181,7 @@ export default {
   },
   computed: {
     dataReclaims() {
-      let out = []
-      let index = 0
-      for (let record of this.reclaims.data) {
-        out.push({
-          index: index++,
-          date: getStrDate(record.date),
-          ruffAddr: record.ruffAddr,
-          hecoAddr: record.hecoAddr,
-          hecoTx: record.hecoTx,
-          value: record.value,
-          status: this.getStatus(record)
-        })
-      }
-      return out
+      return getDataReclaims(this.reclaims.data)
     },
     amountRules() {
       return [...this.formRules.amount]
@@ -227,37 +215,6 @@ export default {
     this.checkMetaMask()
   },
   methods: {
-    getStatus(record) {
-      if (record.type === 0) {
-        return 'Checking'
-      } else if (record.type === 1) {
-        return 'Valid'
-      } else if (record.type === 2) {
-        return 'Accepted'
-      } else if (record.type === 3) {
-        return 'Completed'
-      } else if (record.type === 10) {
-        return 'Rejected'
-      } else {
-        return ''
-      }
-    },
-    getAuthNormal() {
-      let privateKey = this.$_APP.privateKey
-      let address = chainLib.addressFromSecretKey(privateKey)
-      let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')
-
-      let num = Math.floor(new Date().getTime() / 1000) - 1
-
-      let hash = chainLib.hash256(Buffer.from(num + ''))
-
-      return {
-        date: num, // seconds
-        address: address,
-        pubkey: pubkey,
-        signature: chainLib.sign(hash, privateKey).toString('hex')
-      }
-    },
     async checkMetaMask() {
       console.log('Check MetaMask')
       this.textMetaMask = 'Connect MetaMask'
@@ -351,7 +308,7 @@ export default {
             this.formData.amount,
             '',
             receipt.transactionHash,
-            this.getAuthNormal()
+            getAuthNormal(this.$_APP.privateKey)
           )
           .then(res=>{
             console.log(res)
@@ -386,7 +343,7 @@ export default {
       this.loading = true
 
       chainApi
-        .getReclaimsByAddr(this.page - 1, this.pageSize, this.getAuthNormal())
+        .getReclaimsByAddr(this.page - 1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
         .then(res => {
           console.log(res)
           if (res.err === 0) {

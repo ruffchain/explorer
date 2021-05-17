@@ -240,7 +240,51 @@ export const setReclaim = (blocknum, hecoaddr, val, rufftx, hecotx, inAuth) =>
     },
     auth: inAuth
   })
-
+export const completeReclaim = (hecotx, rufftx, inAuth) =>
+  callMintageRpc({
+    method: 'complete-reclaim',
+    args:{
+      hecoTx: hecotx,
+      ruffTx: rufftx
+    },
+    auth: inAuth
+  })
+export const getReclaimInvalid = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-reclaim-invalid',
+    args:{
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getReclaimAccepted = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-reclaim-accepted',
+    args:{
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getReclaimCompleted = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-reclaim-completed',
+    args:{
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+export const getReclaimRejected = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-reclaim-rejected',
+    args:{
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
 //////////////////////////////////////////
 const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })

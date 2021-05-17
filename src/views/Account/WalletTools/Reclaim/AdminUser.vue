@@ -35,15 +35,47 @@
 
 <template>
   <div class="admin-user">
-      <h2>Admin</h2>
+      <section>
+        <el-alert :closable="false" :title="strAlert" type="info" show-icon>
+      </el-alert>
+
+      </section>
 
   </div>
 </template>
 
 <script>
 import LoadingContainer from '@/components/LoadingContainer'
+import * as chainApi from '../../../../common/chain-api'
+import * as chainLib from '../../../../common/chain-lib'
+import ConfirmTx from '../ConfirmTx'
+import AppDialog from '../../../../components/AppDialog'
+import TransactionResult from '../TransactionResult'
+import { getStatus, getDataReclaims } from './utils'
 
 export default {
-
+  components:{
+    LoadingContainer,
+    ConfirmTx,
+    AppDialog,
+    TransactionResult
+  },
+  data(){
+    return{
+      strAlert: '',
+      loading: false,
+      page:1,
+      pageSize:5,
+      reclaims:{
+        total:0,
+        data:[]
+      }
+    }
+  },
+  computed:{
+    dataReclaims() {
+      return getDataReclaims(this.reclaims.data)
+    },
+  }
 }
 </script>
