@@ -264,7 +264,7 @@ export default {
         return ''
       }
     },
-    getAuthNormal(txHash) {
+    getAuthNormal() {
       let privateKey = this.$_APP.privateKey
       let address = chainLib.addressFromSecretKey(privateKey)
       let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')

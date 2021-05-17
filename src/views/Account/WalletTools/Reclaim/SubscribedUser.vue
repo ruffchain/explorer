@@ -75,20 +75,44 @@
         >
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand" label-width="150px">
-
+              <el-form
+                label-position="left"
+                inline
+                class="demo-table-expand"
+                label-width="150px"
+              >
+                <el-form-item label="Heco Tx:">
+                  <span>{{ props.row.hecoTx }}</span>
+                </el-form-item>
+                <el-form-item v-if="props.row.ruffTx" label="Ruff Tx:">
+                  <span>{{ props.row.ruffTx }}</span>
+                </el-form-item>
+                <el-form-item label="Ruff Address:">
+                  <span>{{ props.row.ruffAddr }}</span>
+                </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column prop="date" :label="strTableDate" width="150">
           </el-table-column>
-          <el-table-column prop="ruffAddr" :label="strTableAddr" width="400">
+          <el-table-column prop="hecoAddr" :label="strTableAddr" width="400">
           </el-table-column>
           <el-table-column prop="value" :label="strTableAmount" width="150">
           </el-table-column>
           <el-table-column prop="status" :label="strTableStatus">
           </el-table-column>
         </el-table>
+        <div class="pagination-container" v-if="reclaims && reclaims.total > 0">
+          <el-pagination
+            @size-change="updateReclaims"
+            @current-change="updateReclaims"
+            :current-page.sync="page"
+            :page-size.sync="pageSize"
+            :page-sizes="[3, 5, 10]"
+            layout="total,sizes,prev,pager,next,jumper"
+            :total="reclaims.total"
+          />
+        </div>
       </div>
     </LoadingContainer>
 
@@ -98,7 +122,7 @@
       @confirm="confirmSendTx"
     />
     <AppDialog
-      title="RuffToken depositTo()"
+      title="Heco RuffToken depositTo()"
       @cleanForm="cleanTable(), (apploading = false)"
       v-if="apploading"
     />
@@ -113,6 +137,9 @@ import { ethers } from 'ethers'
 import { abi } from './RuffTokenAbi'
 import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
+import { getStrDate } from '../../../../common/utils'
+import * as chainApi from '../../../../common/chain-api'
+import * as chainLib from '../../../../common/chain-lib'
 
 const BigNumber = require('bignumber.js')
 
@@ -145,11 +172,29 @@ export default {
       txData: {},
       showConfirmTx: false,
       apploading: false,
-      dataReclaims:[],
-      reclaims:[]
+      // dataReclaims: [],
+      reclaims: { total: 0, data: [] },
+      page: 1,
+      pageSize: 3
     }
   },
   computed: {
+    dataReclaims() {
+      let out = []
+      let index = 0
+      for (let record of this.reclaims.data) {
+        out.push({
+          index: index++,
+          date: getStrDate(record.date),
+          ruffAddr: record.ruffAddr,
+          hecoAddr: record.hecoAddr,
+          hecoTx: record.hecoTx,
+          value: record.value,
+          status: this.getStatus(record)
+        })
+      }
+      return out
+    },
     amountRules() {
       return [...this.formRules.amount]
     },
@@ -159,7 +204,7 @@ export default {
     strAmount() {
       return 'Amount'
     },
-        strTableDate() {
+    strTableDate() {
       return this.$t('Mintage.date')
     },
     strTableAddr() {
@@ -182,6 +227,37 @@ export default {
     this.checkMetaMask()
   },
   methods: {
+    getStatus(record) {
+      if (record.type === 0) {
+        return 'Checking'
+      } else if (record.type === 1) {
+        return 'Valid'
+      } else if (record.type === 2) {
+        return 'Accepted'
+      } else if (record.type === 3) {
+        return 'Completed'
+      } else if (record.type === 10) {
+        return 'Rejected'
+      } else {
+        return ''
+      }
+    },
+    getAuthNormal() {
+      let privateKey = this.$_APP.privateKey
+      let address = chainLib.addressFromSecretKey(privateKey)
+      let pubkey = chainLib.publicKeyFromSecretKey(privateKey).toString('hex')
+
+      let num = Math.floor(new Date().getTime() / 1000) - 1
+
+      let hash = chainLib.hash256(Buffer.from(num + ''))
+
+      return {
+        date: num, // seconds
+        address: address,
+        pubkey: pubkey,
+        signature: chainLib.sign(hash, privateKey).toString('hex')
+      }
+    },
     async checkMetaMask() {
       console.log('Check MetaMask')
       this.textMetaMask = 'Connect MetaMask'
@@ -211,6 +287,7 @@ export default {
           message: 'MetaMask未安装'
         }
       }
+      await this.updateReclaims()
     },
     async enableMetaMask() {
       console.log('Enable MetaMask')
@@ -254,8 +331,10 @@ export default {
         let signer = provider.getSigner()
 
         this.contract = new ethers.Contract(RuffTokenContract, abi, signer)
-        const value = new BigNumber(10).pow(18).times(new BigNumber(this.formData.amount))
-        let tx = await this.contract.depositTo(value.toFixed(),this.ruffAddr)
+        const value = new BigNumber(10)
+          .pow(18)
+          .times(new BigNumber(this.formData.amount))
+        let tx = await this.contract.depositTo(value.toFixed(), this.ruffAddr)
         this.apploading = true
         let receipt = await tx.wait()
         console.log('depositTo receipt:', receipt)
@@ -263,6 +342,26 @@ export default {
         this.result = {
           message: receipt.status === 1 ? 'Send OK' : 'Send Fail'
         }
+        console.log('status:', receipt.status)
+        if(receipt.status === 1){
+          chainApi
+          .setReclaim(
+            receipt.blockNumber,
+            this.account,
+            this.formData.amount,
+            '',
+            receipt.transactionHash,
+            this.getAuthNormal()
+          )
+          .then(res=>{
+            console.log(res)
+            this.result = {
+              message: res.err === 0? this.result.message + ' Send Request OK': this.result.message + ' Send Request Fail'
+            }
+            this.updateReclaims()
+          })
+        }
+        
       } catch (e) {
         console.log(e)
         this.result = {
@@ -270,11 +369,10 @@ export default {
         }
       } finally {
         this.apploading = false
-        this.formData.amount = ''
       }
     },
-    handleCurrentReclaim(){
-      console.log("current row changed")
+    handleCurrentReclaim() {
+      console.log('current row changed')
     },
     selectedTxStyle({ row, rowIndex }) {
       let type = this.reclaims.data[rowIndex].type
@@ -283,6 +381,22 @@ export default {
           'background-color': 'rgb(253, 226, 226)'
         }
       }
+    },
+    async updateReclaims() {
+      this.loading = true
+
+      chainApi
+        .getReclaimsByAddr(this.page - 1, this.pageSize, this.getAuthNormal())
+        .then(res => {
+          console.log(res)
+          if (res.err === 0) {
+            this.reclaims.total = res.data.page_total
+            this.reclaims.data = res.data.data
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }

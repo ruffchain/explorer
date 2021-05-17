@@ -216,6 +216,31 @@ export const completeCashback = (txhash, hecoHash, hecoVal, inAuth) =>
     },
     auth: inAuth
   })
+
+// Reclaims
+export const getReclaimsByAddr = (index, pagesize, inAuth) =>
+  callMintageRpc({
+    method: 'get-reclaim-byaddr',
+    args: {
+      page: index,
+      page_size: pagesize
+    },
+    auth: inAuth
+  })
+
+export const setReclaim = (blocknum, hecoaddr, val, rufftx, hecotx, inAuth) =>
+  callMintageRpc({
+    method: 'set-reclaim',
+    args:{
+      blockNum: blocknum,
+      hecoAddr: hecoaddr,
+      value: val,
+      ruffTx: rufftx,
+      hecoTx: hecotx
+    },
+    auth: inAuth
+  })
+
 //////////////////////////////////////////
 const callChainRpc = (function () {
   const http = axios.create({ baseURL: '/chain-rpc', timeout: 5000 })
