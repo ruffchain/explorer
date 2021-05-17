@@ -47,6 +47,57 @@
         </el-radio-group>
       </div>
 
+      <!-- 展示表格 -->
+      <LoadingContainer :loading="loading" v-if="action === actionInvalid">
+        <div>
+          <el-table
+            :data="dataReclaims"
+            highlight-current-row
+            style="width: 100%"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                  <el-form-item label="Ruff Addr:">
+                    <span>{{ props.row.ruffAddr }}</span>
+                  </el-form-item>
+                  <el-form-item label="Heco Tx:">
+                    <span>{{ props.row.hecoTx }}</span>
+                  </el-form-item>
+                  <el-form-item label="Exchange Amount:">
+                    <span>{{ props.row.value }}</span>
+                  </el-form-item>
+                  <el-form-item v-if="props.row.ruffTx" label="Ruff TxHash:">
+                    <span>{{ props.row.ruffTx }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" width="150">
+            </el-table-column>
+            <el-table-column prop="hecoAddr" label="Heco地址" width="400">
+            </el-table-column>
+            <el-table-column prop="value" label="数量" width="150">
+            </el-table-column>
+            <el-table-column prop="status" label="状态"> </el-table-column>
+          </el-table>
+          <div
+            class="pagination-container"
+            v-if="reclaims && reclaims.total > 0"
+          >
+            <el-pagination
+              @size-change="updateInvalidReclaim"
+              @current-change="updateInvalidReclaim"
+              :current-page.sync="page"
+              :page-size.sync="pageSize"
+              :page-sizes="[5, 10]"
+              layout="total,sizes,prev,pager,next,jumper"
+              :total="reclaims.total"
+            />
+          </div>
+        </div>
+      </LoadingContainer>
+
       </section>
 
   </div>
@@ -59,7 +110,7 @@ import * as chainLib from '../../../../common/chain-lib'
 import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
 import TransactionResult from '../TransactionResult'
-import { getStatus, getDataReclaims } from './utils'
+import { getStatus, getDataReclaims, getAuthNormal } from './utils'
 
 export default {
   components:{
@@ -113,6 +164,8 @@ export default {
   beforeMount(){
     this.strAlert = this.strActionInvalid
     this.action = this.actionInvalid
+
+    this.updateInvalidReclaim()
   },
   mounted(){},
   methods:{
@@ -137,6 +190,71 @@ export default {
         this.page = 1
       }
     },
+    updateInvalidReclaim(){
+      this.loading = true
+      console.log('updateInvalidReclaim()')
+      chainApi
+        .getReclaimInvalid(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .then(res =>{
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.reclaims.total = res.data.page_total
+            this.reclaims.data = res.data.data
+          }
+        })
+        .finally(()=>{
+          this.loading = false
+        })
+    },
+    updateAcceptedReclaim(){
+      this.loading = true
+      chainApi
+        .getReclaimAccepted(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .then(res => {
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.reclaims.total = res.data.page_total
+            this.reclaims.data = res.data.data
+          }
+        })
+        .finally(()=>{
+          this.loading = false
+        })
+    },
+    updateCompletedReclaim(){
+      this.loading = true
+      chainApi
+        .getReclaimCompleted(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .then(res => {
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.reclaims.total = res.data.page_total
+            this.reclaims.data = res.data.data
+          }
+        })
+        .finally(()=>{
+          this.loading = false
+        })
+    },
+    updateRejectedReclaim(){
+      this.loading = true
+      chainApi
+        .getReclaimRejected(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .then(res => {
+          console.log(res)
+          if(res.err === 0){
+            this.pageSize = res.data.page_size
+            this.reclaims.total = res.data.page_total
+            this.reclaims.data = res.data.data
+          }
+        })
+        .finally(()=>{
+          this.loading = false
+        })
+    }
   }
 }
 </script>
