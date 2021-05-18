@@ -240,12 +240,13 @@ export const setReclaim = (blocknum, hecoaddr, val, rufftx, hecotx, inAuth) =>
     },
     auth: inAuth
   })
-export const completeReclaim = (hecotx, rufftx, inAuth) =>
+export const completeReclaim = (hecotx, rufftx, val, inAuth) =>
   callMintageRpc({
     method: 'complete-reclaim',
     args:{
       hecoTx: hecotx,
-      ruffTx: rufftx
+      ruffTx: rufftx,
+      exchangeValue: val
     },
     auth: inAuth
   })

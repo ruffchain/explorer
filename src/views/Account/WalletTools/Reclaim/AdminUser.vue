@@ -35,8 +35,8 @@
 
 <template>
   <div class="admin-user">
-      <section>
-        <el-alert :closable="false" :title="strAlert" type="info" show-icon>
+    <section>
+      <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
       <div class="top-radio-selecter">
         <el-radio-group size="medium" v-model="action" @change="actionChange">
@@ -57,7 +57,11 @@
           >
             <el-table-column type="expand">
               <template slot-scope="props">
-                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                <el-form
+                  label-position="left"
+                  class="demo-table-expand"
+                  label-width="150px"
+                >
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
@@ -108,7 +112,11 @@
           >
             <el-table-column type="expand">
               <template slot-scope="props">
-                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                <el-form
+                  label-position="left"
+                  class="demo-table-expand"
+                  label-width="150px"
+                >
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
@@ -116,7 +124,7 @@
                     <span>{{ props.row.hecoTx }}</span>
                   </el-form-item>
                   <el-form-item label="Exchange Amount:">
-                    <span>{{ props.row.value }}</span>
+                    <span>{{ props.row.exchangeValue }}</span>
                   </el-form-item>
                   <el-form-item v-if="props.row.ruffTx" label="Heco TxHash:">
                     <span>{{ props.row.ruffTx }}</span>
@@ -160,16 +168,25 @@
       </LoadingContainer>
 
       <el-dialog
-        title="设置 Ruff TxHash"
+        title="设置 Ruff TxHash 和 成交数量"
         :visible="ruffTxDialogVisible"
         @update:visible="ruffTxClose"
-        width="600px"
+        width="650px"
       >
-        <el-form>
-          <el-form-item>
+        <el-form
+          label-width="80px">
+          <el-form-item
+          label="Ruff TX">
             <el-input
               type="text"
               v-model="currentRuffTx"
+              style="width:100%"
+            ></el-input>
+          </el-form-item>
+          <el-form-item  label="Amount">
+            <el-input
+              type="number"
+              v-model="currentExchangeValue"
               style="width:100%"
             ></el-input>
           </el-form-item>
@@ -190,10 +207,11 @@
           >
             <el-table-column type="expand">
               <template slot-scope="props">
-                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
-                  <!-- <el-form-item label="Type:">
-                    <span>{{ props.row.type }}</span>
-                  </el-form-item> -->
+                <el-form
+                  label-position="left"
+                  class="demo-table-expand"
+                  label-width="150px"
+                >
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
@@ -201,7 +219,7 @@
                     <span>{{ props.row.hecoTx }}</span>
                   </el-form-item>
                   <el-form-item label="Exchange Amount:">
-                    <span>{{ props.row.value }}</span>
+                    <span>{{ props.row.exchangeValue }}</span>
                   </el-form-item>
                   <el-form-item v-if="props.row.ruffTx" label="Ruff TxHash:">
                     <span>{{ props.row.ruffTx }}</span>
@@ -233,7 +251,7 @@
           </div>
         </div>
       </LoadingContainer>
-<!-- rejected -->
+      <!-- rejected -->
       <LoadingContainer :loading="loading" v-if="action === actionRejected">
         <div>
           <el-table
@@ -243,14 +261,18 @@
           >
             <el-table-column type="expand">
               <template slot-scope="props">
-                <el-form label-position="left"  class="demo-table-expand" label-width="150px">
+                <el-form
+                  label-position="left"
+                  class="demo-table-expand"
+                  label-width="150px"
+                >
                   <el-form-item label="Ruff Addr:">
                     <span>{{ props.row.ruffAddr }}</span>
                   </el-form-item>
                   <el-form-item label="Heco Tx:">
                     <span>{{ props.row.hecoTx }}</span>
                   </el-form-item>
-                  <el-form-item label="Exchange Amount:">
+                  <el-form-item label="Amount:">
                     <span>{{ props.row.value }}</span>
                   </el-form-item>
                   <el-form-item v-if="props.row.ruffTx" label="Ruff TxHash:">
@@ -283,45 +305,44 @@
           </div>
         </div>
       </LoadingContainer>
-      </section>
-
+    </section>
   </div>
 </template>
 
 <script>
 import LoadingContainer from '@/components/LoadingContainer'
 import * as chainApi from '../../../../common/chain-api'
-import * as chainLib from '../../../../common/chain-lib'
 import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
 import TransactionResult from '../TransactionResult'
-import { getStatus, getDataReclaims, getAuthNormal } from './utils'
+import {  getDataReclaims, getAuthNormal, getValidValue } from './utils'
 
 export default {
-  components:{
+  components: {
     LoadingContainer,
     ConfirmTx,
     AppDialog,
     TransactionResult
   },
-  data(){
-    return{
+  data() {
+    return {
       strAlert: '',
       action: '',
       loading: false,
-      page:1,
-      pageSize:5,
-      reclaims:{
-        total:0,
-        data:[]
+      page: 1,
+      pageSize: 5,
+      reclaims: {
+        total: 0,
+        data: []
       },
       ruffTxDialogVisible: false,
-      currentRuffTx:'',
-      currentRuffValue:'',
-      currentHecoTx:''
+      currentRuffTx: '',
+      currentRuffValue: '',
+      currentHecoTx: '',
+      currentExchangeValue: '0'
     }
   },
-  computed:{
+  computed: {
     dataReclaims() {
       return getDataReclaims(this.reclaims.data)
     },
@@ -348,24 +369,24 @@ export default {
     },
     strActionRejected() {
       return '管理员页面: ' + '被驳回的请求'
-    },
+    }
   },
-  beforeMount(){
+  beforeMount() {
     this.strAlert = this.strActionInvalid
     this.action = this.actionInvalid
 
     this.updateInvalidReclaim()
   },
-  mounted(){},
-  methods:{
-     actionChange() {
+  mounted() {},
+  methods: {
+    actionChange() {
       console.log('change')
 
       if (this.action === this.actionInvalid) {
         this.strAlert = this.strActionInvalid
         this.updateInvalidReclaim()
         this.page = 1
-      }  else if (this.action === this.actionAccepted) {
+      } else if (this.action === this.actionAccepted) {
         this.strAlert = this.strActionAccepted
         this.updateAcceptedReclaim()
         this.page = 1
@@ -379,110 +400,132 @@ export default {
         this.page = 1
       }
     },
-    updateInvalidReclaim(){
+    updateInvalidReclaim() {
       this.loading = true
       console.log('updateInvalidReclaim()')
       chainApi
-        .getReclaimInvalid(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
-        .then(res =>{
-          console.log(res)
-          if(res.err === 0){
-            this.pageSize = res.data.page_size
-            this.reclaims.total = res.data.page_total
-            this.reclaims.data = res.data.data
-          }
-        })
-        .finally(()=>{
-          this.loading = false
-        })
-    },
-    updateAcceptedReclaim(){
-      this.loading = true
-      chainApi
-        .getReclaimAccepted(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .getReclaimInvalid(
+          this.page - 1,
+          this.pageSize,
+          getAuthNormal(this.$_APP.privateKey)
+        )
         .then(res => {
           console.log(res)
-          if(res.err === 0){
+          if (res.err === 0) {
             this.pageSize = res.data.page_size
             this.reclaims.total = res.data.page_total
             this.reclaims.data = res.data.data
           }
         })
-        .finally(()=>{
+        .finally(() => {
           this.loading = false
         })
     },
-    updateCompletedReclaim(){
+    updateAcceptedReclaim() {
       this.loading = true
       chainApi
-        .getReclaimCompleted(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .getReclaimAccepted(
+          this.page - 1,
+          this.pageSize,
+          getAuthNormal(this.$_APP.privateKey)
+        )
         .then(res => {
           console.log(res)
-          if(res.err === 0){
+          if (res.err === 0) {
             this.pageSize = res.data.page_size
             this.reclaims.total = res.data.page_total
             this.reclaims.data = res.data.data
           }
         })
-        .finally(()=>{
+        .finally(() => {
           this.loading = false
         })
     },
-    updateRejectedReclaim(){
+    updateCompletedReclaim() {
       this.loading = true
       chainApi
-        .getReclaimRejected(this.page -1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .getReclaimCompleted(
+          this.page - 1,
+          this.pageSize,
+          getAuthNormal(this.$_APP.privateKey)
+        )
         .then(res => {
           console.log(res)
-          if(res.err === 0){
+          if (res.err === 0) {
             this.pageSize = res.data.page_size
             this.reclaims.total = res.data.page_total
             this.reclaims.data = res.data.data
           }
         })
-        .finally(()=>{
+        .finally(() => {
           this.loading = false
         })
     },
-    handleAccepted(index){
+    updateRejectedReclaim() {
+      this.loading = true
+      chainApi
+        .getReclaimRejected(
+          this.page - 1,
+          this.pageSize,
+          getAuthNormal(this.$_APP.privateKey)
+        )
+        .then(res => {
+          console.log(res)
+          if (res.err === 0) {
+            this.pageSize = res.data.page_size
+            this.reclaims.total = res.data.page_total
+            this.reclaims.data = res.data.data
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    handleAccepted(index) {
       console.log(
         this.dataReclaims[index].ruffTx,
         this.dataReclaims[index].hecoTx
       )
       this.currentHecoTx = this.dataReclaims[index].hecoTx
-      this.currentRuffValue = this.dataReclaims[index].value 
+      this.currentRuffValue = this.dataReclaims[index].value
       this.currentRuffTx = ''
+      this.currentExchangeValue = 0
+
       this.ruffTxDialogVisible = true
     },
-    ruffTxClose(){
+    ruffTxClose() {
       this.ruffTxDialogVisible = false
     },
-    ruffTxConfirm(){
+    ruffTxConfirm() {
       this.loading = true
       console.log(this.currentRuffTx, this.currentRuffValue)
 
       console.log('ruffTxConfirm()')
 
-      if( this.currentRuffTx.length < 20){
-        this.loading = false;
-        console.error('Wrong ruff Tx')
+      if (this.currentRuffTx.length < 20 || parseFloat(this.currentExchangeValue) < 0) {
+        this.loading = false
+        console.error('Wrong ruff Tx or exchange Value')
         this.ruffTxDialogVisible = false
         return
       }
+
+      console.log('exchangeValue:', this.currentExchangeValue)
+      console.log('ruffValue:', this.currentRuffValue)
 
       chainApi
         .completeReclaim(
           this.currentHecoTx,
           this.currentRuffTx,
+          getValidValue(this.currentExchangeValue,this.currentRuffValue ),
           getAuthNormal(this.$_APP.privateKey)
         )
-        .then( res =>{
+        .then(res => {
           console.log(res)
-          if(res.err ===0){
+          if (res.err === 0) {
             this.updateAcceptedReclaim()
           }
         })
-        .finally(() =>{
+        .finally(() => {
           this.loading = false
           this.ruffTxDialogVisible = false
         })

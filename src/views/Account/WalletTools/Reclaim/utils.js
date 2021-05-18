@@ -2,6 +2,14 @@ import * as chainLib from '../../../../common/chain-lib'
 import { getStrDate } from '../../../../common/utils'
 
 
+export function getValidValue( val, oldVal){
+  if(val === 0 || val === '0'){
+    return parseFloat(oldVal)
+  }else{
+    return parseFloat(val)
+  }
+}
+
 export function getStatus(record) {
     if (record.type === 0) {
       return 'Checking'
@@ -46,6 +54,7 @@ export function getStatus(record) {
         hecoAddr: record.hecoAddr,
         hecoTx: record.hecoTx,
         value: record.value,
+        exchangeValue: record.exchangeValue?record.exchangeValue:'0',
         status: getStatus(record)
       })
     }

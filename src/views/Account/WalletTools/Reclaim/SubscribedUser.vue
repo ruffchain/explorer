@@ -90,6 +90,9 @@
                 <el-form-item label="Ruff Address:">
                   <span>{{ props.row.ruffAddr }}</span>
                 </el-form-item>
+                <el-form-item v-if="props.row.exchangeValue" label="Exchanged Value:">
+                  <span>{{ props.row.exchangeValue }}</span>
+                </el-form-item>
               </el-form>
             </template>
           </el-table-column>
