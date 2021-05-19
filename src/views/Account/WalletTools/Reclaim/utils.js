@@ -53,6 +53,7 @@ export function getStatus(record) {
         ruffAddr: record.ruffAddr,
         hecoAddr: record.hecoAddr,
         hecoTx: record.hecoTx,
+        ruffTx: record.ruffTx,
         value: record.value,
         exchangeValue: record.exchangeValue?record.exchangeValue:'0',
         status: getStatus(record)

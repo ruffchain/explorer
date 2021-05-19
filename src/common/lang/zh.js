@@ -124,6 +124,16 @@ export default {
     handled: '处理',
     status:'状态'
   },
+  Reclaim: {
+    hecoAddr: 'Heco地址',
+    walletStatus: '钱包状态',
+    amount:'提取数量',
+    confirm:'确认提取',
+    hecoTx: 'Heco交易Hash',
+    ruffTx: 'Ruff交易Hash',
+    ruffAddr: 'Ruff地址',
+    exchangeValue: '提取数量'
+  },
   ConfirmTx: {
     title: '确认交易内容',
     cancel: '取消',

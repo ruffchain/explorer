@@ -29,7 +29,7 @@
 <template>
   <div class="subscribed-user">
     <section>
-      <h2>Heco: {{ account }}</h2>
+      <h2>{{ strHecoAddr }}: {{ account }}</h2>
 
       <el-form
         ref="form"
@@ -38,7 +38,7 @@
         :rules="formRules"
         label-width="150px"
       >
-        <el-form-item label="MetaMask">
+        <el-form-item :label="strWalletStatus">
           <el-button
             :disabled="bButtonDisabled"
             :type="metaMaskConnected"
@@ -81,16 +81,16 @@
                 class="demo-table-expand"
                 label-width="150px"
               >
-                <el-form-item label="Heco Tx:">
+                <el-form-item :label="strHecoTx">
                   <span>{{ props.row.hecoTx }}</span>
                 </el-form-item>
-                <el-form-item v-if="props.row.ruffTx" label="Ruff Tx:">
+                <el-form-item v-if="props.row.ruffTx" :label="strRuffTx">
                   <span>{{ props.row.ruffTx }}</span>
                 </el-form-item>
-                <el-form-item label="Ruff Address:">
+                <el-form-item :label="strRuffAddr">
                   <span>{{ props.row.ruffAddr }}</span>
                 </el-form-item>
-                <el-form-item v-if="props.row.exchangeValue" label="Exchanged Value:">
+                <el-form-item v-if="props.row.exchangeValue" :label="strExchangeValue">
                   <span>{{ props.row.exchangeValue }}</span>
                 </el-form-item>
               </el-form>
@@ -190,10 +190,10 @@ export default {
       return [...this.formRules.amount]
     },
     strTxConfirm() {
-      return 'Confirm'
+      return this.$t('Reclaim.confirm')
     },
     strAmount() {
-      return 'Amount'
+      return this.$t('Reclaim.amount')
     },
     strTableDate() {
       return this.$t('Mintage.date')
@@ -206,6 +206,24 @@ export default {
     },
     strTableStatus() {
       return this.$t('Mintage.status')
+    },
+    strHecoAddr(){
+      return this.$t('Reclaim.hecoAddr')
+    },
+    strWalletStatus(){
+      return this.$t('Reclaim.walletStatus')
+    },
+    strHecoTx(){
+      return this.$t('Reclaim.hecoTx')
+    },
+    strRuffTx(){
+      return this.$t('Reclaim.ruffTx')
+    },
+    strRuffAddr(){
+      return this.$t('Reclaim.ruffAddr')
+    },
+    strExchangeValue(){
+      return this.$t('Reclaim.exchangeValue')
     }
   },
   beforeMount() {

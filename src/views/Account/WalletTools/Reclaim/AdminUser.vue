@@ -489,7 +489,7 @@ export default {
       this.currentHecoTx = this.dataReclaims[index].hecoTx
       this.currentRuffValue = this.dataReclaims[index].value
       this.currentRuffTx = ''
-      this.currentExchangeValue = 0
+      this.currentExchangeValue = this.dataReclaims[index].value
 
       this.ruffTxDialogVisible = true
     },
@@ -502,7 +502,7 @@ export default {
 
       console.log('ruffTxConfirm()')
 
-      if (this.currentRuffTx.length < 20 || parseFloat(this.currentExchangeValue) < 0) {
+      if (this.currentRuffTx.length < 20 || parseFloat(this.currentExchangeValue) <= 0) {
         this.loading = false
         console.error('Wrong ruff Tx or exchange Value')
         this.ruffTxDialogVisible = false
@@ -510,13 +510,12 @@ export default {
       }
 
       console.log('exchangeValue:', this.currentExchangeValue)
-      console.log('ruffValue:', this.currentRuffValue)
 
       chainApi
         .completeReclaim(
           this.currentHecoTx,
           this.currentRuffTx,
-          getValidValue(this.currentExchangeValue,this.currentRuffValue ),
+          this.currentExchangeValue,
           getAuthNormal(this.$_APP.privateKey)
         )
         .then(res => {

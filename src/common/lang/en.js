@@ -124,6 +124,16 @@ export default {
     handled: 'Handled',
     status:'Status'
   },
+  Reclaim:{
+    hecoAddr: 'Heco Address',
+    walletStatus: 'Wallet Connection',
+    amount:'Amount',
+    confirm: 'Confirm',
+    hecoTx: 'Heco Tx Hash',
+    ruffTx: 'Ruff Tx Hash',
+    ruffAddr: 'Ruff Address',
+    exchangeValue: 'Exchanged Value'
+  },
   ConfirmTx: {
     title: 'Confirm Tx',
     cancel: 'Cancel',
