@@ -50,7 +50,7 @@ export function getStatus(record) {
       out.push({
         index: index++,
         date: getStrDate(record.date),
-        ruffAddr: record.ruffAddr,
+        ruffAddr: 'ruff' + record.ruffAddr,
         hecoAddr: record.hecoAddr,
         hecoTx: record.hecoTx,
         ruffTx: record.ruffTx,
