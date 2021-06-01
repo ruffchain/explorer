@@ -132,7 +132,8 @@ export default {
     hecoTx: 'Heco交易Hash',
     ruffTx: 'Ruff交易Hash',
     ruffAddr: 'Ruff地址',
-    exchangeValue: '提取数量'
+    exchangeValue: '提取数量',
+    ruffAmount:'剩余数量'
   },
   ConfirmTx: {
     title: '确认交易内容',

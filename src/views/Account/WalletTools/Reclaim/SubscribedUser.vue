@@ -29,8 +29,6 @@
 <template>
   <div class="subscribed-user">
     <section>
-      <h2>{{ strHecoAddr }}: {{ account }}</h2>
-
       <el-form
         ref="form"
         :inline="false"
@@ -46,6 +44,12 @@
           >
             {{ textMetaMask }}
           </el-button>
+        </el-form-item>
+        <el-form-item :label="strHecoAddr">
+          <el-tag type="info">{{ account }}</el-tag>
+        </el-form-item>
+        <el-form-item :label="strRuffAmount">
+          <el-tag type="info">{{ ruffAmount }}</el-tag>
         </el-form-item>
         <el-form-item prop="amount" :rules="amountRules" :label="strAmount">
           <el-input v-model="formData.amount" type="number"> </el-input>
@@ -90,7 +94,10 @@
                 <el-form-item :label="strRuffAddr">
                   <span>{{ props.row.ruffAddr }}</span>
                 </el-form-item>
-                <el-form-item v-if="props.row.exchangeValue" :label="strExchangeValue">
+                <el-form-item
+                  v-if="props.row.exchangeValue"
+                  :label="strExchangeValue"
+                >
                   <span>{{ props.row.exchangeValue }}</span>
                 </el-form-item>
               </el-form>
@@ -140,10 +147,9 @@ import { ethers } from 'ethers'
 import { abi } from './RuffTokenAbi'
 import ConfirmTx from '../ConfirmTx'
 import AppDialog from '../../../../components/AppDialog'
-import { getStrDate } from '../../../../common/utils'
 import * as chainApi from '../../../../common/chain-api'
-
-import {getStatus , getAuthNormal, getDataReclaims} from './utils'
+import ParameterRow from '@/components/ParameterRow'
+import { getAuthNormal, getDataReclaims } from './utils'
 
 const BigNumber = require('bignumber.js')
 
@@ -157,7 +163,8 @@ export default {
     LoadingContainer,
     TransactionResult,
     ConfirmTx,
-    AppDialog
+    AppDialog,
+    ParameterRow
   },
   data() {
     return {
@@ -179,7 +186,8 @@ export default {
       // dataReclaims: [],
       reclaims: { total: 0, data: [] },
       page: 1,
-      pageSize: 3
+      pageSize: 3,
+      ruffAmount: '0'
     }
   },
   computed: {
@@ -207,22 +215,25 @@ export default {
     strTableStatus() {
       return this.$t('Mintage.status')
     },
-    strHecoAddr(){
-      return this.$t('Reclaim.hecoAddr')
+    strHecoAddr() {
+      return this.$t('Reclaim.hecoAddr') + ':'
     },
-    strWalletStatus(){
+    strWalletStatus() {
       return this.$t('Reclaim.walletStatus')
     },
-    strHecoTx(){
+    strRuffAmount() {
+      return this.$t('Reclaim.ruffAmount')
+    },
+    strHecoTx() {
       return this.$t('Reclaim.hecoTx')
     },
-    strRuffTx(){
+    strRuffTx() {
       return this.$t('Reclaim.ruffTx')
     },
-    strRuffAddr(){
+    strRuffAddr() {
       return this.$t('Reclaim.ruffAddr')
     },
-    strExchangeValue(){
+    strExchangeValue() {
       return this.$t('Reclaim.exchangeValue')
     }
   },
@@ -239,6 +250,7 @@ export default {
     async checkMetaMask() {
       console.log('Check MetaMask')
       this.textMetaMask = 'Connect MetaMask'
+      const that = this;
 
       if (typeof window.ethereum !== 'undefined') {
         const accounts = await ethereum.request({
@@ -254,9 +266,12 @@ export default {
         } else {
           this.bButtonDisabled = false
         }
-        ethereum.on('accountsChanged', accountsNew => {
+        await that.getRemainRuff();
+
+        ethereum.on('accountsChanged', async accountsNew => {
           this.account = accountsNew[0]
           console.log('account: ', this.account)
+          await that.getRemainRuff()
         })
       } else {
         console.log('Please install MetaMask')
@@ -302,6 +317,22 @@ export default {
       }
       this.showConfirmTx = true
     },
+    async getRemainRuff(){
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+        let signer = provider.getSigner()
+
+        this.contract = new ethers.Contract(RuffTokenContract, abi, signer)
+        let amount = await this.contract.balanceOf(this.account)
+        // console.log("amount:", amount)
+        if(amount){
+          this.ruffAmount = new BigNumber(amount.toString());
+          this.ruffAmount = this.ruffAmount.div(new BigNumber(10).pow(18)).toFixed(3);
+        }else{
+          this.ruffAmount = '0'
+        }
+        // console.log("ruffAmount:", this.ruffAmount)
+    },
     async confirmSendTx() {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -321,32 +352,36 @@ export default {
           message: receipt.status === 1 ? 'Send OK' : 'Send Fail'
         }
         console.log('status:', receipt.status)
-        if(receipt.status === 1){
+        if (receipt.status === 1) {
           chainApi
-          .setReclaim(
-            receipt.blockNumber,
-            this.account,
-            this.formData.amount,
-            '',
-            receipt.transactionHash,
-            getAuthNormal(this.$_APP.privateKey)
-          )
-          .then(res=>{
-            console.log(res)
-            this.result = {
-              message: res.err === 0? this.result.message + ' Send Request OK': this.result.message + ' Send Request Fail'
-            }
-            this.updateReclaims()
-          })
+            .setReclaim(
+              receipt.blockNumber,
+              this.account,
+              this.formData.amount,
+              '',
+              receipt.transactionHash,
+              getAuthNormal(this.$_APP.privateKey)
+            )
+            .then(res => {
+              console.log(res)
+              this.result = {
+                message:
+                  res.err === 0
+                    ? this.result.message + ' Send Request OK'
+                    : this.result.message + ' Send Request Fail'
+              }
+              this.updateReclaims()
+            })
         }
-        
       } catch (e) {
         console.log(e)
         this.result = {
           message: 'Error Encountered'
         }
       } finally {
+        await this.getRemainRuff();
         this.apploading = false
+       
       }
     },
     handleCurrentReclaim() {
@@ -364,7 +399,11 @@ export default {
       this.loading = true
 
       chainApi
-        .getReclaimsByAddr(this.page - 1, this.pageSize, getAuthNormal(this.$_APP.privateKey))
+        .getReclaimsByAddr(
+          this.page - 1,
+          this.pageSize,
+          getAuthNormal(this.$_APP.privateKey)
+        )
         .then(res => {
           console.log(res)
           if (res.err === 0) {

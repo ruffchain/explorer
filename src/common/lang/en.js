@@ -132,7 +132,8 @@ export default {
     hecoTx: 'Heco Tx Hash',
     ruffTx: 'Ruff Tx Hash',
     ruffAddr: 'Ruff Address',
-    exchangeValue: 'Exchanged Value'
+    exchangeValue: 'Exchanged Value',
+    ruffAmount:'Remain'
   },
   ConfirmTx: {
     title: 'Confirm Tx',

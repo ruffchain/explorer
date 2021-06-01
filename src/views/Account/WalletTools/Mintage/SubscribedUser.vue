@@ -29,7 +29,9 @@
 <template>
   <div class="subscribed-user">
     <section>
-      <h2>{{ value }} RUFF</h2>
+      <div class="card">
+        <ParameterRow name="">{{ value }} RUFF</ParameterRow>
+      </div>
       <el-alert :closable="false" :title="strAlert" type="info" show-icon>
       </el-alert>
       <el-form
@@ -139,6 +141,7 @@ import { getStrDate, getStrHandled } from '../../../../common/utils'
 import { genTransferTx } from '../wallet-helper'
 import { TokenType } from '../../../../common/enums'
 import AppDialog from '../../../../components/AppDialog'
+import ParameterRow from '@/components/ParameterRow'
 
 export default {
   props: {
@@ -156,7 +159,8 @@ export default {
     LoadingContainer,
     TransactionResult,
     ConfirmTx,
-    AppDialog
+    AppDialog,
+    ParameterRow,
   },
   data() {
     return {
