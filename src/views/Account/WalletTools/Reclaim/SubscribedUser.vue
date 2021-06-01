@@ -302,6 +302,9 @@ export default {
       console.log('confirm()')
       let val = parseFloat(this.formData.amount)
       console.log(val)
+      if(!val){
+        return
+      }
       if (val <= 0) {
         this.result = {
           message: 'Invalid amount' + this.formData.amount
